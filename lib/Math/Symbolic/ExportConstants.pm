@@ -72,7 +72,7 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw(
 );
-our $VERSION = '0.101';
+our $VERSION = '0.102';
 
 1;
 __END__
@@ -104,6 +104,8 @@ of this module, you'll want to export the :all group of constants.
 =head1 AUTHOR
 
 Steffen Mueller, E<lt>symbolic-module at steffen-mueller dot netE<gt>
+
+New versions of this module can be found on http://steffen-mueller.net or CPAN.
 
 =head1 SEE ALSO
 

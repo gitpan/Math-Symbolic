@@ -48,9 +48,7 @@ use Math::Symbolic::Derivative qw//;
 
 use base 'Math::Symbolic::Base';
 
-use overload '""' => sub{ $_[0]->to_string() };
-
-our $VERSION = '0.101';
+our $VERSION = '0.102';
 
 our %Op_Symbols = (
 	'+'     => B_SUM,
@@ -287,7 +285,7 @@ function in parens)
   cosh               => hyperbolic cosine (1)
   asinh              => hyperbolic area sine (1)
   acosh              => hyperbolic area cosine (1)
-  
+
 =cut
 
 sub new {
@@ -693,6 +691,8 @@ __END__
 =head1 AUTHOR
 
 Steffen Mueller, E<lt>symbolic-module at steffen-mueller dot netE<gt>
+
+New versions of this module can be found on http://steffen-mueller.net or CPAN.
 
 =head1 SEE ALSO
 

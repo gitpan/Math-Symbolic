@@ -18,6 +18,19 @@ Version 0.100: (Released)
 	  appropriately.
 	+ Add tests for the new features.
 
+Version 0.105:
+	+ Add reasonable overloaded interface for arithmetic operators and
+	  some mathematical functions as far as feasible.
+	+ Overloaded interface for exp, sqrt, log, +,-,*,/,**.
+	+ Overloaded interface for boolean context and stringification.
+	+ O. i. for unary minus
+	+ O. i. for trig functions
+	+ More tests.
+	+ Overloaded interface for numerical context.
+	+ Overloaded interface for MUTATORS!
+	+ Tests for the above.
+	+ Documentation for the above changes
+
 Version 0.110: (major milestone!)
 	- Instead of all terms being either a Math::Symbolic::Operator, a
 	  Math::Symbolic::Variable, or a Math::Symbolic::Constant object,

@@ -13,6 +13,7 @@ lib/Math/Symbolic/Operator.pm
 lib/Math/Symbolic/Parser.pm
 lib/Math/Symbolic/Variable.pm
 run.pl
+run10.pl
 run2.pl
 run3.pl
 run4.pl
@@ -32,3 +33,4 @@ t/08parse_hyperbolic.t
 t/09hyperbolic.t
 t/10hyperbolic.t
 t/11trigonometric.t
+t/12overload.t

@@ -32,7 +32,7 @@ my $n_tree = $op->new( {
 	operands => [$sin, $a],
 } );
 
-print $n_tree->to_string('prefix') . " = " . $sin->value() . "\n\n";
+print $n_tree->to_string('prefix') . " = " . $n_tree->value() . "\n\n";
 
 print "Now, we apply the derivative to the term: (infix)\n";
 my $derived = $n_tree->apply_derivatives();
@@ -44,7 +44,7 @@ $derived = $derived->simplify();
 print "$derived = " . $derived->value() . "\n\n";
 
 print "Two more derivatives:\n\n";
-for (1..2) {
+for (1..4) {
 	$derived = $op->new( {
 				type => U_P_DERIVATIVE,
 				operands => [$derived, $a],

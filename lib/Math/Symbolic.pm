@@ -98,7 +98,7 @@ our %EXPORT_TAGS = (
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT = qw();
 
-our $VERSION = '0.101';
+our $VERSION = '0.102';
 
 =head1 CLASS DATA
 
@@ -179,9 +179,30 @@ ways of applying derivatives and simplifying terms.
   my $simplified = $derived->simplify();
   print "$simplified = " . $derived->value() . "\n\n";
 
+=head1 OVERLOADED OPERATORS
+
+Since version 0.102, several arithmetic operators have been overloaded.
+
+That means you can do most arithmetic with Math::Symbolic trees just as
+if they were plain Perl scalars.
+
+The following operators are currently overloaded to produce valid
+Math::Symbolic trees when applied to an expression involving at least one
+Math::Symbolic object:
+
+  +, -, *, /, **, sqrt, log, exp, sin, cos
+
+Furthermore, some contexts have been overloaded with particular behaviour:
+'""' (stringification context) has been overloaded to produce the string
+representation of the object. '0+' (numerical context) has been overloaded
+to produce the value of the object. 'bool' (boolean context) has been
+overloaded to produce the value of the object.
+
 =head1 AUTHOR
 
 Steffen Mueller, E<lt>symbolic-module at steffen-mueller dot netE<gt>
+
+New versions of this module can be found on http://steffen-mueller.net or CPAN.
 
 =head1 SEE ALSO
 

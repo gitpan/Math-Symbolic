@@ -45,7 +45,7 @@ use Parse::RecDescent;
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.101';
+our $VERSION = '0.102';
 our $DEBUG = 0;
 
 our $Grammar = <<'GRAMMAR_END';
@@ -284,6 +284,8 @@ __END__
 =head1 AUTHOR
 
 Steffen Mueller, E<lt>symbolic-module at steffen-mueller dot netE<gt>
+
+New versions of this module can be found on http://steffen-mueller.net or CPAN.
 
 =head1 SEE ALSO
 
