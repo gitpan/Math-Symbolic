@@ -114,6 +114,8 @@ use Math::Symbolic::Derivative;
 use Math::Symbolic::Parser;
 use Math::Symbolic::Compiler;
 
+use Math::Symbolic::Custom;
+
 require Exporter;
 
 our @ISA = qw(Exporter);
@@ -130,7 +132,7 @@ our %EXPORT_TAGS = (
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT = qw();
 
-our $VERSION = '0.110';
+our $VERSION = '0.111';
 
 =head1 CLASS DATA
 
@@ -251,6 +253,10 @@ L<Math::Symbolic::Base>
 L<Math::Symbolic::Operator>
 L<Math::Symbolic::Constant>
 L<Math::Symbolic::Variable>
+
+L<Math::Symbolic::Custom>
+L<Math::Symbolic::Custom::Base>
+L<Math::Symbolic::Custom::Default>
 
 L<Math::Symbolic::Derivative>
 

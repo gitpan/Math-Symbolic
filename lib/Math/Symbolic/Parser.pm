@@ -113,7 +113,7 @@ use Parse::RecDescent;
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.110';
+our $VERSION = '0.111';
 our $DEBUG = 0;
 
 our $Grammar = <<'GRAMMAR_END';

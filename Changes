@@ -1,5 +1,42 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.111  Tue Jul 29 12:38:40 2003
+	- Added Math::Symbolic::Custom::*.
+	- Added custom transformation and test functionality.
+	- Added is_sum(), is_constant(), is_integer() to M::S::C::Default
+	- Added documentation and tests for the above.
+	- Moved apply_derivatives() to the MSC::Default namespace.
+	- TODO goals met with this release:
+		+ Create a Math::Symbolic::Custom class and a
+		  Math::Symbolic::Custom::Default class.
+		+ The Math::Symbolic::Custom::Default class is to
+		  contain all builtin simplification and term-transformation
+		  routines.
+		  (Also contains methods that tests trees for particular
+		  properties)
+		+ All calls to Math::Symbolic methods that cannot be
+		  resolved in the Math::Symbolic inheritance hierarchy
+		  (which should consist of the package itself, anyhow) and
+		  that start with "apply_" should be delegated to the subs
+		  named apply_... in the Math::Symbolic::Custom
+		  package.
+		  ('is_', 'test_', and 'mod_' also delegated.)
+		+ Math::Symbolic::Custom should load
+		  Math::Symbolic::Custom::Default.
+		+ Math::Symbolic::Custom::Default should inherit
+		  from a package named Math::Symbolic::Custom::Base
+		  which defines a special import routine that automatically
+		  adds the loaded module to the @ISA of
+		  Math::Symbolic::Custom.
+		  (Implemented this using a custom exporter scheme.)
+		+ Thus, users can extend the number of
+		  Math::Symbolic::Custom's by writing a package with
+		  transformation subroutines in it that just inherits
+		  from Math::Symbolic::Custom::Base. Upon use-ing the
+		  custom module, the routines will automatically be
+		  added to Math::Symbolic's transformation and testing
+		  repertoire.
+
 0.110  Sat Jul 19 15:16:11 2003
 	- Documentation patches.
 	- Added total derivatives.

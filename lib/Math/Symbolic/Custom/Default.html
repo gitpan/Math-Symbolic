@@ -1,0 +1,169 @@
+<HTML>
+<HEAD>
+<TITLE>Math::Symbolic::Custom::Default</TITLE>
+</HEAD>
+<BODY BGCOLOR="#fffff8" TEXT="#000000">
+<UL>
+<LI><A HREF="#NAME">NAME
+
+</A></LI>
+<LI><A HREF="#SYNOPSIS">SYNOPSIS
+
+</A></LI>
+<LI><A HREF="#DESCRIPTION">DESCRIPTION
+
+</A></LI>
+<UL>
+<LI><A HREF="#EXPORT">EXPORT
+
+</A></LI>
+</UL>
+<LI><A HREF="#SUBROUTINES">SUBROUTINES
+
+</A></LI>
+<UL>
+<LI><A HREF="#is_integer()">is_integer()
+
+</A></LI>
+<LI><A HREF="#is_constant()">is_constant()
+
+</A></LI>
+<LI><A HREF="#is_sum()">is_sum()
+
+</A></LI>
+<LI><A HREF="#apply_derivatives()">apply_derivatives()
+
+</A></LI>
+</UL>
+<LI><A HREF="#AUTHOR">AUTHOR
+
+</A></LI>
+<LI><A HREF="#SEE%20ALSO">SEE ALSO
+
+</A></LI>
+</UL>
+<HR>
+<H1><A NAME="NAME">NAME
+
+</A></H1>
+
+<P>Math::Symbolic::Custom::Default - Default tree tests and transformations
+
+</P><H1><A NAME="SYNOPSIS">SYNOPSIS
+
+</A></H1>
+
+<PRE>  use Math::Symbolic;</PRE>
+<H1><A NAME="DESCRIPTION">DESCRIPTION
+
+</A></H1>
+
+<P>This is a class of default tests and transformations for Math::Symbolic trees.
+For details on how the custom method delegation model works, please have
+a look at the Math::Symbolic::Custom and Math::Symbolic::Custom::Base
+classes.
+
+</P><H2><A NAME="EXPORT">EXPORT
+
+</A></H2>
+
+<P>Please see the docs for Math::Symbolic::Custom::Base for details, but
+you should not try to use the standard Exporter semantics with this
+class.
+
+</P><H1><A NAME="SUBROUTINES">SUBROUTINES
+
+</A></H1>
+<H2><A NAME="is_integer()">is_integer()
+
+</A></H2>
+
+<P>is_integer() returns a boolean.
+
+</P>
+<P>It returns true (1) if the tree is a constant object representing an
+integer value. It does <I>not</I> compute the value of the tree.
+(eg. '5*10' is <I>not</I> considered an integer, but '50' is.)
+
+</P>
+<P>It returns false (0) otherwise.
+
+</P><H2><A NAME="is_constant()">is_constant()
+
+</A></H2>
+
+<P>is_constant() returns a boolean.
+
+</P>
+<P>It returns true (1) if the tree consists of only constants and operators or
+if it becomes a tree of only constants and operators after application
+of derivatives.
+
+</P>
+<P>It returns false (0) otherwise.
+
+</P><H2><A NAME="is_sum()">is_sum()
+
+</A></H2>
+
+<P>(beta)
+
+</P>
+<P>is_constant() returns a boolean.
+
+</P>
+<P>It returns true (1) if the tree contains no variables (because it can then
+be evaluated to a single constant which is a sum). It also returns true if
+it is a sum or difference of constants and variables. Furthermore, it is
+true for products of integers and constants because those products are really
+sums of variables.
+If none of the above cases match, it applies all derivatives and tries again.
+
+</P>
+<P>It returns false (0) otherwise.
+
+</P>
+<P>Please contact the author in case you encounter bugs in the specs or
+implementation. The heuristics aren't all that great.
+
+</P><H2><A NAME="apply_derivatives()">apply_derivatives()
+
+</A></H2>
+
+<P>Never modifies the tree in-place, but returns a modified copy of the
+original tree instead.
+
+</P>
+<P>Applied to variabls and constants, this method just clones.
+
+</P>
+<P>Applied to operators and if the operator is a derivative, this applies
+the derivative to the derivative's first operand.
+
+</P>
+<P>Regardless what kind of operator this is called on, apply_derivatives
+will be applied recursively on its operands.
+
+</P>
+<P>If the first parameter to this function is an integer, at maximum that
+number of derivatives are applied (from top down the tree if possible).
+
+</P><H1><A NAME="AUTHOR">AUTHOR
+
+</A></H1>
+
+<P>Steffen Mueller, &lt;symbolic-module at steffen-mueller dot net&gt;
+
+</P>
+<P>New versions of this module can be found on http://steffen-mueller.net or CPAN.
+
+</P><H1><A NAME="SEE%20ALSO">SEE ALSO
+
+</A></H1>
+
+<P><A HREF="Math/Symbolic/Custom.html">Math::Symbolic::Custom</A>
+<A HREF="Math/Symbolic.html">Math::Symbolic</A>
+
+</P>
+</BODY>
+</HTML>

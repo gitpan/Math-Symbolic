@@ -43,7 +43,8 @@ use overload
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.110';
+our $VERSION = '0.111';
+our $AUTOLOAD;
 
 =head1 METHODS
 
@@ -182,19 +183,6 @@ sub simplify {
 
 
 
-=head2 Method apply_derivatives
-
-Minimum method for application of derivatives just clones.
-
-=cut
-
-sub apply_derivatives {
-	my $self = shift;
-	return $self->new();
-}
-
-
-
 =head2 Method term_type
 
 Returns the type of the term. This is a stub to be overridden.
@@ -315,6 +303,53 @@ sub _overload_cos {
 	return $n_obj;
 }
 
+
+=begin comment
+
+The following AUTOLOAD mechanism delegates all method calls that aren't found
+in the normal Math::Symbolic inheritance tree and that start with
+'is_', 'test_', 'apply_', or 'mod_' to the Math::Symbolic::Custom class.
+
+The 'is_' and 'test_' "namespaces" are intended for methods that test a
+tree on whether or not it has certain characteristics that define a group.
+Eg.: 'is_polynomial'
+
+The 'apply_' and 'mod_' prefixes are intended for modifications to the tree
+itself. Eg.: 'apply_derivatives'
+
+=end comment
+
+=cut
+
+
+sub AUTOLOAD {
+	my $call = $AUTOLOAD;
+	$call =~ s/.*\:\:(\w+)$/$1/;
+	study $call;
+	if (
+		$call =~ /^(apply_\w+)/ or
+		$call =~ /^(mod_\w+)/ or
+		$call =~ /^(is_\w+)/ or
+		$call =~ /^(test_\w+)/
+	) {
+		my $method = $1;
+		my $ref = Math::Symbolic::Custom->can($method);
+		if (defined $ref) {
+			goto &$ref;
+		}
+		else {
+			croak "Invalid method called on Math::Symbolic " .
+				"tree: '$call'.";
+		}
+	}
+	else {
+		croak "Invalid method called on Math::Symbolic tree: '$call'.";
+	}
+}
+
+# to make AUTOLOAD happy:
+
+sub DESTROY {}
 
 1;
 __END__

@@ -54,7 +54,7 @@ use Math::Symbolic::Derivative qw//;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.110';
+our $VERSION = '0.111';
 
 =head1 CLASS DATA
 
@@ -805,55 +805,6 @@ sub signature {
 		$sig{$_} = undef for $o->signature();
 	}
 	return sort keys %sig;
-}
-
-
-
-=head2 Method apply_derivatives
-
-If the operator is a derivative, this applies the derivative to its
-first operand.
-Regardless what kind of operator this is called on, apply_derivatives
-will be applied recursively on its operands.
-
-If the first parameter to this function is an integer, at maximum that
-number of derivatives are applied (from top down the tree if possible).
-
-=cut
-
-sub apply_derivatives {
-	my $self = shift;
-	my $n = shift || -1;
-	my $max_derivatives = $n;
-	$self = $self->new();
-	return $self if $self->term_type() == T_CONSTANT;
-	my $type = $self->type();
-	
-	while ($n && ($type == U_P_DERIVATIVE or $type == U_T_DERIVATIVE)) {
-		my $op = $Op_Types[$type];
-		my $operands = $self->{operands};
-		my $application = $op->{application};
-
-		if (
-			$type == U_T_DERIVATIVE and
-			$operands->[0]->term_type() == T_VARIABLE
-		) {
-			my @sig = $operands->[0]->signature();
-			my $name = $operands->[1]->name();
-			if ((grep {$_ eq $name} @sig) > 0) {
-				return $self;
-			}
-		}
-		$self = $application->(@$operands);
-		return $self unless $self->term_type() == T_OPERATOR;
-		$type = $self->type();
-		$n--;
-	}
-
-	@{$self->{operands}} =	map {$_->apply_derivatives($max_derivatives)}
-				@{$self->{operands}};
-
-	return $self;
 }
 
 
