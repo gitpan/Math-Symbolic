@@ -2,7 +2,6 @@ Changes
 MANIFEST
 META.yml
 Makefile.PL
-precompile_grammar.pl
 README
 TODO
 examples/run01.pl
@@ -43,7 +42,8 @@ lib/Math/Symbolic/Parser.pm
 lib/Math/Symbolic/Parser/Precompiled.pm
 lib/Math/Symbolic/Variable.pm
 lib/Math/Symbolic/VectorCalculus.pm
-t/00sanity.t
+t/00dist.t
+t/00podcover.t
 t/01basic.t
 t/02basic.t
 t/03exp.t

@@ -1,5 +1,19 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.130  Sun Feb 15 23:54:54 2004
+	- Fixed documentation bug in M::S::VectorCalculus.
+	- Increased the accuracy of pi and euler number.
+	- Fixed documentation bug in M::S::Derivative
+	- Removed Pod::Coverage from the Makefile.PL requirements
+	- Modified the 00sanity.t tests to only use Pod::Coverage when
+	  availlable.
+	- Removed 1 test from 20miscalgebra.t which took way too long on
+	  automatted test platforms.
+	- Renamed 00sanity.t to 00podcover.t and added 00dist.t which uses
+	  Test::Distribution for well, exactly that.
+	- Modified precompile_grammar.pl (CVS only) to include a $VERSION
+	  in M::S::P::Precompiled.
+
 0.129  Sat Feb  7 19:04:50 2004
 	- Fixed associativity bug in parser for exponentiation.
 	- Regenerated the Precompiled Parser.

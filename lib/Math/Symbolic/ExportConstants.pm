@@ -6,8 +6,8 @@ use warnings;
 
 require Exporter;
 
-use constant EULER => 2.718281828;
-use constant PI    => 3.141592654;
+use constant EULER => 2.718281828459045235360287;
+use constant PI    => 3.141592653589793238462643;
 
 use constant B_SUM          => 0;
 use constant B_DIFFERENCE   => 1;
@@ -76,7 +76,7 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw(
 );
-our $VERSION = '0.129';
+our $VERSION = '0.130';
 
 1;
 __END__

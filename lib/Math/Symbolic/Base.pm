@@ -45,7 +45,7 @@ use overload
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.129';
+our $VERSION = '0.130';
 our $AUTOLOAD;
 
 =head1 METHODS

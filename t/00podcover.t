@@ -1,9 +1,22 @@
 use strict;
 use warnings;
 
-use Test::More tests => 22;
+use Test::More;
 
-use Pod::Coverage;
+BEGIN {
+        eval {
+                require Pod::Coverage;
+        };
+        if($@) {
+                plan skip_all => 'Pod::Coverage not installed';
+		exit;
+        }
+        else {
+                import Pod::Coverage;
+		plan tests => 22;
+        }
+}
+
 
 use_ok('Math::Symbolic');
 use_ok('Math::Symbolic::MiscAlgebra');

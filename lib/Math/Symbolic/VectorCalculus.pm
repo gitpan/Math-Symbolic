@@ -45,8 +45,8 @@ Math::Symbolic::VectorCalculus - Symbolically comp. grad, Jacobi matrices etc.
   $differential = TotalDifferential $function, @signature;
   $differential = TotalDifferential $function, @signature, @point;
   
-  $dir_deriv = DeriectionalDerivative $function, @vector;
-  $dir_deriv = DeriectionalDerivative $function, @vector, @signature;
+  $dir_deriv = DirectionalDerivative $function, @vector;
+  $dir_deriv = DirectionalDerivative $function, @vector, @signature;
   
   $taylor = TaylorPolyTwoDim $function, $var1, $var2, $degree;
   $taylor = TaylorPolyTwoDim $function, $var1, $var2,
@@ -118,7 +118,7 @@ our %EXPORT_TAGS = (
 
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
-our $VERSION = '0.129';
+our $VERSION = '0.130';
 
 =begin comment
 

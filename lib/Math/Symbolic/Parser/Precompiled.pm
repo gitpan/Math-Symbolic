@@ -40,6 +40,7 @@ L<Math::Symbolic::Parser>
 =cut
 
 package Math::Symbolic::Parser::Precompiled;
+our $VERSION = 0.13;
 use Parse::RecDescent;
 
 {

@@ -1,7 +1,7 @@
 
 =head1 NAME
 
-Math::Symbolic::Derivative - Derive Math::symbolic trees
+Math::Symbolic::Derivative - Derive Math::Symbolic trees
 
 =head1 SYNOPSIS
 
@@ -63,7 +63,7 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw();
 
-our $VERSION = '0.129';
+our $VERSION = '0.130';
 
 =head1  CLASS DATA
 
