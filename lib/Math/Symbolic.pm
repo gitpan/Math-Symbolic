@@ -147,7 +147,7 @@ our %EXPORT_TAGS = (
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT    = qw();
 
-our $VERSION = '0.125';
+our $VERSION = '0.126';
 
 =head1 CLASS DATA
 
@@ -156,10 +156,7 @@ object that is used to parse strings at runtime.
 
 =cut
 
-our $Parser;
-
-# Defer until first call!
-# = Math::Symbolic::Parser->new();
+our $Parser = Math::Symbolic::Parser->new();
 
 =head1 SUBROUTINES
 
@@ -181,7 +178,7 @@ sub parse_from_string {
     my $string = shift;
     croak "Missing string argument from parse_from_string() call"
       unless defined $string;
-    $string = shift if $string eq __PACKAGE__ and @_;
+    $string = shift if $string eq 'Math::Symbolic' and @_;
     $string =~ s/\s+//gs;
     if ( not defined $Parser ) {
         $Parser = Math::Symbolic::Parser->new();
@@ -277,6 +274,7 @@ List of contributors:
 
   Steffen Müller, symbolic-module at steffen-mueller dot net
   Stray Toaster, mwk at users dot sourceforge dot net
+  Oliver Ebenhöh
 
 =head1 SEE ALSO
 
@@ -304,6 +302,7 @@ L<Math::Symbolic::VectorCalculus>,
 L<Math::Symbolic::MiscAlgebra>
 
 L<Math::Symbolic::Parser>,
+L<Math::Symbolic::Parser::Precompiled>,
 L<Math::Symbolic::Compiler>
 
 =cut

@@ -97,7 +97,7 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw();
 
-our $VERSION = '0.125';
+our $VERSION = '0.126';
 
 =head2 ($code, $trees) = compile_to_code($tree, $vars)
 
@@ -325,6 +325,7 @@ List of contributors:
 
   Steffen Müller, symbolic-module at steffen-mueller dot net
   Stray Toaster, mwk at users dot sourceforge dot net
+  Oliver Ebenhöh
 
 =head1 SEE ALSO
 

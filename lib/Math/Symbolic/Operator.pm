@@ -58,7 +58,7 @@ use Math::Symbolic::Derivative qw//;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.125';
+our $VERSION = '0.126';
 
 =head1 CLASS DATA
 
@@ -847,6 +847,7 @@ List of contributors:
 
   Steffen Müller, symbolic-module at steffen-mueller dot net
   Stray Toaster, mwk at users dot sourceforge dot net
+  Oliver Ebenhöh
 
 =head1 SEE ALSO
 

@@ -53,7 +53,7 @@ use 5.006;
 use strict;
 use warnings;
 
-our $VERSION = '0.125';
+our $VERSION = '0.126';
 our $AUTOLOAD;
 
 =head2 aggregate_import
@@ -91,6 +91,7 @@ List of contributors:
 
   Steffen Müller, symbolic-module at steffen-mueller dot net
   Stray Toaster, mwk at users dot sourceforge dot net
+  Oliver Ebenhöh
 
 =head1 SEE ALSO
 

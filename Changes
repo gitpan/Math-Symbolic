@@ -1,5 +1,12 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.126  Sun Nov  9 16:54:26 2003
+	- Fixed parser bug with asinh, acosh.
+	- Added Oliver Ebenhoeh to the list of contributors.
+	- Now including a precompiled Parse::RecDescent grammar
+	  as Math::Symbolic::Parser::Precompiled. That's for startup
+	  performance.
+
 0.125  Wed Oct  8 16:19:13 2003
 	- Implemented binomial_coeff in AuxFunctions.
 	- Now requiring Memoize to be installed.

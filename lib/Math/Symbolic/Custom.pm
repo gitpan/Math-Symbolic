@@ -57,7 +57,7 @@ use Carp;
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.125';
+our $VERSION = '0.126';
 our $AUTOLOAD;
 
 use Math::Symbolic::Custom::DefaultTests;
@@ -164,6 +164,7 @@ List of contributors:
 
   Steffen Müller, symbolic-module at steffen-mueller dot net
   Stray Toaster, mwk at users dot sourceforge dot net
+  Oliver Ebenhöh
 
 =head1 SEE ALSO
 

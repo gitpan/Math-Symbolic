@@ -117,7 +117,7 @@ use Math::Symbolic::ExportConstants qw/:all/;
 #use Parse::RecDescent;
 my $Required_Parse_RecDescent = 0;
 
-our $VERSION = '0.125';
+our $VERSION = '0.126';
 our $DEBUG   = 0;
 
 our $Grammar = <<'GRAMMAR_END';
@@ -285,6 +285,8 @@ our $Grammar = <<'GRAMMAR_END';
 		     | 'total_derivative'
 		     | 'sinh'
 		     | 'cosh'
+		     | 'asinh'
+		     | 'acosh'
 		     | 'asin'
 		     | 'acos'
 		     | 'atan'
@@ -432,9 +434,17 @@ This constructor does not expect any arguments and returns a Parse::RecDescent
 parser to parse algebraic expressions from a string into Math::Symbolic
 trees.
 
+The constructor takes key/value pairs of options. Currently, the only option
+is to regenerate the parser from the grammar in the scalar
+$Math::Symbolic::Parser::Grammar instead of using the (faster) precompiled
+grammar from Math::Symbolic::Parser::Precompiled.
+You can enable recompilation from the grammar with the option
+"recompile => 1".
+
 =cut
 
 sub new {
+    my $class = shift;
     if ( not $Required_Parse_RecDescent ) {
         local $@;
         eval 'require Parse::RecDescent;';
@@ -442,7 +452,20 @@ sub new {
           . "Parse::RecDescent in order to use Math::Symbolic::Parser."
           if $@;
     }
-    my $parser = new Parse::RecDescent($Grammar);
+    my %args = @_;
+    my $parser;
+
+    if ( exists $args{recompile} and $args{recompile} ) {
+        $parser = new Parse::RecDescent($Grammar);
+    }
+    else {
+        eval 'require Math::Symbolic::Parser::Precompiled;';
+        croak "Could not require Math::Symbolic::Parser::Precompiled.\n"
+          . "Please install the latest version of Math::Symbolic"
+          . "(>=0.126)."
+          if $@;
+        $parser = Math::Symbolic::Parser::Precompiled->new();
+    }
     return $parser;
 }
 
@@ -464,6 +487,7 @@ List of contributors:
 
   Steffen Müller, symbolic-module at steffen-mueller dot net
   Stray Toaster, mwk at users dot sourceforge dot net
+  Oliver Ebenhöh
 
 =head1 SEE ALSO
 
@@ -472,5 +496,7 @@ http://steffen-mueller.net or CPAN. The module development takes place on
 Sourceforge at http://sourceforge.net/projects/math-symbolic/
 
 L<Math::Symbolic>
+
+L<Math::Symbolic::Parser::Precompiled>
 
 =cut
