@@ -1,10 +1,18 @@
 Revision history for Perl extension Math::Symbolic.
 
-0.06  The Jun  11 16:58:59 2003
+0.08  Sun Jun  15 22:17:11 2003
+	- Parser now a module (M::S::Parser)
+	- Parser accessible through new_from_string().
+
+0.07  Sat Jun  14 18:21:47 2003
+	- Parser now outputs Math::Symbolic tree
+	- Fixed unary-minus to infix issues.
+
+0.06  Wed Jun  11 16:58:59 2003
 	- Now including rudimentary parser for algebraic expressions.
 	- Some documentation added.
 
-0.05  The Jun  6 16:57:19 2003
+0.05  Fri Jun  6 16:57:19 2003
 	- Moved the rules for partial derivatives to separatE
 	  subs and introduced a lookup-table.
 

@@ -5,11 +5,29 @@ Math::Symbolic::Operator - Operators in symbolic calculations
 
 =head1 SYNOPSIS
 
-  use Math::Symbolic;
+  use Math::Symbolic::Operator;
+  
+  my $sum = Math::Symbolic::Operator->new('+', $term1, $term2);
+  
+  my $division = Math::Symbolic::Operator->new(
+     {
+       type => B_DIVISON,
+       operands => [$term1, $term2],
+     }
+  );
+  
+  my $derivative = Math::Symbolic::Operator->new(
+     {
+       type => U_P_DERIVATIVE,
+       operands => [$term],
+     }
+  );
 
 =head1 DESCRIPTION
 
-
+This module implements all Math::Symbolic::Operator objects.
+These objects are overloaded in stringification-context to evaluate
+to their term's value.
 
 =head2 EXPORT
 
@@ -30,7 +48,7 @@ use base 'Math::Symbolic::Base';
 
 use overload '""' => sub{ $_[0]->to_string() };
 
-our $VERSION = '0.06';
+our $VERSION = '0.08';
 
 our %OP_B_SYMBOLS = (
 	'+' => B_SUM,
@@ -262,12 +280,12 @@ sub _to_string_infix {
 		if (not defined $op_str) {
 			$op_str = $op->{prefix_string};
 			$string = "$op_str(" .
-				  $op->{operands}[0]->to_string('infix') .
+				  $self->{operands}[0]->to_string('infix') .
 				  ")";
 		}
 		else {
-			$string = '$op_str' . ($is_op1?'(':'') .
-				  $op->{operands}[0]->to_string('infix') .
+			$string = "$op_str" . ($is_op1?'(':'') .
+				  $self->{operands}[0]->to_string('infix') .
 				  ($is_op1?')':'');
 		}
 	}
@@ -532,7 +550,6 @@ Steffen Mueller, E<lt>symbolic-module at steffen-mueller dot netE<gt>
 
 =head1 SEE ALSO
 
-L<perl>.
 L<Math::Symbolic>
 
 =cut

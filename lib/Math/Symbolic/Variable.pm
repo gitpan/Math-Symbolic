@@ -5,11 +5,25 @@ Math::Symbolic::Variable - Variable in symbolic calculations
 
 =head1 SYNOPSIS
 
-  use Math::Symbolic;
+  use Math::Symbolic::Variable;
+
+  my $var1 = Math::Symbolic::Variable->new('name');
+  $var1->value(5);
+  
+  my $var2 = Math::Symbolic::Variable->new('x', 2);
+
+  my $var3 = Math::Symbolic::Variable->new(
+     {
+       name  => 'variable',
+       value => 1,
+     }
+  );
 
 =head1 DESCRIPTION
 
-
+This class implements variables for Math::Symbolic trees.
+The objects are overloaded in stringification context to
+return their names.
 
 =head2 EXPORT
 
@@ -29,7 +43,7 @@ use base 'Math::Symbolic::Base';
 
 use overload '""' => sub{ $_[0]->to_string() };
 
-our $VERSION = '0.06';
+our $VERSION = '0.08';
 
 =head1 METHODS
 
@@ -141,7 +155,6 @@ Steffen Mueller, E<lt>symbolic-module at steffen-mueller dot netE<gt>
 
 =head1 SEE ALSO
 
-L<perl>.
 L<Math::Symbolic>
 
 =cut

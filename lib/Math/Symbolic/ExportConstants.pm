@@ -42,7 +42,7 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw(
 );
-our $VERSION = '0.06';
+our $VERSION = '0.08';
 
 1;
 __END__
@@ -58,6 +58,13 @@ Math::Symbolic::ExportConstants - Export constants used for Math::Symbolic
 =head1 DESCRIPTION
 
 This just exports a number of constants on demand.
+Usually, you'd want to rather use Math::Symbolic instead.
+Math::Symbolic allows you to optionally export the same constants
+as this module, but using the ':constants' tag instead of the
+':all' tag that you'd have to use with this module.
+
+Please refer to the documentation of the Math::Symbolic module for
+a list of constants.
 
 =head2 EXPORT
 
@@ -70,7 +77,6 @@ Steffen Mueller, E<lt>symbolic-module at steffen-mueller dot netE<gt>
 
 =head1 SEE ALSO
 
-L<perl>.
 L<Math::Symbolic>
 
 =cut

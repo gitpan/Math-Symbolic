@@ -4,11 +4,16 @@ Math::Symbolic::Constant - Constants in symbolic calculations
 
 =head1 SYNOPSIS
 
-  use Math::Symbolic;
+  use Math::Symbolic::Constant;
+  my $const = Math::Symbolic::Constant->new(25);
+  my $zero  = Math::Symbolic::Constant->zero();
+  my $one   = Math::Symbolic::Constant->one();
+  my $euler = Math::Symbolic::Constant->euler();
+  # e = 2.718281828...
 
 =head1 DESCRIPTION
 
-
+This module implements numeric constants for Math::Symbolic trees.
 
 =head2 EXPORT
 
@@ -29,7 +34,7 @@ use base 'Math::Symbolic::Base';
 
 use overload '""' => sub{ $_[0]->to_string() };
 
-our $VERSION = '0.06';
+our $VERSION = '0.08';
 
 =head1 METHODS
 
@@ -184,7 +189,6 @@ Steffen Mueller, E<lt>symbolic-module at steffen-mueller dot netE<gt>
 
 =head1 SEE ALSO
 
-L<perl>.
 L<Math::Symbolic>
 
 =cut

@@ -8,7 +8,9 @@ Math::Symbolic::Base - Base class for symbols in symbolic calculations
 
 =head1 DESCRIPTION
 
-
+This is a base class for all Math::Symbolic::* terms such as
+Math::Symbolic::Operator, Math::Symbolic::Variable and
+Math::Symbolic::Constant objects.
 
 =head2 EXPORT
 
@@ -24,7 +26,7 @@ use warnings;
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.06';
+our $VERSION = '0.08';
 
 =head1 METHODS
 
@@ -47,7 +49,7 @@ sub to_string {
 
 =head2 Method simplify
 
-Minimum method for term simpilification.
+Minimum method for term simpilification just clones.
 
 =cut
 
@@ -60,7 +62,7 @@ sub simplify {
 
 =head2 Method apply_derivatives
 
-Minimum method for application of derivatives.
+Minimum method for application of derivatives just clones.
 
 =cut
 
@@ -73,8 +75,7 @@ sub apply_derivatives {
 
 =head2 Method term_type
 
-Returns the type of the term.
-This is a stub to be overridden.
+Returns the type of the term. This is a stub to be overridden.
 
 =cut
 
@@ -92,7 +93,6 @@ Steffen Mueller, E<lt>symbolic-module at steffen-mueller dot netE<gt>
 
 =head1 SEE ALSO
 
-L<perl>.
 L<Math::Symbolic>
 
 =cut

@@ -1,32 +1,3 @@
-package Math::Symbolic;
-
-use 5.006;
-use strict;
-use warnings;
-
-use Math::Symbolic::ExportConstants qw/:all/;
-
-use Math::Symbolic::Base;
-use Math::Symbolic::Operator;
-use Math::Symbolic::Variable;
-use Math::Symbolic::Constant;
-use Math::Symbolic::Derivative;
-
-require Exporter;
-
-our @ISA = qw(Exporter);
-
-our %EXPORT_TAGS = %Math::Symbolic::ExportConstants::EXPORT_TAGS;
-our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
-our @EXPORT = qw();
-
-our $VERSION = '0.06';
-
-
-
-1;
-__END__
-
 =head1 NAME
 
 Math::Symbolic - Symbolic calculations
@@ -34,6 +5,8 @@ Math::Symbolic - Symbolic calculations
 =head1 SYNOPSIS
 
   use Math::Symbolic;
+  
+  my $tree = Math::Symbolic->new_from_string('2*3^2');
 
 =head1 DESCRIPTION
 
@@ -49,8 +22,9 @@ research in CS.
 =head2 EXPORT
 
 None by default, but you may choose to have the following constants
-exported to your namespace using the standard Exporter semantics
-(including the :all tag).
+exported to your namespace using the standard Exporter semantics.
+There are two export tags: :all and :constants. :all will export
+all constants and the parse_from_string subroutine.
 
   Constants representing operator types: (First letter indicates arity)
     B_SUM
@@ -65,6 +39,83 @@ exported to your namespace using the standard Exporter semantics
     T_OPERATOR
     T_CONSTANT
     T_VARIABLE
+  
+  Subroutines:
+    parse_from_string (returns Math::Symbolic tree)
+
+=cut
+
+package Math::Symbolic;
+
+use 5.006;
+use strict;
+use warnings;
+
+use Carp;
+
+use Math::Symbolic::ExportConstants qw/:all/;
+
+use Math::Symbolic::Base;
+use Math::Symbolic::Operator;
+use Math::Symbolic::Variable;
+use Math::Symbolic::Constant;
+
+use Math::Symbolic::Derivative;
+
+use Math::Symbolic::Parser;
+
+require Exporter;
+
+our @ISA = qw(Exporter);
+
+our %EXPORT_TAGS = (
+	all => [
+		@{$Math::Symbolic::ExportConstants::EXPORT_TAGS{all}},
+		qw{&parse_from_string},
+	],
+	constants => [
+		@{$Math::Symbolic::ExportConstants::EXPORT_TAGS{all}},
+	],
+);
+our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
+our @EXPORT = qw();
+
+our $VERSION = '0.08';
+
+=head1 CLASS DATA
+
+The package variable $Parser will contain a Parse::RecDescent
+object that is used to parse strings at runtime.
+
+=cut
+
+our $Parser = Math::Symbolic::Parser->new();
+
+
+=head1 SUBROUTINES
+
+=head2 parse_from_string
+
+This subroutine takes a string as argument and parses it using
+a Parse::RecDescent parser. It generates a Math::Symbolic tree
+from the string and returns that string.
+
+The parser object used can be found in the $Parser package variable.
+
+=cut
+
+sub parse_from_string {
+	my $string = shift;
+	die "Missing string argument from parse_from_string() call"
+		unless defined $string;
+	$string = shift if $string eq __PACKAGE__ and @_;
+	$string =~ s/\s+//gs;
+	return $Parser->parse($string);
+}
+
+
+1;
+__END__
 
 =head1 EXAMPLES
 
@@ -116,12 +167,15 @@ Steffen Mueller, E<lt>symbolic-module at steffen-mueller dot netE<gt>
 
 =head1 SEE ALSO
 
-L<perl>.
+L<Math::Symbolic::ExportConstants>
+
 L<Math::Symbolic::Base>
 L<Math::Symbolic::Operator>
-L<Math::Symbolic::Derivative>
 L<Math::Symbolic::Constant>
 L<Math::Symbolic::Variable>
 
+L<Math::Symbolic::Derivative>
+
+L<Math::Symbolic::Parser>
 
 =cut

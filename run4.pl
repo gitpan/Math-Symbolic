@@ -26,6 +26,8 @@ print $exp1->to_string('prefix') . " = " . $exp1->value() . "\n\n";
 
 print "Now, we derive this partially to a (20 times): (infix)\n";
 
+use Time::HiRes qw/time/;
+
 my $n_tree = $op->new( {
 	type => U_P_DERIVATIVE,
 	operands => [$exp1, $a],

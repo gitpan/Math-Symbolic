@@ -6,6 +6,7 @@ Math::Symbolic::Derivative - Derive Math::symbolic trees
 =head1 SYNOPSIS
 
   use Math::Symbolic::Derivative qw/:all/;
+  $derived = partial_derivative($term, $variable);
 
 =head1 DESCRIPTION
 
@@ -39,19 +40,24 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw();
 
-our $VERSION = '0.06';
+our $VERSION = '0.08';
 
-# Class data
+=head1  CLASS DATA
+
+The package variable %Partial_Rules contains partial
+derivative rules as key-value pairs of names and subroutines.
+
+=cut
 
 # lookup-table for partial derivative rules for various operators.
 our %Partial_Rules = (
-	'each operand'  => \&each_operand,
-	'product rule'  => \&product_rule,
-	'quotient rule' => \&quotient_rule,
+	'each operand'                    => \&_each_operand,
+	'product rule'                    => \&_product_rule,
+	'quotient rule'                   => \&_quotient_rule,
 	'logarithmic chain rule after ln' =>
-		\&logarithmic_chain_rule_after_ln,
-	'logarithmic chain rule' => \&logarithmic_chain_rule,
-	'partial derivative commutation' => \&partial_derivative_commutation,
+		\&_logarithmic_chain_rule_after_ln,
+	'logarithmic chain rule'          => \&_logarithmic_chain_rule,
+	'partial derivative commutation'  => \&_partial_derivative_commutation,
 );
 
 
@@ -63,7 +69,7 @@ specific rule to a tree.
 
 =cut
 
-sub each_operand {
+sub _each_operand {
 	my ($tree, $var, $cloned) = @_;
 	foreach (@{$tree->{operands}}) {
 		$_ = partial_derivative($_, $var, 1);
@@ -73,7 +79,7 @@ sub each_operand {
 
 
 
-sub product_rule {
+sub _product_rule {
 	my ($tree, $var, $cloned) = @_;
 
 	my $ops = $tree->{operands};
@@ -93,7 +99,7 @@ sub product_rule {
 
 
 
-sub quotient_rule {
+sub _quotient_rule {
 	my ($tree, $var, $cloned) = @_;
 	my $ops = $tree->{operands};
 	my $do1 = partial_derivative($ops->[0], $var, 0);
@@ -118,7 +124,7 @@ sub quotient_rule {
 
 
 
-sub logarithmic_chain_rule_after_ln {
+sub _logarithmic_chain_rule_after_ln {
 	my ($tree, $var, $cloned) = @_;
 	# y(x)=u^v
 	# y'(x)=y*(d/dx ln(y))
@@ -140,7 +146,7 @@ sub logarithmic_chain_rule_after_ln {
 
 
 
-sub logarithmic_chain_rule {
+sub _logarithmic_chain_rule {
 	my ($tree, $var, $cloned) = @_;
 	#log_a(y(x))=>y'(x)/(ln(a)*y(x))
 	my $ops = $tree->{operands};
@@ -160,7 +166,7 @@ sub logarithmic_chain_rule {
 
 
 
-sub partial_derivative_commutation {
+sub _partial_derivative_commutation {
 	my ($tree, $var, $cloned) = @_;
 	$tree->{operands}[0] = partial_derivative(
 		$tree->{operands}[0], $var, 0
@@ -226,17 +232,19 @@ sub partial_derivative {
 
 
 
-=head2
+=head2 total_derivative
+
+Total derivatives are not yet implemented because there is no need
+for total derivatives if there are no variables that represent
+algebraic terms themselves. (Which aren't implemented either.)
 
 =cut
-
-
-
 
 sub total_derivative {
 	die "Total derivatives not implemented yet. Please use partial\n" .
 		"derivatives instead.\n";
 }
+
 
 1;
 __END__
@@ -247,7 +255,6 @@ Steffen Mueller, E<lt>symbolic-module at steffen-mueller dot netE<gt>
 
 =head1 SEE ALSO
 
-L<perl>.
 L<Math::Symbolic>
 
 =cut
