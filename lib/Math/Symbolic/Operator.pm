@@ -58,7 +58,7 @@ use Math::Symbolic::Derivative qw//;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.127';
+our $VERSION = '0.128';
 
 =head1 CLASS DATA
 
@@ -738,7 +738,8 @@ and values.
 sub apply {
     my $self        = shift;
     my @args        = @_;
-    my $op          = $Op_Types[ $self->type ];
+    my $op_type     = $self->type();
+    my $op          = $Op_Types[$op_type];
     my $operands    = $self->{operands};
     my $application = $op->{application};
 
@@ -751,6 +752,7 @@ sub apply {
             } @$operands;
         };
         return undef if $@;
+        return undef if $op_type == B_DIVISION and $_[1] == 0;
         local $@;
         my $result = eval $application;
         die "Invalid operator application: $@" if $@;

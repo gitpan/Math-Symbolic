@@ -45,7 +45,7 @@ use overload
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.127';
+our $VERSION = '0.128';
 our $AUTOLOAD;
 
 =head1 METHODS
@@ -178,6 +178,11 @@ First argument must be a valid Math::Symbolic tree.
 replace() modifies the object it is called on in-place in that it
 replaces it with its first argument. Doing that, it retains the original
 object reference. This destroys the object it is called on.
+
+However, this also means that you can create recursive trees of objects if
+the new tree is to contain the old tree. So make sure you clone the old tree
+using the new() method before using it in the replacement tree or you will
+end up with a program that eats your memory fast.
 
 =cut
 

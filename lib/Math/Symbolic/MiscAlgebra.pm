@@ -57,7 +57,7 @@ our %EXPORT_TAGS = (
 
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
-our $VERSION = '0.127';
+our $VERSION = '0.128';
 
 =head2 det
 

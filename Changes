@@ -1,5 +1,13 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.128  Sat Feb  4 13:14:12 2004
+	- Fixed bug in Constant.pm about special tag not being unset when
+	  the value of the constant is changed.
+	- Documented an important gotcha with the replace() method in Base.pm
+	- Added an extra check to the apply() method in Operator.pm that
+	  makes sure no "undefined ... in [arithmetic operation]" errors are
+	  generated when computing 1/0.
+
 0.127  Sat Jan  3 19:20:29 2004
 	- Happy New Year!
 	- There was an error in the 0.126 distribution related to

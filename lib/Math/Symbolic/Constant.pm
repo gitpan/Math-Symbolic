@@ -32,7 +32,7 @@ use Math::Symbolic::ExportConstants qw/:all/;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.127';
+our $VERSION = '0.128';
 
 =head1 METHODS
 
@@ -148,7 +148,11 @@ it temporarily), the call to value() returns undef.
 
 sub value {
     my $self = shift;
-    $self->{value} = shift if @_ == 1;
+    if ( @_ == 1 ) {
+        $self->{value}   = shift;
+        $self->{special} = undef;    # !!!FIXME!!! one day, this
+                                     # needs better handling.
+    }
     die "Constant has undefined value!" if not defined $self->{value};
     return $self->{value};
 }
