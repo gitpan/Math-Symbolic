@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use lib 'lib';
+use lib '../lib';
 use Math::Symbolic qw/:all/;
 
 my $latex_str = "\\documentclass[12pt]{article}\n\\begin{document}\n";

@@ -43,6 +43,8 @@ Uses a custom exporter implementation to export certain routines from the
 invoking namespace to the Math::Symbolic::Custom namespace.
 But... Nevermind.
 
+=head1 SUBROUTINES
+
 =cut
 
 package Math::Symbolic::Custom::Base;
@@ -51,8 +53,16 @@ use 5.006;
 use strict;
 use warnings;
 
-our $VERSION = '0.123';
+our $VERSION = '0.124';
 our $AUTOLOAD;
+
+=head2 aggregate_import
+
+aggregate_import() is the only public subroutine defined by
+Math::Symbolic::Custom::Base and should only be called in BEGIN blocks like
+the one shown in the SYNOPSIS above.
+
+=cut
 
 sub aggregate_import {
     my $class = shift;

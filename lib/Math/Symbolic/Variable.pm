@@ -42,7 +42,7 @@ use Math::Symbolic::ExportConstants qw/:all/;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.123';
+our $VERSION = '0.124';
 
 =head1 METHODS
 
@@ -114,6 +114,9 @@ with the value-arguments if the corresponging key matches the variable name.
 
 Example: $tree->value(x => 1, y => 2, z => 3, t => 0) assigns the value 1 to
 any occurrances of variables of the name "x", aso.
+
+If a variable in the tree has no value set (and no argument of value sets
+it temporarily), the call to value() returns undef.
 
 =cut
 

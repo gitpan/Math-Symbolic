@@ -33,7 +33,7 @@ use strict;
 use warnings;
 no warnings 'recursion';
 
-our $VERSION = '0.123';
+our $VERSION = '0.124';
 
 use Math::Symbolic::Custom::Base;
 BEGIN { *import = \&Math::Symbolic::Custom::Base::aggregate_import }
@@ -390,6 +390,7 @@ http://steffen-mueller.net or CPAN. The module development takes place on
 Sourceforge at http://sourceforge.net/projects/math-symbolic/
 
 L<Math::Symbolic::Custom>
+L<Math::Symbolic::Custom::DefaultDumpers>
 L<Math::Symbolic::Custom::DefaultMods>
 L<Math::Symbolic>
 

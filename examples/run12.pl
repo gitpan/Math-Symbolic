@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use lib 'lib';
+use lib '../lib';
 use Math::Symbolic qw/:all/;
 
 # A particle being thrown on the earth:

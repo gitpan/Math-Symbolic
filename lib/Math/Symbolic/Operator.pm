@@ -58,7 +58,7 @@ use Math::Symbolic::Derivative qw//;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.123';
+our $VERSION = '0.124';
 
 =head1 CLASS DATA
 
@@ -714,8 +714,11 @@ Applies the operation to its operands' value() and returns the result
 as a constant (-object).
 
 Without arguments, all variables in the tree are required to have a value.
-To (temorarily, for this command) assign values to variables in the tree,
-you may provide key/value pairs of variable names and values.
+If any don't, the call to apply() returns undef.
+
+To (temorarily, for this single method call) assign values to
+variables in the tree, you may provide key/value pairs of variable names
+and values.
 
 =cut
 
@@ -727,7 +730,14 @@ sub apply {
     my $application = $op->{application};
 
     if ( ref($application) ne 'CODE' ) {
-        local @_ = map { $_->value(@args) } @$operands;
+        local @_;
+        eval {
+            @_ = map {
+                my $v = $_->value(@args);
+                ( defined $v ? $v : die )
+            } @$operands;
+        };
+        return undef if $@;
         local $@;
         my $result = eval $application;
         die "Invalid operator application: $@" if $@;
@@ -760,13 +770,18 @@ with the value-arguments if the corresponging key matches the variable name.
 Example: $tree->value(x => 1, y => 2, z => 3, t => 0) assigns the value 1 to
 any occurrances of variables of the name "x", aso.
 
+If a variable in the tree has no value set (and no argument of value sets
+it temporarily), the call to value() returns undef.
+
 =cut
 
 sub value {
     my $self = shift;
     my @args = @_;
 
-    return $self->apply(@args)->value(@args);
+    my $applied = $self->apply(@args);
+    return undef unless defined $applied;
+    return $applied->value(@args);
 }
 
 =head2 Method signature

@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 10;
+use Test::More tests => 14;
 
 #use lib 'lib';
 
@@ -95,4 +95,19 @@ eval <<'HERE';
 $simplified->set_value(a=>3);
 HERE
 ok( !$@ && $a->value() == 2, 'set_value() with arguments did not complain' );
+
+my $term = Math::Symbolic::Operator->new(
+    '*',
+    Math::Symbolic::Variable->new('a'),
+    Math::Symbolic::Variable->new( 'b', 2 )
+);
+ok( !defined( $term->value() ), 'value() returns undef for undefined vars' );
+ok( !defined( $term->apply() ), 'apply() returns undef for undefined vars' );
+ok( defined( $term->value( a => 2 ) ), 'value() defined if vars defined' );
+
+ok(
+    $term->fill_in_vars()->is_identical('a*2')
+      || $term->fill_in_vars()->is_identical('2*a'),
+    'fill_in_vars()'
+);
 

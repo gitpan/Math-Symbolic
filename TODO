@@ -33,7 +33,7 @@ Random and unordered thoughts and ideas:
 	- Integration (*laugh*)
 	- Matrices
 
-Version 0.120:
+Version 0.120: (erm, we're past 0.120, sadly.)
 	- Major change to MS::Operator guts:
 	  - Separate ordinary operands such as the ones found with
 	    arithmetic operators and the special operands such as the
@@ -53,39 +53,5 @@ Version 0.120:
 	    would all be special.
 	- Documentation for the changes.
 	- Tests for the changes.
-
-[outdated!?] Version 0.130: (major milestone!) [pushed back from 0.110]
-	- Instead of all terms being either a Math::Symbolic::Operator, a
-	  Math::Symbolic::Variable, or a Math::Symbolic::Constant object,
-	  introduce actual Math::Symbolic objects as container objects for
-	  any Math::Symbolic trees.
-	- These should then also hold symbol tables for variables.
-	  Two reasons:
-	+ a) The parser can't parse variables without knowing their names
-	     in advance. (Update: That's bullshit. The M::S parser now does
-	     this perfectly all right.)
-	- b) Math::Symbolic objects should then be able to hold other
-	     Math::Symbolic objects (which needn't necessarily have an
-	     implementation at the time they're used!) as (unknown)
-	     functions with a defined signature.
-	- Symbol tables for variables.
-	- Make sure variables are unique in any Math::Symbolic tree.
-	- Store variable values in the symbol table, not in the objects
-	  themselves.
-	- Make sure that when wrapping operators around Math::Symbolic trees,
-	  the operator is *included* in the tree, not the tree included in the
-	  operator object as an operand. (And therefore acting as a function
-	  with a defined implementation which is not the generally desired
-	  behaviour!)
-	+ [not necessary any more]
-	  According to the previously outlined major changes, make sure the
-	  (as of 0.090) current Math::Symbolic::parse_from_string becomes a
-	  Math::Symbolic OBJECT ONLY method. (Otherwise, the symbol table for
-	  parsing vars is missing.)
-	+ Find a solution for the problem that parsers would currently need to
-	  be reconstructed for a given symbol table. (performance!)
-	  (Now parsing identifiers as vars.)
-	- Add tests for the new features.
-
 
 

@@ -37,6 +37,10 @@ Math::Symbolic::VectorCalculus - Symbolically comp. grad, Jacobi matrices etc.
   # or:
   @matrix = Hesse $function, @signature;
   
+  $wronsky_determinant = WronskyDet @functions, @vars;
+  # or:
+  $wronsky_determinant = WronskyDet @functions; # functions of 1 variable
+  
   $differential = TotalDifferential $function;
   $differential = TotalDifferential $function, @signature;
   $differential = TotalDifferential $function, @signature, @point;
@@ -54,9 +58,10 @@ Math::Symbolic::VectorCalculus - Symbolically comp. grad, Jacobi matrices etc.
 
 This module provides several subroutines related to
 vector calculus such as computing gradients, divergence, rotation,
-and Jacobi matrices of Math::Symbolic trees.
+and Jacobi/Hesse Matrices of Math::Symbolic trees.
 Furthermore it provides means of computing directional derivatives
-and the total differential of a scalar function.
+and the total differential of a scalar function and the
+Wronsky Determinant of a set of n scalar functions.
 
 Please note that the code herein may or may not be refactored into
 the OO-interface of the Math::Symbolic module in the future.
@@ -73,6 +78,7 @@ calling namespace. ':all' tag exports all of the following:
   rot
   Jacobi
   Hesse
+  WronskyDet
   TotalDifferential
   DirectionalDerivative
   TaylorPolyTwoDim
@@ -90,6 +96,7 @@ use warnings;
 use Carp;
 
 use Math::Symbolic qw/:all/;
+use Math::Symbolic::MiscAlgebra qw/det/;
 
 require Exporter;
 our @ISA         = qw(Exporter);
@@ -104,13 +111,14 @@ our %EXPORT_TAGS = (
           TotalDifferential
           DirectionalDerivative
           TaylorPolyTwoDim
+          WronskyDet
           )
     ]
 );
 
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
-our $VERSION = '0.123';
+our $VERSION = '0.124';
 
 =begin comment
 
@@ -717,6 +725,48 @@ sub TaylorPolyTwoDim ($$$$;$$) {
     }
 
     return $taylor;
+}
+
+=head2 WronskyDet
+
+WronskyDet() computes the Wronsky Determinant of a set of n functions.
+
+First argument is required and a (literal) array of n functions. Second
+argument is optional and a (literal) array of n variables or variable names.
+If the second argument is omitted, the variables used for deriving are inferred
+from function signatures. This requires, however, that the function signatures
+have exactly one element. (And the function this exactly one variable.)
+
+=cut
+
+sub WronskyDet (\@;\@) {
+    my $functions = shift;
+    my @functions =
+      map { ( ref($_) =~ /^Math::Symbolic/ ) ? $_ : parse_from_string($_) }
+      @$functions;
+    my $vars = shift;
+    my @vars = ( defined $vars ? @$vars : () );
+    @vars = map {
+        my @sig = $_->signature();
+        croak "Cannot infer function signature for WronskyDet."
+          if @sig != 1;
+        shift @sig;
+    } @functions if not defined $vars;
+    @vars = map { Math::Symbolic::Variable->new($_) } @vars;
+    croak "Number of vars doesn't match num of functions in WronskyDet."
+      if not @vars == @functions;
+
+    my @matrix;
+    push @matrix, [@functions];
+    foreach ( 2 .. @functions ) {
+        my $i = 0;
+        @functions = map {
+            Math::Symbolic::Operator->new( 'partial_derivative', $_,
+                $vars[ $i++ ] )
+        } @functions;
+        push @matrix, [@functions];
+    }
+    return det @matrix;
 }
 
 1;

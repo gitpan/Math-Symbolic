@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 19;
+use Test::More tests => 20;
 
 #use lib 'lib';
 
@@ -198,3 +198,12 @@ partial_derivative(partial_derivative(x_0 * y_0, y_0), y_0)) *
 ((y - y_0) ^ 2))) / (1 * 2))
 HERE
 
+my @functions = (
+	'x*y',
+	'z'
+);
+my @vars = ('x', 'z');
+my $wronsky = WronskyDet @functions, @vars;
+ok($wronsky->is_identical(<<'HERE'), 'simple Wronsky Determinant');
+(x*y)*partial_derivative(z, z) - partial_derivative(x*y, x) * z
+HERE

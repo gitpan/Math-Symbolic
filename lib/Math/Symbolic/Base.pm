@@ -45,7 +45,7 @@ use overload
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.123';
+our $VERSION = '0.124';
 our $AUTOLOAD;
 
 =head1 METHODS
@@ -79,6 +79,9 @@ with the value-arguments if the corresponging key matches the variable name.
 
 Example: $tree->value(x => 1, y => 2, z => 3, t => 0) assigns the value 1 to
 any occurrances of variables of the name "x", aso.
+
+If a variable in the tree has no value set (and no argument of value sets
+it temporarily), the call to value() returns undef.
 
 =cut
 
@@ -184,6 +187,39 @@ sub replace {
     %$tree = %$new;
     bless $tree => ref $new;
     return $tree;
+}
+
+=head2 fill_in_vars
+
+This method returns a modified copy of the tree it was called on.
+
+It walks the tree and replaces all variables whose value attribute is
+defined (either done at the time of object creation or using set_value())
+with the corresponding constant objects. Variables whose value is
+not defined are unaffected. Take, for example, the following code:
+
+  $tree = parse_from_string('a*b+a*c');
+  $tree->set_value(a => 4, c => 10); # value of b still not defined.
+  print $tree->fill_in_vars();
+  # prints "(4 * b) + (4 * 10)"
+
+=cut
+
+sub fill_in_vars {
+    my $self = shift;
+    return $self->descend(
+        in_place => 0,
+        before   => sub {
+            my $term = shift;
+            if ( $term->term_type() == T_VARIABLE
+                and defined $term->{value} )
+            {
+                $term->replace(
+                    Math::Symbolic::Constant->new( $term->{value} ) );
+            }
+            return ();
+        },
+    );
 }
 
 =head2 Method simplify

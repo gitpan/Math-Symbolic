@@ -36,7 +36,7 @@ use strict;
 use warnings;
 no warnings 'recursion';
 
-our $VERSION = '0.123';
+our $VERSION = '0.124';
 
 use Math::Symbolic::Custom::Base;
 BEGIN { *import = \&Math::Symbolic::Custom::Base::aggregate_import }
@@ -53,8 +53,60 @@ use Carp;
 our $Aggregate_Export = [
     qw/
       to_latex
+      to_code
+      to_sub
       /
 ];
+
+=head2 to_string
+
+The to_string method is currently implemented in the module core namespaces
+and will be moved to Math::Symbolic::DefaultDumpers in a future release.
+
+Takes one optional argument indicating whether the Math::Symbolic tree should
+be transformed to a string using 'postfix' notation or using 'infix' notation.
+Default is infix which is also more likely to be reparseable by the
+Math::Symbolic parser.
+
+=head2 to_code
+
+This method is a wrapper around the compile_to_code class method in the
+Math::Symbolic::Compiler module. Takes key/value pairs of variables and
+integers as argument. The integers should starting at 0 and they determine
+the order of the variables/parameters to the compiled code.
+
+Returns the compiled code and a reference to an array of possible leftover
+tree elements that could not be compiled.
+
+Please refer to the Math::Symbolic::Compiler man page for details.
+
+=cut
+
+sub to_code {
+    my $self = shift;
+    my $args = [@_];    # \@_ would be evil. @_ is not a real Perl array
+    return Math::Symbolic::Compiler->compile_to_code( $self, $args );
+}
+
+=head2 to_sub
+
+This method is a wrapper around the compile_to_sub class method in the
+Math::Symbolic::Compiler module. Takes key/value pairs of variables and
+integers as argument. The integers should starting at 0 and they determine
+the order of the variables/parameters to the compiled code.
+
+Returns the compiled sub and a reference to an array of possible leftover
+tree elements that could not be compiled.
+
+Please refer to the Math::Symbolic::Compiler man page for details.
+
+=cut
+
+sub to_sub {
+    my $self = shift;
+    my $args = [@_];    # \@_ would be evil. @_ is not a real Perl array
+    return Math::Symbolic::Compiler->compile_to_sub( $self, $args );
+}
 
 =head2 to_latex
 
@@ -356,6 +408,7 @@ http://steffen-mueller.net or CPAN. The module development takes place on
 Sourceforge at http://sourceforge.net/projects/math-symbolic/
 
 L<Math::Symbolic::Custom>
+L<Math::Symbolic::Custom::DefaultMods>
 L<Math::Symbolic::Custom::DefaultTests>
 L<Math::Symbolic>
 

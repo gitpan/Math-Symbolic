@@ -6,11 +6,11 @@ WriteMakefile(
     'NAME'         => 'Math::Symbolic',
     'VERSION_FROM' => 'lib/Math/Symbolic.pm',    # finds $VERSION
     'PREREQ_PM'    => {
-        Data::Dumper => 0,
-
-        #Parse::RecDescent => 0, # not required for rudimentary operation
-        Test::More => 0,
-    },                                           # e.g., Module::Name => 1.1
+        Data::Dumper      => 0,
+        Parse::RecDescent => 0,      # not required for rudimentary operation
+        Test::More        => 0,
+        Pod::Coverage     => 0.11,
+    },    # e.g., Module::Name => 1.1
     (
         $] >= 5.005
         ?    ## Add these new keywords supported since 5.005

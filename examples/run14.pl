@@ -5,6 +5,7 @@ use warnings;
 # Perl solving a physics / electrodynamics problem involving
 # symbolic mathematics, derivatives and complex numbers:
 
+use lib '../lib';
 use Math::Symbolic qw/:all/;
 use Math::Complex;
 

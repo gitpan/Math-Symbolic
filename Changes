@@ -1,5 +1,21 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.124  Wed Oct  1 15:08:49 2003
+	- Now value() and apply() return undef if any var is undefined.
+	- Docs for the above.
+	- value() on constants that aren't defined die.
+	- Fixed some documentation oversights.
+	- Added to_code, to_sub to DefaultDumpers.
+	- Added fill_in_vars() to Base.
+	- Moved the run*.pl files to ./examples/
+	- Added the perltidy.conf that is being used with this module
+	  to the CVS development tree.
+	- Added WronskyDet to VectorCalc
+	- Modified MANIFEST.skip to ignore CVS dirs and perltidy.conf
+	- Added 00sanity.t which uses all modules and uses
+	  Pod::Coverage to test for validity of documentation.
+	- Added requirement of Pod::Coverage to META.yml and Makefile.PL
+
 0.123  Fri Sep 26 00:49:55 2003
 	- Fixed the previously slightly broken to_latex() method.
 	- Added support for automatic greek output for to_latex().

@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name: Math-Symbolic
-version: 0.123
+version: 0.124
 abstract: Symbolic calculations
 license: perl
 distribution_type: module
@@ -9,6 +9,8 @@ requires:
   Data::Dumper: 0
 recommends:
   Parse::RecDescent: 0
+  Pod::Coverage: 0.11
 build_requires:
   Parse::RecDescent: 0
+  Pod::Coverage: 0.11
 dynamic_config: 0
