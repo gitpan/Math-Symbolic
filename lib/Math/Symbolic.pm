@@ -133,7 +133,7 @@ our %EXPORT_TAGS = (
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT = qw();
 
-our $VERSION = '0.113';
+our $VERSION = '0.114';
 
 =head1 CLASS DATA
 
@@ -178,47 +178,42 @@ __END__
 
 This example demonstrates variable and operator creation using
 object prototypes as well as partial derivatives and the various
-ways of applying derivatives and simplifying terms.
-This is an old example demonstrating the worse parts of the interface.
-To be replaced soon.
+ways of applying derivatives and simplifying terms. Furthermore, it
+shows how to use the compiler for simple expressions.
 
   use Math::Symbolic qw/:all/;
   
-  my $var = Math::Symbolic::Variable->new();
-  my $a = $var->new('a' => 2);
-  my $b = $var->new('b' => 3);
-  my $c = $var->new('c' => 4);
+  my $energy = parse_from_string(<<'HERE');
+        kinetic(mass, velocity, time) +
+        potential(mass, z, time)
+  HERE
   
-  print "Vars: a=" . $a->value() .
-             " b=" . $b->value() .
-             " c=" . $c->value() .
-             " (Values are optional)\n\n";
+  $energy->implement(kinetic => '(1/2) * mass * velocity(time)^2');
+  $energy->implement(potential => 'mass * g * z(t)');
   
-  my $op    = Math::Symbolic::Operator->new();
-  my $add1  = $op->new('+', $a, $c);
-  my $mult1 = $op->new('*', $a, $b);
-  my $div1  = $op->new('/', $add1, $mult1);
+  $energy->set_value(g => 9.81); # permanently
   
-  print "Expression: (a+c)/(a*b)\n\n";
+  print "Energy is: $energy\n";
   
-  print "prefix notation and evaluation:\n";
-  print $div1->to_string('prefix') . " = " . $div1->value() . "\n\n";
+  # Is how does the energy change with the height?
+  my $derived = $energy->new('partial_derivative', $energy, 'z');
+  $derived = $derived->apply_derivatives()->simplify();
   
-  print "Now, we derive this partially to a: (prefix again)\n";
+  print "Changes with the heigth as: $derived\n";
   
-  my $n_tree = $op->new( {
-    type => U_P_DERIVATIVE,
-    operands => [$div1, $a],
-  } );
-  print $n_tree->to_string('prefix') . " = " . $n_tree->value() . "\n\n";
-  	
-  print "Now, we apply the derivative to the term: (infix)\n";
-  my $derived = $n_tree->apply_derivatives();
-  print "$derived = " . $derived->value() . "\n\n";
+  # With whatever values you fancy:
+  print "Putting in some sample values: ",
+        $energy->value(mass => 20, velocity => 10, z => 5),
+        "\n";
   
-  print "Finally, we simplify the derived term as much as possible:\n";
-  my $simplified = $derived->simplify();
-  print "$simplified = " . $derived->value() . "\n\n";
+  # Too slow?
+  $energy->implement(g => '9.81'); # To get rid of the variable
+  
+  my ($sub) = Math::Symbolic::Compiler->compile($energy);
+  
+  print "This was much faster: ",
+        $sub->(20, 10, 5),  # vars ordered alphabetically
+        "\n";
 
 =head1 OVERLOADED OPERATORS
 

@@ -1,5 +1,9 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.114  Thu Aug 28 13:26:47 2003
+	- Fixed bug in set_value() routine that was introduced in 0.113.
+	- New example in Math::Symbolic docs
+
 0.113  Sun Aug 17 19:13:28 2003
 	- Added the MS::Constant pi() constructor
 	- Added tests and docs.

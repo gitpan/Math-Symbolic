@@ -31,7 +31,7 @@ use 5.006;
 use strict;
 use warnings;
 
-our $VERSION = '0.113';
+our $VERSION = '0.114';
 
 use Math::Symbolic::Custom::Base;
 BEGIN {*import = \&Math::Symbolic::Custom::Base::aggregate_import}

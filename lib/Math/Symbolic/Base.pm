@@ -43,7 +43,7 @@ use overload
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.113';
+our $VERSION = '0.114';
 our $AUTOLOAD;
 
 =head1 METHODS
@@ -551,6 +551,7 @@ sub set_value {
 	}
 	
 	$self->descend(
+		in_place => 1,
 		after => sub {
 			my $tree = shift;
 			my $ttype = $tree->term_type();

@@ -95,7 +95,7 @@ ok(!$@, 'value() with arguments did not complain');
 
 $@ = undef;
 eval <<'HERE';
-$simplified->set_value(a=>2);
+$simplified->set_value(a=>3);
 HERE
-ok(!$@, 'set_value() with arguments did not complain');
+ok(!$@ && $a->value() == 2, 'set_value() with arguments did not complain');
 
