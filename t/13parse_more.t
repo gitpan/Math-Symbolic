@@ -4,21 +4,18 @@ use strict;
 use warnings;
 
 use Test::More tests => 13;
+
 #use lib 'lib';
 
 use_ok('Math::Symbolic');
 use Math::Symbolic::ExportConstants qw/:all/;
-
 
 my $tree;
 undef $@;
 eval <<'HERE';
 $tree = Math::Symbolic->parse_from_string('a');
 HERE
-ok(
-	(!$@ and ref($tree) eq 'Math::Symbolic::Variable'),
-	'Parsing variables'
-);
+ok( ( !$@ and ref($tree) eq 'Math::Symbolic::Variable' ), 'Parsing variables' );
 
 my $str;
 undef $@;
@@ -27,10 +24,7 @@ $tree = Math::Symbolic->parse_from_string('a*a');
 HERE
 $str = $tree->to_string();
 $str =~ s/\(|\)|\s+//g;
-ok(
-	(!$@ and $str eq 'a*a'),
-	'Parsing multiplication of variables'
-);
+ok( ( !$@ and $str eq 'a*a' ), 'Parsing multiplication of variables' );
 
 undef $@;
 eval <<'HERE';
@@ -38,10 +32,8 @@ $tree = $tree + '(b + a)';
 HERE
 $str = $tree->to_string();
 $str =~ s/\s+//g;
-ok(
-	(!$@ and $str eq '(a*a)+(b+a)'),
-	'Parsing parens and addition, precedence, overloaded ops'
-);
+ok( ( !$@ and $str eq '(a*a)+(b+a)' ),
+    'Parsing parens and addition, precedence, overloaded ops' );
 
 undef $@;
 eval <<'HERE';
@@ -50,8 +42,8 @@ HERE
 $str = $tree->to_string();
 $str =~ s/\s+//g;
 ok(
-	(!$@ and $str eq '((a+a)-a)-a'),
-	'Parsing difference, chaining, reordering'
+    ( !$@ and $str eq '((a+a)-a)-a' ),
+    'Parsing difference, chaining, reordering'
 );
 
 undef $@;
@@ -61,10 +53,9 @@ HERE
 $str = $tree->to_string();
 $str =~ s/\s+//g;
 ok(
-	(!$@ and $str eq '-BLABLAIdent_1213_ad'),
-	'Parsing unary minus and complex identifier'
+    ( !$@ and $str eq '-BLABLAIdent_1213_ad' ),
+    'Parsing unary minus and complex identifier'
 );
-
 
 undef $@;
 eval <<'HERE';
@@ -73,9 +64,12 @@ HERE
 $str = $tree->to_string('prefix');
 $str =~ s/\s+//g;
 ok(
-	(!$@ and $str eq
-	'exponentiate(add(1,t),log(multiply(t,2),exponentiate(x,2)))'),
-	'Parsing exp and log'
+    (
+        !$@
+          and $str eq
+          'exponentiate(add(1,t),log(multiply(t,2),exponentiate(x,2)))'
+    ),
+    'Parsing exp and log'
 );
 
 undef $@;
@@ -88,9 +82,12 @@ HERE
 $str = $tree->to_string('prefix');
 $str =~ s/\s+//g;
 ok(
-	(!$@ and $str eq
-	'subtract(add(multiply(a,3),b),exponentiate(multiply(2,c),sin(x)))'),
-	'Parsing complicated term'
+    (
+        !$@
+          and $str eq
+          'subtract(add(multiply(a,3),b),exponentiate(multiply(2,c),sin(x)))'
+    ),
+    'Parsing complicated term'
 );
 
 undef $@;
@@ -100,13 +97,7 @@ HERE
 
 $str = $tree->to_string('prefix');
 $str =~ s/\s+//g;
-ok(
-	(!$@ and $str eq
-	'multiply(a,b)'),
-	'Autoparsing at operator creation'
-);
-
-
+ok( ( !$@ and $str eq 'multiply(a,b)' ), 'Autoparsing at operator creation' );
 
 undef $@;
 eval <<'HERE';
@@ -115,18 +106,9 @@ HERE
 
 $str = $tree->to_string('prefix');
 $str =~ s/\s+//g;
-ok(
-	(!$@ and $str eq
-	'a'),
-	'Parsing variable with signature'
-);
+ok( ( !$@ and $str eq 'a' ), 'Parsing variable with signature' );
 $str = join '|', $tree->signature();
-ok(
-	(!$@ and $str eq
-	'a|b|c|d'),
-	'Checking variable for correct signature'
-);
-
+ok( ( !$@ and $str eq 'a|b|c|d' ), 'Checking variable for correct signature' );
 
 undef $@;
 eval <<'HERE';
@@ -136,15 +118,15 @@ HERE
 $str = $tree->to_string('prefix');
 $str =~ s/\s+//g;
 ok(
-	(!$@ and $str eq
-	'add(E_pot,divide(multiply(multiply(1,m),exponentiate(v,2)),2))'),
-	'Parsing term involving variables with signatures'
+    (
+        !$@
+          and $str eq
+          'add(E_pot,divide(multiply(multiply(1,m),exponentiate(v,2)),2))'
+    ),
+    'Parsing term involving variables with signatures'
 );
 
 $str = join '|', $tree->signature();
-ok(
-	(!$@ and $str eq
-	'E_pot|m|r|t|v'),
-	'Checking term for correct signature'
-);
+ok( ( !$@ and $str eq 'E_pot|m|r|t|v' ),
+    'Checking term for correct signature' );
 

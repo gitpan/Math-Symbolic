@@ -2,6 +2,7 @@ use strict;
 use warnings;
 
 use Test::More tests => 4;
+
 #use lib 'lib';
 
 use_ok('Math::Symbolic');
@@ -15,11 +16,7 @@ $tree = Math::Symbolic->parse_from_string('sinh(2)');
 HERE
 $str = $tree->to_string();
 $str =~ s/\s+//g;
-ok(
-	(!$@ and $str eq 'sinh(2)'),
-	"Parsing hyperbolic sine"
-);
-
+ok( ( !$@ and $str eq 'sinh(2)' ), "Parsing hyperbolic sine" );
 
 undef $@;
 eval <<'HERE';
@@ -27,10 +24,7 @@ $tree = Math::Symbolic->parse_from_string('cosh(2)');
 HERE
 $str = $tree->to_string();
 $str =~ s/\s+//g;
-ok(
-	(!$@ and $str eq 'cosh(2)'),
-	'Parsing hyperbolic cosine'
-);
+ok( ( !$@ and $str eq 'cosh(2)' ), 'Parsing hyperbolic cosine' );
 
 undef $@;
 eval <<'HERE';
@@ -41,8 +35,7 @@ HERE
 $str = $tree->to_string();
 $str =~ s/\s+//g;
 ok(
-	(!$@ and $str eq
-		'tan(log(cosh(2),(sin(((2*1)*3)+(1*3)))*(sinh(0))))'),
-	'Parsing more complicated string involving sinh/cosh/tan.'
+    ( !$@ and $str eq 'tan(log(cosh(2),(sin(((2*1)*3)+(1*3)))*(sinh(0))))' ),
+    'Parsing more complicated string involving sinh/cosh/tan.'
 );
 

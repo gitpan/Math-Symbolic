@@ -1,5 +1,12 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.115  Tue Sep 2 16:23:15 2003
+	- Moved to sf.net
+	- Ran perltidy over the distro.
+	- Lots of doc patches including a section on extending the module.
+	- Added can() overriding to Base.pm in order to reflect method
+	  delegation.
+
 0.114  Thu Aug 28 13:26:47 2003
 	- Fixed bug in set_value() routine that was introduced in 0.113.
 	- New example in Math::Symbolic docs

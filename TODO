@@ -8,7 +8,11 @@ Sooner-than-later:
 
 	- Yes, damnit. I mean it.
 
-Version 0.115: (pushed back from 0.111)
+	- Update TODO and clean it.
+	- Make sure TODO and sourceforge task/issue/whatever trackers are in
+	  sync.
+
+Version 0.118: (pushed back from 0.111)
 	+ New, better example in the main man page.
 	- Write a coherent, easy-to-understand, central section on variable
 	  signatures and their purpose.

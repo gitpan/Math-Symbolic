@@ -1,3 +1,4 @@
+
 =head1 NAME
 
 Math::Symbolic::Custom::DefaultTests - Default Math::Symbolic tree tests
@@ -31,10 +32,10 @@ use 5.006;
 use strict;
 use warnings;
 
-our $VERSION = '0.114';
+our $VERSION = '0.115';
 
 use Math::Symbolic::Custom::Base;
-BEGIN {*import = \&Math::Symbolic::Custom::Base::aggregate_import}
+BEGIN { *import = \&Math::Symbolic::Custom::Base::aggregate_import }
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
@@ -45,14 +46,15 @@ use Carp;
 # All subroutines that are to be exported to the Math::Symbolic::Custom
 # namespace should be listed here.
 
-our $Aggregate_Export = [qw/
-	is_sum
-	is_constant
-	is_simple_constant
-	is_integer
-	is_identical
-/];
-
+our $Aggregate_Export = [
+    qw/
+      is_sum
+      is_constant
+      is_simple_constant
+      is_integer
+      is_identical
+      /
+];
 
 =head2 is_integer()
 
@@ -67,15 +69,11 @@ It returns false (0) otherwise.
 =cut
 
 sub is_integer {
-	my $tree = shift;
-	return 0 unless $tree->term_type() == T_CONSTANT;
-	my $value = $tree->value();
-	return (
-		int($value) == $value
-	);
+    my $tree = shift;
+    return 0 unless $tree->term_type() == T_CONSTANT;
+    my $value = $tree->value();
+    return ( int($value) == $value );
 }
-
-
 
 =head2 is_simple_constant()
 
@@ -90,34 +88,31 @@ It returns false (0) otherwise.
 =cut
 
 sub is_simple_constant {
-	my $tree = shift;
+    my $tree = shift;
 
-	my $return = 1;
-	$tree->descend(
-		in_place => 1,
-		before => sub {
-			my $tree = shift;
-			my $ttype = $tree->term_type();
-			if ($ttype == T_CONSTANT) {
-				return undef;
-			}
-			elsif ($ttype == T_VARIABLE) {
-				$return = 0;
-				return undef;
-			}
-			elsif ($ttype == T_OPERATOR) {
-				return();
-			}
-			else {
-				croak "is_simple_constant called on " .
-					"invalid tree type.";
-			}
-		},
-	);
-	return $return;
+    my $return = 1;
+    $tree->descend(
+        in_place => 1,
+        before   => sub {
+            my $tree  = shift;
+            my $ttype = $tree->term_type();
+            if ( $ttype == T_CONSTANT ) {
+                return undef;
+            }
+            elsif ( $ttype == T_VARIABLE ) {
+                $return = 0;
+                return undef;
+            }
+            elsif ( $ttype == T_OPERATOR ) {
+                return ();
+            }
+            else {
+                croak "is_simple_constant called on " . "invalid tree type.";
+            }
+        },
+    );
+    return $return;
 }
-
-
 
 =head2 is_constant()
 
@@ -135,44 +130,37 @@ is_simple_constant() method instead.
 =cut
 
 sub is_constant {
-	my $tree = shift;
+    my $tree = shift;
 
-	my $return = 1;
-	$tree->descend(
-		in_place => 1,
-		before => sub {
-			my $tree = shift;
-			my $ttype = $tree->term_type();
-			if ($ttype == T_CONSTANT) {
-				return undef;
-			}
-			elsif ($ttype == T_VARIABLE) {
-				$return = 0;
-				return undef;
-			}
-			elsif ($ttype == T_OPERATOR) {
-				my $tree = $tree->apply_derivatives();
-				$ttype = $tree->term_type();
-				return undef if $ttype == T_CONSTANT;
-				($return = 0), return undef
-				   if $ttype == T_VARIABLE;
-				
-				return {
-					descend_into => [
-						@{ $tree->{operands} }
-					],
-				};
-			}
-			else {
-				croak "is_constant called on " .
-					"invalid tree type.";
-			}
-		},
-	);
-	return $return;
+    my $return = 1;
+    $tree->descend(
+        in_place => 1,
+        before   => sub {
+            my $tree  = shift;
+            my $ttype = $tree->term_type();
+            if ( $ttype == T_CONSTANT ) {
+                return undef;
+            }
+            elsif ( $ttype == T_VARIABLE ) {
+                $return = 0;
+                return undef;
+            }
+            elsif ( $ttype == T_OPERATOR ) {
+                my $tree = $tree->apply_derivatives();
+                $ttype = $tree->term_type();
+                return undef if $ttype == T_CONSTANT;
+                ( $return = 0 ), return undef
+                  if $ttype == T_VARIABLE;
+
+                return { descend_into => [ @{ $tree->{operands} } ], };
+            }
+            else {
+                croak "is_constant called on " . "invalid tree type.";
+            }
+        },
+    );
+    return $return;
 }
-
-
 
 =head2 is_identical()
 
@@ -190,65 +178,60 @@ It returns false (0) otherwise.
 =cut
 
 sub is_identical {
-	my $tree1 = shift;
-	my $tree2 = shift;
-	
-	my $tt1 = $tree1->term_type();
-	my $tt2 = $tree2->term_type();
-	
-	if ($tt1 != $tt2) {
-		return 0;
-	}
-	else {
-		if ($tt1 == T_VARIABLE) {
-			return 0 if $tree1->name() ne $tree2->name();
-			my @sig1 = $tree1->signature();
-			my @sig2 = $tree2->signature();
-			return 0 if scalar(@sig1) != scalar(@sig2);
-			for (my $i = 0; $i < @sig1; $i++) {
-				return 0 if $sig1[$i] ne $sig2[$i];
-			}
-			return 1;
-		}
-		elsif ($tt1 == T_CONSTANT) {
-			my $sp1 = $tree1->special();
-			my $sp2 = $tree2->special();
-			if (
-				defined $sp1 and defined $sp2 and
-				$sp1 eq $sp2 and
-				$sp1 ne '' and
-				$sp1 =~ /\S/
-			) {
-				return 1;
-			}
-			return 1 if $tree1->value() == $tree2->value();
-			return 0;
-		}
-		elsif ($tt1 == T_OPERATOR) {
-			my $t1 = $tree1->type();
-			my $t2 = $tree2->type();
-			return 0 if $t1 != $t2;
-			return 0
-			  if @{$tree1->{operands}} != @{$tree2->{operands}};
+    my $tree1 = shift;
+    my $tree2 = shift;
 
-			my $i = 0;
-			foreach (@{$tree1->{operands}}) {
-				return 0
-				  unless is_identical(
-					  $_,
-					  $tree2->{operands}[$i++]
-				  );
-			}
-			return 1;
-		}
-		else {
-			croak "is_identical() called on invalid term type.";
-		}
-		die "Sanity check in is_identical(). Should not be reached.";
-	}
+    my $tt1 = $tree1->term_type();
+    my $tt2 = $tree2->term_type();
+
+    if ( $tt1 != $tt2 ) {
+        return 0;
+    }
+    else {
+        if ( $tt1 == T_VARIABLE ) {
+            return 0 if $tree1->name() ne $tree2->name();
+            my @sig1 = $tree1->signature();
+            my @sig2 = $tree2->signature();
+            return 0 if scalar(@sig1) != scalar(@sig2);
+            for ( my $i = 0 ; $i < @sig1 ; $i++ ) {
+                return 0 if $sig1[$i] ne $sig2[$i];
+            }
+            return 1;
+        }
+        elsif ( $tt1 == T_CONSTANT ) {
+            my $sp1 = $tree1->special();
+            my $sp2 = $tree2->special();
+            if (    defined $sp1
+                and defined $sp2
+                and $sp1 eq $sp2
+                and $sp1 ne ''
+                and $sp1 =~ /\S/ )
+            {
+                return 1;
+            }
+            return 1 if $tree1->value() == $tree2->value();
+            return 0;
+        }
+        elsif ( $tt1 == T_OPERATOR ) {
+            my $t1 = $tree1->type();
+            my $t2 = $tree2->type();
+            return 0 if $t1 != $t2;
+            return 0
+              if @{ $tree1->{operands} } != @{ $tree2->{operands} };
+
+            my $i = 0;
+            foreach ( @{ $tree1->{operands} } ) {
+                return 0
+                  unless is_identical( $_, $tree2->{operands}[ $i++ ] );
+            }
+            return 1;
+        }
+        else {
+            croak "is_identical() called on invalid term type.";
+        }
+        die "Sanity check in is_identical(). Should not be reached.";
+    }
 }
-
-
 
 =head2 is_sum()
 
@@ -271,98 +254,100 @@ implementation. The heuristics aren't all that great.
 =cut
 
 sub is_sum {
-	my $tree = shift;
+    my $tree = shift;
 
-	my $return = 1;
-	$tree->descend(
-		in_place => 1,
-		before => sub {
-			my $tree = shift;
-			my $ttype = $tree->term_type();
+    my $return = 1;
+    $tree->descend(
+        in_place => 1,
+        before   => sub {
+            my $tree  = shift;
+            my $ttype = $tree->term_type();
 
-			if ($ttype == T_CONSTANT or $ttype == T_VARIABLE) {
-				return undef;
-			}
-			elsif ($ttype == T_OPERATOR) {
-				my $type = $tree->type();
-				if (
-					$type == B_SUM or
-					$type == B_DIFFERENCE or
-					$type == U_MINUS
-				) {
-					return ();
-				}
-				elsif ($type == B_PRODUCT) {
-					$return = 
-						$tree->{operands}[0]
-						->is_integer() ||
-						$tree->{operands}[1]
-						->is_integer();
-					return undef;
-				}
-				elsif (
-					$type == U_P_DERIVATIVE or
-					$type == U_T_DERIVATIVE
-				) {
-					my $tree = $tree->apply_derivatives();
-					$tree = $tree->simplify();
-					my $ttype = $tree->term_type();
-					return undef if (
-						$ttype == T_CONSTANT or
-						$ttype == T_VARIABLE
-					);
+            if ( $ttype == T_CONSTANT or $ttype == T_VARIABLE ) {
+                return undef;
+            }
+            elsif ( $ttype == T_OPERATOR ) {
+                my $type = $tree->type();
+                if (   $type == B_SUM
+                    or $type == B_DIFFERENCE
+                    or $type == U_MINUS )
+                {
+                    return ();
+                }
+                elsif ( $type == B_PRODUCT ) {
+                    $return = $tree->{operands}[0]->is_integer()
+                      || $tree->{operands}[1]->is_integer();
+                    return undef;
+                }
+                elsif ($type == U_P_DERIVATIVE
+                    or $type == U_T_DERIVATIVE )
+                {
+                    my $tree = $tree->apply_derivatives();
+                    $tree = $tree->simplify();
+                    my $ttype = $tree->term_type();
+                    return undef
+                      if ( $ttype == T_CONSTANT
+                        or $ttype == T_VARIABLE );
 
-					if ($ttype == T_OPERATOR) {
-						my $type = $tree->type();
-						if (
-							$type == U_P_DERIVATIVE
-							||
-							$type == U_T_DERIVATIVE
-						) {
-							$return = 0;
-							return undef;
-						}
-						else {
-							return {
-							descend_into => [$tree]
-							};
-						}
-					}
-					else {
-						die "apply_derivatives " .
-						"screwed the pooch in " .
-						"is_sum().";
-					}
-				}
-				elsif (is_constant($tree)) {
-					return undef;
-				}
-				else {
-					$return = 0;
-					return undef;
-				}
-			}
-			else {
-				croak "is_sum called on invalid tree type.";
-			}
-			die;
-		},
-	);
-	return $return;
+                    if ( $ttype == T_OPERATOR ) {
+                        my $type = $tree->type();
+                        if (   $type == U_P_DERIVATIVE
+                            || $type == U_T_DERIVATIVE )
+                        {
+                            $return = 0;
+                            return undef;
+                        }
+                        else {
+                            return { descend_into => [$tree] };
+                        }
+                    }
+                    else {
+                        die "apply_derivatives "
+                          . "screwed the pooch in "
+                          . "is_sum().";
+                    }
+                }
+                elsif ( is_constant($tree) ) {
+                    return undef;
+                }
+                else {
+                    $return = 0;
+                    return undef;
+                }
+            }
+            else {
+                croak "is_sum called on invalid tree type.";
+            }
+            die;
+        },
+    );
+    return $return;
 }
-
-
 
 1;
 __END__
 
 =head1 AUTHOR
 
-Steffen Mueller, E<lt>symbolic-module at steffen-mueller dot netE<gt>
+Please send feedback, bug reports, and support requests to the Math::Symbolic
+support mailing list:
+math-symbolic-support at lists dot sourceforge dot net. Please
+consider letting us know how you use Math::Symbolic. Thank you.
 
-New versions of this module can be found on http://steffen-mueller.net or CPAN.
+If you're interested in helping with the development or extending the
+module's functionality, please contact the developer's mailing list:
+math-symbolic-develop at lists dot sourceforge dot net.
+
+List of contributors:
+
+  Steffen Müller, symbolic-module at steffen-mueller dot net
+  Stray Toaster, mwk at users dot sourceforge dot net
 
 =head1 SEE ALSO
+
+New versions of this module can be found on
+http://steffen-mueller.net or CPAN. The module development takes place on
+Sourceforge at http://sourceforge.net/projects/math-symbolic/
 
 L<Math::Symbolic::Custom>
 L<Math::Symbolic::Custom::DefaultMods>

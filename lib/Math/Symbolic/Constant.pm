@@ -1,3 +1,4 @@
+
 =head1 NAME
 
 Math::Symbolic::Constant - Constants in symbolic calculations
@@ -31,7 +32,7 @@ use Math::Symbolic::ExportConstants qw/:all/;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.114';
+our $VERSION = '0.115';
 
 =head1 METHODS
 
@@ -46,26 +47,24 @@ Returns a Math::Symbolic::Constant.
 =cut
 
 sub new {
-	my $proto = shift;
-	my $class = ref($proto) || $proto;
+    my $proto = shift;
+    my $class = ref($proto) || $proto;
 
-	my %args;
-	%args = %{+shift} if @_ && ref($_[0]) eq 'HASH';
+    my %args;
+    %args = %{ shift() } if @_ && ref( $_[0] ) eq 'HASH';
 
-	my $value = (@_ && !%args ? shift : $args{value});
-	$value = $proto->value() if !defined($value) and ref($proto);
+    my $value = ( @_ && !%args ? shift: $args{value} );
+    $value = $proto->value() if !defined($value) and ref($proto);
 
-	my $self = {
-		special => '',
-		(ref($proto)?%$proto:()),
-		value => $value,
-		%args,
-	};
+    my $self = {
+        special => '',
+        ( ref($proto) ? %$proto : () ),
+        value => $value,
+        %args,
+    };
 
-	bless $self => $class;
+    bless $self => $class;
 }
-
-
 
 =head2 Constructor zero
 
@@ -75,13 +74,11 @@ Returns a Math::Symbolic::Constant with value of 0.
 =cut
 
 sub zero {
-	my $proto = shift;
-	my $class = ref($proto) || $proto;
+    my $proto = shift;
+    my $class = ref($proto) || $proto;
 
-	return $class->new({@_, value => 0, special => 'zero'})
+    return $class->new( { @_, value => 0, special => 'zero' } );
 }
-
-
 
 =head2 Constructor one
 
@@ -91,13 +88,11 @@ Returns a Math::Symbolic::Constant with value of 1.
 =cut
 
 sub one {
-	my $proto = shift;
-	my $class = ref($proto) || $proto;
+    my $proto = shift;
+    my $class = ref($proto) || $proto;
 
-	return $class->new({@_, value => 1})
+    return $class->new( { @_, value => 1 } );
 }
-
-
 
 =head2 Constructor euler
 
@@ -108,13 +103,11 @@ The object has its 'special' attribute set to 'euler'.
 =cut
 
 sub euler {
-	my $proto = shift;
-	my $class = ref($proto) || $proto;
+    my $proto = shift;
+    my $class = ref($proto) || $proto;
 
-	return $class->new({@_, value => EULER, special => 'euler'})
+    return $class->new( { @_, value => EULER, special => 'euler' } );
 }
-
-
 
 =head2 Constructor pi
 
@@ -125,13 +118,11 @@ The object has its 'special' attribute set to 'pi'.
 =cut
 
 sub pi {
-	my $proto = shift;
-	my $class = ref($proto) || $proto;
+    my $proto = shift;
+    my $class = ref($proto) || $proto;
 
-	return $class->new({@_, value => PI, special => 'pi'})
+    return $class->new( { @_, value => PI, special => 'pi' } );
 }
-
-
 
 =head2 Method value
 
@@ -153,14 +144,10 @@ any occurrances of variables of the name "x", aso.
 =cut
 
 sub value {
-	my $self = shift;
-	if (@_==1) {
-		$self->{value} = shift;
-	}
-	return $self->{value};
+    my $self = shift;
+    $self->{value} = shift if @_ == 1;
+    return $self->{value};
 }
-
-
 
 =head2 Method signature
 
@@ -186,9 +173,9 @@ have the signature ('acceleration', 'force1', 'force2',..., 'mass', 'time').
 
 =cut
 
-sub signature {return ();}
-
-
+sub signature {
+    return ();
+}
 
 =head2 Method special
 
@@ -198,14 +185,10 @@ Returns the object's special attribute.
 =cut
 
 sub special {
-	my $self = shift;
-	if (@_) {
-		$self->{special} = shift;
-	}
-	return $self->{special};
+    my $self = shift;
+    $self->{special} = shift if @_;
+    return $self->{special};
 }
-
-
 
 =head2 Method to_string
 
@@ -214,12 +197,9 @@ Returns a string representation of the constant.
 =cut
 
 sub to_string {
-	my $self = shift;
-
-	return $self->value();
+    my $self = shift;
+    return $self->value();
 }
-
-
 
 =head2 Method term_type
 
@@ -228,22 +208,33 @@ Returns the type of the term. (T_CONSTANT)
 =cut
 
 sub term_type {
-	return T_CONSTANT;
+    return T_CONSTANT;
 }
-
-
 
 1;
 __END__
 
-
 =head1 AUTHOR
 
-Steffen Mueller, E<lt>symbolic-module at steffen-mueller dot netE<gt>
+Please send feedback, bug reports, and support requests to the Math::Symbolic
+support mailing list:
+math-symbolic-support at lists dot sourceforge dot net. Please
+consider letting us know how you use Math::Symbolic. Thank you.
 
-New versions of this module can be found on http://steffen-mueller.net or CPAN.
+If you're interested in helping with the development or extending the
+module's functionality, please contact the developer's mailing list:
+math-symbolic-develop at lists dot sourceforge dot net.
+
+List of contributors:
+
+  Steffen Müller, symbolic-module at steffen-mueller dot net
+  Stray Toaster, mwk at users dot sourceforge dot net
 
 =head1 SEE ALSO
+
+New versions of this module can be found on
+http://steffen-mueller.net or CPAN. The module development takes place on
+Sourceforge at http://sourceforge.net/projects/math-symbolic/
 
 L<Math::Symbolic>
 

@@ -8,13 +8,12 @@ use Data::Dumper;
 use Math::Symbolic qw/:all/;
 
 my $var = Math::Symbolic::Variable->new();
-my $a = $var->new('x' => 2);
+my $a   = $var->new( 'x' => 2 );
 
-print "Vars: x=" . $a->value() .
-           " (Value is optional)\n\n";
+print "Vars: x=" . $a->value() . " (Value is optional)\n\n";
 
-my $op   = Math::Symbolic::Operator->new();
-my $exp = $op->new('^', $a, $a);
+my $op  = Math::Symbolic::Operator->new();
+my $exp = $op->new( '^', $a, $a );
 
 print "Expression: x^x\n\n";
 
@@ -23,10 +22,12 @@ print $exp->to_string('prefix') . "\n\n";
 
 print "Now, we derive this partially to x: (prefix again)\n";
 
-my $n_tree = $op->new( {
-	type => U_P_DERIVATIVE,
-	operands => [$exp, $a],
-} );
+my $n_tree = $op->new(
+    {
+        type     => U_P_DERIVATIVE,
+        operands => [ $exp, $a ],
+    }
+);
 
 print $n_tree->to_string('prefix') . "\n\n";
 

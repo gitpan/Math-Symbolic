@@ -12,12 +12,13 @@ Math::Symbolic::Variable - Variable in symbolic calculations
   
   my $var2 = Math::Symbolic::Variable->new('x', 2);
 
-  my $var3 = Math::Symbolic::Variable->new(
-     {
-       name  => 'variable',
-       value => 1,
-     }
-  );
+  my $var3 =
+    Math::Symbolic::Variable->new(
+      {
+        name  => 'variable',
+        value => 1,
+      }
+    );
 
 =head1 DESCRIPTION
 
@@ -41,7 +42,7 @@ use Math::Symbolic::ExportConstants qw/:all/;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.114';
+our $VERSION = '0.115';
 
 =head1 METHODS
 
@@ -64,31 +65,32 @@ Returns a Math::Symbolic::Variable.
 =cut
 
 sub new {
-	my $proto = shift;
-	my $class = ref($proto) || $proto;
+    my $proto = shift;
+    my $class = ref($proto) || $proto;
 
-	if (@_ and not ref($_[0]) eq 'HASH') {
-		my $name = shift;
-		my $value = shift;
-		return bless {name=>$name, value=>$value, signature=>[@_]}
-			=> $class;
-	}
-	
-	my %args;
-	%args = %{+shift} if @_ and defined $_[0] and ref($_[0]) eq 'HASH';
+    if ( @_ and not ref( $_[0] ) eq 'HASH' ) {
+        my $name  = shift;
+        my $value = shift;
+        return
+          bless { name => $name, value => $value, signature => [@_] } => $class;
+    }
 
-	my $self = {
-		value => undef,
-		name => undef,
-		signature => [],
-		(ref($proto)?%$proto:()),
-		%args,
-	};
+    my %args;
+    %args = %{ shift() }
+      if @_
+      and defined $_[0]
+      and ref( $_[0] ) eq 'HASH';
 
-	bless $self => $class;
+    my $self = {
+        value     => undef,
+        name      => undef,
+        signature => [],
+        ( ref($proto) ? %$proto : () ),
+        %args,
+    };
+
+    bless $self => $class;
 }
-
-
 
 =head2 Method value
 
@@ -110,27 +112,25 @@ any occurrances of variables of the name "x", aso.
 =cut
 
 sub value {
-	my $self = shift;
-	if (@_==1) {
-		$self->{value} = shift;
-		return $self->{value};
-	}
-	elsif (@_==0) {
-		return $self->{value};
-	}
-	else {
-		my %args = @_;
-		if (exists $args{$self->{name}}) {
-			return $args{$self->{name}};
-		}
-		else {
-			return $self->{value};
-		}
-	}
-	die "Sanity check in Math::Symbolic::Variable::value()";
+    my $self = shift;
+    if ( @_ == 1 ) {
+        $self->{value} = shift;
+        return $self->{value};
+    }
+    elsif ( @_ == 0 ) {
+        return $self->{value};
+    }
+    else {
+        my %args = @_;
+        if ( exists $args{ $self->{name} } ) {
+            return $args{ $self->{name} };
+        }
+        else {
+            return $self->{value};
+        }
+    }
+    die "Sanity check in Math::Symbolic::Variable::value()";
 }
-
-
 
 =head2 Method name
 
@@ -140,14 +140,10 @@ Returns the object's name.
 =cut
 
 sub name {
-	my $self = shift;
-	if (@_) {
-		$self->{name} = shift;
-	}
-	return $self->{name};
+    my $self = shift;
+    $self->{name} = shift if @_;
+    return $self->{name};
 }
-
-
 
 =head2 Method signature
 
@@ -173,13 +169,13 @@ have the signature ('acceleration', 'force1', 'force2',..., 'mass', 'time').
 =cut
 
 sub signature {
-	my $self = shift;
-	my $sig = [@{$self->{signature}}];
-	push @$sig, $self->{name};
-	return sort keys %{{map {($_, undef)} @$sig}};
+    my $self = shift;
+    my $sig  = [ @{ $self->{signature} } ];    # copying it
+    push @$sig, $self->{name};
+
+    # Make things unique, then sort and return.
+    return sort keys %{ { map { ( $_, undef ) } @$sig } };
 }
-
-
 
 =head2 Method set_signature
 
@@ -189,12 +185,10 @@ It sets a variable's signature to this list of identifiers.
 =cut
 
 sub set_signature {
-	my $self = shift;
-	@{$self->{signature}} = @_;
-	return();
+    my $self = shift;
+    @{ $self->{signature} } = @_;
+    return ();
 }
-
-
 
 =head2 Method to_string
 
@@ -203,12 +197,9 @@ Returns a string representation of the variable.
 =cut
 
 sub to_string {
-	my $self = shift;
-
-	return $self->name();
+    my $self = shift;
+    return $self->name();
 }
-
-
 
 =head2 Method term_type
 
@@ -217,21 +208,33 @@ Returns the type of the term. (T_VARIABLE)
 =cut
 
 sub term_type {
-	return T_VARIABLE;
+    return T_VARIABLE;
 }
-
-
 
 1;
 __END__
 
 =head1 AUTHOR
 
-Steffen Mueller, E<lt>symbolic-module at steffen-mueller dot netE<gt>
+Please send feedback, bug reports, and support requests to the Math::Symbolic
+support mailing list:
+math-symbolic-support at lists dot sourceforge dot net. Please
+consider letting us know how you use Math::Symbolic. Thank you.
 
-New versions of this module can be found on http://steffen-mueller.net or CPAN.
+If you're interested in helping with the development or extending the
+module's functionality, please contact the developer's mailing list:
+math-symbolic-develop at lists dot sourceforge dot net.
+
+List of contributors:
+
+  Steffen Müller, symbolic-module at steffen-mueller dot net
+  Stray Toaster, mwk at users dot sourceforge dot net
 
 =head1 SEE ALSO
+
+New versions of this module can be found on
+http://steffen-mueller.net or CPAN. The module development takes place on
+Sourceforge at http://sourceforge.net/projects/math-symbolic/
 
 L<Math::Symbolic>
 

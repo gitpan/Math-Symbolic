@@ -8,7 +8,7 @@ Math::Symbolic::Parser - Parse strings into Math::Symbolic trees
   use Math::Symbolic::Parser;
   my $parser = Math::Symbolic::Parser->new();
   $string =~ s/\s+//g;
-  my $tree   = $parser->parse($string);
+  my $tree = $parser->parse($string);
   
   # or better:
   use Math::Symbolic;
@@ -41,9 +41,10 @@ Math::Symbolic::Operator in the section on the new() constructor.
 =head2 EXAMPLES
 
   # An example from analytical mechanics:
-  my $hamilton_function = Math::Symbolic->parse_from_string(
-                    'p_q(q, dq_dt, t) * dq_dt(q, t) - Lagrange(q, p_q, t)'
-                 );
+  my $hamilton_function =
+          Math::Symbolic->parse_from_string(
+            'p_q(q, dq_dt, t) * dq_dt(q, t) - Lagrange(q, p_q, t)'
+          );
 
 This parses as "The product
 of the generalized impulse p_q (which is a function of the generalized
@@ -113,25 +114,25 @@ use Parse::RecDescent;
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.114';
-our $DEBUG = 0;
+our $VERSION = '0.115';
+our $DEBUG   = 0;
 
 our $Grammar = <<'GRAMMAR_END';
 	parse: expr
 	     | <error>
 
 	expr: addition
-		{
-			warn 'expr ' if $Math::Symbolic::Parser::DEBUG;
-			$item[1]
-		}
+			{
+				warn 'expr ' if $Math::Symbolic::Parser::DEBUG;
+				$item[1]
+			}
 
 	addition: <leftop:multiplication add_op multiplication>
 			{
 				warn 'addition '
-					if $Math::Symbolic::Parser::DEBUG;
+				  if $Math::Symbolic::Parser::DEBUG;
 				Math::Symbolic::Parser::_leftop_list(
-					'addition', @item
+				  'addition', @item
 				)
 			}
 
@@ -141,9 +142,9 @@ our $Grammar = <<'GRAMMAR_END';
 	multiplication: <leftop:exp mult_op exp>
 			{
 				warn 'multiplication '
-					if $Math::Symbolic::Parser::DEBUG;
+				  if $Math::Symbolic::Parser::DEBUG;
 				Math::Symbolic::Parser::_leftop_list(
-					'multiplication', @item
+				  'multiplication', @item
 				)
 			}
   
@@ -155,7 +156,7 @@ our $Grammar = <<'GRAMMAR_END';
 			{
 				warn 'exp ' if $Math::Symbolic::Parser::DEBUG;
 				Math::Symbolic::Parser::_leftop_list(
-					'exp', @item
+				  'exp', @item
 				)
 			}
 
@@ -164,7 +165,7 @@ our $Grammar = <<'GRAMMAR_END';
 	factor: unary
 			{
 				warn 'factor '
-					if $Math::Symolic::Parser::DEBUG;
+				  if $Math::Symolic::Parser::DEBUG;
 				$item[1]
 			}
 		| '(' expr ')'
@@ -175,74 +176,83 @@ our $Grammar = <<'GRAMMAR_END';
 			}
 
 	unary: unary_op number
-		{
-			warn 'unary '
-				if $Math::Symbolic::Parser::DEBUG;
-			if ($item[1] and $item[1] eq '-') {
-				Math::Symbolic::Operator->new({
-					type => Math::Symbolic::U_MINUS,
-					operands => [$item[2]],
-				});
+			{
+				warn 'unary '
+				  if $Math::Symbolic::Parser::DEBUG;
+				if ($item[1] and $item[1] eq '-') {
+					Math::Symbolic::Operator->new(
+					  {
+					    type => Math::Symbolic::U_MINUS,
+					    operands => [$item[2]],
+					  }
+					);
+				}
+				else {
+					$item[2]
+				}
 			}
-			else {
-				$item[2]
-			}
-		}
 	     | unary_op function
-		{
-			warn 'unary '
-				if $Math::Symbolic::Parser::DEBUG;
-			if ($item[1] and $item[1] eq '-') {
-				Math::Symbolic::Operator->new({
-					type => Math::Symbolic::U_MINUS,
-					operands => [$item[2]],
-				});
+			{
+				warn 'unary '
+				  if $Math::Symbolic::Parser::DEBUG;
+				if ($item[1] and $item[1] eq '-') {
+					Math::Symbolic::Operator->new(
+					  {
+					    type => Math::Symbolic::U_MINUS,
+					    operands => [$item[2]],
+					  }
+					);
+				}
+				else {
+					$item[2]
+				}
 			}
-			else {
-				$item[2]
-			}
-		}
 	     | unary_op variable
-		{
-			warn 'unary '
-				if $Math::Symbolic::Parser::DEBUG;
-			if ($item[1] and $item[1] eq '-') {
-				Math::Symbolic::Operator->new({
-					type => Math::Symbolic::U_MINUS,
-					operands => [$item[2]],
-				});
+			{
+				warn 'unary '
+				  if $Math::Symbolic::Parser::DEBUG;
+				if ($item[1] and $item[1] eq '-') {
+					Math::Symbolic::Operator->new(
+					  {
+					    type => Math::Symbolic::U_MINUS,
+					    operands => [$item[2]],
+					  }
+					);
+				}
+				else {
+					$item[2]
+				}
 			}
-			else {
-				$item[2]
-			}
-		}
 		
 	unary_op: /([+-]?)/
-		{
-			$item[1]
-		}
+			{
+				$item[1]
+			}
 		
 	number: /\d+(\.\d+)?/
-		{
-			warn 'number ' if $Math::Symbolic::Parser::DEBUG;
-			Math::Symbolic::Constant->new($item[1])
-		}
+			{
+				warn 'number '
+				  if $Math::Symbolic::Parser::DEBUG;
+				Math::Symbolic::Constant->new($item[1])
+			}
 
 	function: function_name '(' expr_list ')'
 			{
 				warn 'function ' 
-					if $Math::Symbolic::Parser::DEBUG;
+				  if $Math::Symbolic::Parser::DEBUG;
 				my $function =
-				$Math::Symbolic::Operator::Op_Symbols{
-					$item[1]
-				};
+				  $Math::Symbolic::Operator::Op_Symbols{
+				    $item[1]
+				  };
 				die "Invalid function '$item[1]'!"
-					unless defined $function;
+				  unless defined $function;
 					
-				Math::Symbolic::Operator->new({
-					type => $function,
-					operands => $item[3],
-				});
+				Math::Symbolic::Operator->new(
+				  {
+				    type => $function,
+				    operands => $item[3],
+				  }
+				);
 			}
 
 	function_name: 'log'
@@ -263,13 +273,13 @@ our $Grammar = <<'GRAMMAR_END';
 	expr_list: <leftop:expr list_op expr>
 			{
 				warn 'expr_list '
-					if $Math::Symbolic::Parser::DEBUG;
+				  if $Math::Symbolic::Parser::DEBUG;
 				my $i = 1;
 				[
 					grep {
 						$i==1 ?
-						(--$i,1):
-						(++$i,0)
+						(--$i, 1) :
+						(++$i, 0)
 					}
 					@{$item[1]}
 				]
@@ -280,44 +290,47 @@ our $Grammar = <<'GRAMMAR_END';
 	variable: identifier '(' identifier_list ')'
 			{
 				warn 'variable '
-					if $Math::Symbolic::Parser::DEBUG;
-				Math::Symbolic::Variable->new({
-					name => $item[1],
-					signature => $item[3],
-				});
+				  if $Math::Symbolic::Parser::DEBUG;
+				Math::Symbolic::Variable->new(
+				  {
+				    name => $item[1],
+				    signature => $item[3],
+				  }
+				);
 			}
 
 		| identifier
 			{
 				warn 'variable '
-					if $Math::Symbolic::Parser::DEBUG;
-				Math::Symbolic::Variable->new({
-					name => $item[1],
-				});
+				  if $Math::Symbolic::Parser::DEBUG;
+				Math::Symbolic::Variable->new(
+				  {
+				    name => $item[1],
+				  }
+				);
 			}
 
 	identifier: /([a-zA-Z][a-zA-Z0-9_]*)/
-		{
-			$item[1]
-		}
+			{
+				$item[1]
+			}
 
 	identifier_list: <leftop:identifier list_op identifier>
 			{
 				warn 'identifier_list '
-					if $Math::Symbolic::Parser::DEBUG;
+				  if $Math::Symbolic::Parser::DEBUG;
 				my $i = 1;
 				[
 					grep {
 						$i==1 ?
-						(--$i,1):
-						(++$i,0)
+						(--$i, 1) :
+						(++$i, 0)
 					}
 					@{$item[1]}
 				]
 			}
 	
 GRAMMAR_END
-
 
 =begin comment
 
@@ -329,63 +342,63 @@ Math::Symbolic trees.
 =cut
 
 sub _leftop_list {
-	my $type = shift;
-	my $item = $_[1];
-	
-	my @ops;
-	if (@$item==1) {
-		return $item->[0];
-	}
-	elsif ($type eq 'exp') {
-		@ops =(['^', shift @$item]);
-	}
-	elsif ($type eq 'multiplication') {
-		@ops = (['*', shift @$item]);
-	}
-	elsif ($type eq 'addition') {
-		@ops = (['+', shift @$item]);
-	}
-	else {
-		die "Invalid operator!";
-	}
-	
-	while (@$item >= 2) {
-		push @ops, [shift @$item, shift @$item];
-	}
-	my %mapper = (
-		'*' => 0,
-		'/' => 1,
-		'+' => 2,
-		'-' => 3,
-		'^' => 4
-	);
-	@ops = sort { $mapper{$a->[0]} <=> $mapper{$b->[0]} } @ops;
-	my $tree;
-	
-	if ($type eq 'exp') {
-		$tree = $ops[0][1];
-		shift @ops;
-	}
-	elsif ($type eq 'multiplication' or $type eq 'addition') {
-		$tree = $ops[0][1];
-		shift @ops;
-	}
+    my $type = shift;
+    my $item = $_[1];
 
-	
-	foreach my $elem (@ops) {
-		my $op = $elem->[0];
-		my $op_type = $Math::Symbolic::Operator::Op_Symbols{
-			$op
-		};
-		die "Invalid operator: '$op'"
-			unless defined $op_type;
-	
-		$tree = Math::Symbolic::Operator->new({
-			type     => $op_type,
-			operands => [$tree, $elem->[1]],
-		});
-	}
-	return $tree;
+    my @ops;
+    if ( @$item == 1 ) {
+        return $item->[0];
+    }
+    elsif ( $type eq 'exp' ) {
+        @ops = ( [ '^', shift @$item ] );
+    }
+    elsif ( $type eq 'multiplication' ) {
+        @ops = ( [ '*', shift @$item ] );
+    }
+    elsif ( $type eq 'addition' ) {
+        @ops = ( [ '+', shift @$item ] );
+    }
+    else {
+        die "Invalid operator!";
+    }
+
+    while ( @$item >= 2 ) {
+        push @ops, [ shift @$item, shift @$item ];
+    }
+    my %mapper = (
+        '*' => 0,
+        '/' => 1,
+        '+' => 2,
+        '-' => 3,
+        '^' => 4
+    );
+    @ops = sort { $mapper{ $a->[0] } <=> $mapper{ $b->[0] } } @ops;
+    my $tree;
+
+    if ( $type eq 'exp' ) {
+        $tree = $ops[0][1];
+        shift @ops;
+    }
+    elsif ( $type eq 'multiplication' or $type eq 'addition' ) {
+        $tree = $ops[0][1];
+        shift @ops;
+    }
+
+    foreach my $elem (@ops) {
+        my $op      = $elem->[0];
+        my $op_type = $Math::Symbolic::Operator::Op_Symbols{$op};
+
+        die "Invalid operator: '$op'"
+          unless defined $op_type;
+
+        $tree = Math::Symbolic::Operator->new(
+            {
+                type     => $op_type,
+                operands => [ $tree, $elem->[1] ],
+            }
+        );
+    }
+    return $tree;
 }
 
 =head2 Constructor new
@@ -397,8 +410,8 @@ trees.
 =cut
 
 sub new {
-	my $parser = new Parse::RecDescent($Grammar);
-	return $parser;
+    my $parser = new Parse::RecDescent($Grammar);
+    return $parser;
 }
 
 1;
@@ -406,11 +419,25 @@ __END__
 
 =head1 AUTHOR
 
-Steffen Mueller, E<lt>symbolic-module at steffen-mueller dot netE<gt>
+Please send feedback, bug reports, and support requests to the Math::Symbolic
+support mailing list:
+math-symbolic-support at lists dot sourceforge dot net. Please
+consider letting us know how you use Math::Symbolic. Thank you.
 
-New versions of this module can be found on http://steffen-mueller.net or CPAN.
+If you're interested in helping with the development or extending the
+module's functionality, please contact the developer's mailing list:
+math-symbolic-develop at lists dot sourceforge dot net.
+
+List of contributors:
+
+  Steffen Müller, symbolic-module at steffen-mueller dot net
+  Stray Toaster, mwk at users dot sourceforge dot net
 
 =head1 SEE ALSO
+
+New versions of this module can be found on
+http://steffen-mueller.net or CPAN. The module development takes place on
+Sourceforge at http://sourceforge.net/projects/math-symbolic/
 
 L<Math::Symbolic>
 

@@ -49,16 +49,20 @@ require Exporter;
 
 our @ISA = qw(Exporter);
 
-our %EXPORT_TAGS = ( 'all' => [ qw(
-	&total_derivative
-	&partial_derivative
-) ] );
+our %EXPORT_TAGS = (
+    'all' => [
+        qw(
+          &total_derivative
+          &partial_derivative
+          )
+    ]
+);
 
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw();
 
-our $VERSION = '0.114';
+our $VERSION = '0.115';
 
 =head1  CLASS DATA
 
@@ -69,24 +73,20 @@ derivative rules as key-value pairs of names and subroutines.
 
 # lookup-table for derivative rules for various operators.
 our %Rules = (
-	'each operand'                      => \&_each_operand,
-	'product rule'                      => \&_product_rule,
-	'quotient rule'                     => \&_quotient_rule,
-	'logarithmic chain rule after ln'   =>
-		\&_logarithmic_chain_rule_after_ln,
-	'logarithmic chain rule'            => \&_logarithmic_chain_rule,
-	'derivative commutation'    =>
-		\&_derivative_commutation,
-	'trigonometric derivatives'         => \&_trigonometric_derivatives,
-	'inverse trigonometric derivatives' =>
-		\&_inverse_trigonometric_derivatives,
+    'each operand'                      => \&_each_operand,
+    'product rule'                      => \&_product_rule,
+    'quotient rule'                     => \&_quotient_rule,
+    'logarithmic chain rule after ln'   => \&_logarithmic_chain_rule_after_ln,
+    'logarithmic chain rule'            => \&_logarithmic_chain_rule,
+    'derivative commutation'            => \&_derivative_commutation,
+    'trigonometric derivatives'         => \&_trigonometric_derivatives,
+    'inverse trigonometric derivatives' => \&_inverse_trigonometric_derivatives,
 );
 
 # References to derivative subroutines
 # Will be assigned a reference after subroutine compilation.
 our $Partial_Sub;
 our $Total_Sub;
-
 
 =begin comment
 
@@ -98,211 +98,157 @@ specific rule to a tree.
 =cut
 
 sub _each_operand {
-	my ($tree, $var, $cloned, $d_sub) = @_;
-	foreach (@{$tree->{operands}}) {
-		$_ = $d_sub->($_, $var, 1);
-	}
-	return $tree;
+    my ( $tree, $var, $cloned, $d_sub ) = @_;
+    foreach ( @{ $tree->{operands} } ) {
+        $_ = $d_sub->( $_, $var, 1 );
+    }
+    return $tree;
 }
-
-
 
 sub _product_rule {
-	my ($tree, $var, $cloned, $d_sub) = @_;
+    my ( $tree, $var, $cloned, $d_sub ) = @_;
 
-	my $ops = $tree->{operands};
-	my $do1 = $d_sub->($ops->[0], $var, 0);
-	my $do2 = $d_sub->($ops->[1], $var, 0);
-	my $m1  = Math::Symbolic::Operator->new(
-		'*', $ops->[0], $do2,
-	);
-	my $m2  = Math::Symbolic::Operator->new(
-		'*', $ops->[1], $do1,
-	);
-	$tree = Math::Symbolic::Operator->new(
-		'+', $m1, $m2,
-	);
-	return $tree;
+    my $ops = $tree->{operands};
+    my $do1 = $d_sub->( $ops->[0], $var, 0 );
+    my $do2 = $d_sub->( $ops->[1], $var, 0 );
+    my $m1  = Math::Symbolic::Operator->new( '*', $ops->[0], $do2 );
+    my $m2  = Math::Symbolic::Operator->new( '*', $ops->[1], $do1 );
+    $tree = Math::Symbolic::Operator->new( '+', $m1, $m2 );
+    return $tree;
 }
-
-
 
 sub _quotient_rule {
-	my ($tree, $var, $cloned, $d_sub) = @_;
-	my $ops = $tree->{operands};
-	my $do1 = $d_sub->($ops->[0], $var, 0);
-	my $do2 = $d_sub->($ops->[1], $var, 0);
-	my $m1  = Math::Symbolic::Operator->new(
-		'*', $do1, $ops->[1],
-	);
-	my $m2  = Math::Symbolic::Operator->new(
-		'*', $ops->[0], $do2,
-	);
-	my $m3  = Math::Symbolic::Operator->new(
-		'*', $ops->[1], $ops->[1],
-	);
-	my $a   = Math::Symbolic::Operator->new(
-		'+', $m1, $m2,
-	);
-	$tree = Math::Symbolic::Operator->new(
-		'/', $a, $m3,
-	);
-	return $tree;
+    my ( $tree, $var, $cloned, $d_sub ) = @_;
+    my $ops = $tree->{operands};
+    my $do1 = $d_sub->( $ops->[0], $var, 0 );
+    my $do2 = $d_sub->( $ops->[1], $var, 0 );
+    my $m1  = Math::Symbolic::Operator->new( '*', $do1, $ops->[1] );
+    my $m2  = Math::Symbolic::Operator->new( '*', $ops->[0], $do2 );
+    my $m3  = Math::Symbolic::Operator->new( '*', $ops->[1], $ops->[1] );
+    my $a   = Math::Symbolic::Operator->new( '+', $m1, $m2 );
+    $tree = Math::Symbolic::Operator->new( '/', $a, $m3 );
+    return $tree;
 }
-
-
 
 sub _logarithmic_chain_rule_after_ln {
-	my ($tree, $var, $cloned, $d_sub) = @_;
-	# y(x)=u^v
-	# y'(x)=y*(d/dx ln(y))
-	# y'(x)=y*(d/dx (v*ln(u)))
-	my $ops = $tree->{operands};
-	my $e   = Math::Symbolic::Constant->euler();
-	my $ln  = Math::Symbolic::Operator->new(
-		'log', $e, $ops->[0],
-	);
-	my $mul1 = $ln->new(
-		'*', $ops->[1], $ln,
-	);
-	my $dmul = $d_sub->($mul1, $var, 0);
-	$tree = $ln->new(
-		'*', $tree, $dmul,
-	);
-	return $tree;
+    my ( $tree, $var, $cloned, $d_sub ) = @_;
+
+    # y(x)=u^v
+    # y'(x)=y*(d/dx ln(y))
+    # y'(x)=y*(d/dx (v*ln(u)))
+    my $ops  = $tree->{operands};
+    my $e    = Math::Symbolic::Constant->euler();
+    my $ln   = Math::Symbolic::Operator->new( 'log', $e, $ops->[0] );
+    my $mul1 = $ln->new( '*', $ops->[1], $ln );
+    my $dmul = $d_sub->( $mul1, $var, 0 );
+    $tree = $ln->new( '*', $tree, $dmul );
+    return $tree;
 }
-
-
 
 sub _logarithmic_chain_rule {
-	my ($tree, $var, $cloned, $d_sub) = @_;
-	#log_a(y(x))=>y'(x)/(ln(a)*y(x))
-	my $ops = $tree->{operands};
-	my $do2 = $d_sub->($ops->[1], $var, 0);
-	my $e   = Math::Symbolic::Constant->euler();
-	my $ln  = Math::Symbolic::Operator->new(
-		'log', $e, $ops->[0],
-	);
-	my $mul1 = $ln->new(
-		'*', $ln, $ops->[1],
-	);
-	$tree = $ln->new(
-		'/', $do2, $mul1,
-	);
-	return $tree;
+    my ( $tree, $var, $cloned, $d_sub ) = @_;
+
+    #log_a(y(x))=>y'(x)/(ln(a)*y(x))
+    my $ops  = $tree->{operands};
+    my $do2  = $d_sub->( $ops->[1], $var, 0 );
+    my $e    = Math::Symbolic::Constant->euler();
+    my $ln   = Math::Symbolic::Operator->new( 'log', $e, $ops->[0] );
+    my $mul1 = $ln->new( '*', $ln, $ops->[1] );
+    $tree = $ln->new( '/', $do2, $mul1 );
+    return $tree;
 }
-
-
 
 sub _derivative_commutation {
-	my ($tree, $var, $cloned, $d_sub) = @_;
-	$tree->{operands}[0] = $d_sub->(
-		$tree->{operands}[0], $var, 0
-	);
-	return $tree;
+    my ( $tree, $var, $cloned, $d_sub ) = @_;
+    $tree->{operands}[0] = $d_sub->( $tree->{operands}[0], $var, 0 );
+    return $tree;
 }
-
-
 
 sub _trigonometric_derivatives {
-	my ($tree, $var, $cloned, $d_sub) = @_;
-	my $op = Math::Symbolic::Operator->new();
-	my $d_inner = $d_sub->($tree->{operands}[0], $var, 0);
-	my $trig;
-	if ($tree->type() == U_SINE) {
-		$trig = $op->new('cos', $tree->{operands}[0]);
-	}
-	elsif ($tree->type() == U_COSINE) {
-		$trig = $op->new('neg', $op->new('sin', $tree->{operands}[0]));
-	}
-	elsif ($tree->type() == U_SINE_H) {
-		$trig = $op->new('cosh', $tree->{operands}[0]);
-	}
-	elsif ($tree->type() == U_COSINE_H) {
-		$trig = $op->new('sinh', $tree->{operands}[0]);
-	}
-	elsif ($tree->type() == U_TANGENT or $tree->type() == U_COTANGENT) {
-		$trig = $op->new(
-				'/', Math::Symbolic::Constant->one(),
-				$op->new('^',
-					$op->new('cos', $tree->op1()),
-					Math::Symbolic::Constant->new(2)
-				)
-			);
-		$trig = $op->new('neg', $trig) if $tree->type() == U_COTANGENT;
-	}		
-	else {
-		die "Trigonometric derivative applied to invalid operator.";
-	}
-	$tree = $op->new('*', $d_inner, $trig);
-	
-	return $tree;
+    my ( $tree, $var, $cloned, $d_sub ) = @_;
+    my $op = Math::Symbolic::Operator->new();
+    my $d_inner = $d_sub->( $tree->{operands}[0], $var, 0 );
+    my $trig;
+    if ( $tree->type() == U_SINE ) {
+        $trig = $op->new( 'cos', $tree->{operands}[0] );
+    }
+    elsif ( $tree->type() == U_COSINE ) {
+        $trig = $op->new( 'neg', $op->new( 'sin', $tree->{operands}[0] ) );
+    }
+    elsif ( $tree->type() == U_SINE_H ) {
+        $trig = $op->new( 'cosh', $tree->{operands}[0] );
+    }
+    elsif ( $tree->type() == U_COSINE_H ) {
+        $trig = $op->new( 'sinh', $tree->{operands}[0] );
+    }
+    elsif ( $tree->type() == U_TANGENT or $tree->type() == U_COTANGENT ) {
+        $trig = $op->new(
+            '/',
+            Math::Symbolic::Constant->one(),
+            $op->new(
+                '^',
+                $op->new( 'cos', $tree->op1() ),
+                Math::Symbolic::Constant->new(2)
+            )
+        );
+        $trig = $op->new( 'neg', $trig ) if $tree->type() == U_COTANGENT;
+    }
+    else {
+        die "Trigonometric derivative applied to invalid operator.";
+    }
+    $tree = $op->new( '*', $d_inner, $trig );
+
+    return $tree;
 }
-
-
 
 sub _inverse_trigonometric_derivatives {
-	my ($tree, $var, $cloned, $d_sub) = @_;
-	my $op = Math::Symbolic::Operator->new();
-	my $d_inner = $d_sub->($tree->{operands}[0], $var, 0);
-	my $trig;
-	if ($tree->type() == U_ARCSINE || $tree->type() == U_ARCCOSINE) {
-		my $one = Math::Symbolic::Constant->one();
-		$trig = $op->new(
-				'/', $one,
-				$op->new(
-					'-', $one,
-					$op->new(
-						'^', $tree->op1(),
-						$one->new(2)
-					)
-				)
-			);
-		if ($tree->type() == U_ARCCOSINE) {
-			$trig = $op->new('neg', $tree)
-		}
-	}
-	elsif ($tree->type() == U_ARCTANGENT or
-	       $tree->type() == U_ARCCOTANGENT) {
-		my $one = Math::Symbolic::Constant->one();
-		$trig = $op->new(
-			'/', $one,
-			$op->new(
-				'+', $one,
-				$op->new(
-					'^', $tree->op1(), $one->new(2)
-				)
-			)
-		);
-		$trig = $op->new('neg', $trig)
-			if $tree->type() == U_ARCCOTANGENT;
-	}
-	elsif ($tree->type() == U_AREASINE_H or
-	       $tree->type() == U_AREACOSINE_H) {
-		my $one = Math::Symbolic::Constant->one();
-		$trig = $op->new(
-			'/', $one,
-			$op->new(
-				'^',
-				$op->new(
-					($tree->type()==U_AREASINE_H?'+':'-'),
-					$op->new(
-						'^', $tree->op1(), $one->new(2)
-					),
-					$one
-				),
-				$one->new(0.5)
-			)
-		);
-	}
-	else {
-		die "Inverse trig. derivative applied to invalid operator.";
-	}
-	$tree = $op->new('*', $d_inner, $trig);
-	
-	return $tree;
-}
+    my ( $tree, $var, $cloned, $d_sub ) = @_;
+    my $op = Math::Symbolic::Operator->new();
+    my $d_inner = $d_sub->( $tree->{operands}[0], $var, 0 );
+    my $trig;
+    if ( $tree->type() == U_ARCSINE || $tree->type() == U_ARCCOSINE ) {
+        my $one = Math::Symbolic::Constant->one();
+        $trig = $op->new( '/', $one,
+            $op->new( '-', $one, $op->new( '^', $tree->op1(), $one->new(2) ) )
+        );
+        if ( $tree->type() == U_ARCCOSINE ) {
+            $trig = $op->new( 'neg', $tree );
+        }
+    }
+    elsif ($tree->type() == U_ARCTANGENT
+        or $tree->type() == U_ARCCOTANGENT )
+    {
+        my $one = Math::Symbolic::Constant->one();
+        $trig = $op->new( '/', $one,
+            $op->new( '+', $one, $op->new( '^', $tree->op1(), $one->new(2) ) )
+        );
+        $trig = $op->new( 'neg', $trig )
+          if $tree->type() == U_ARCCOTANGENT;
+    }
+    elsif ($tree->type() == U_AREASINE_H
+        or $tree->type() == U_AREACOSINE_H )
+    {
+        my $one = Math::Symbolic::Constant->one();
+        $trig = $op->new(
+            '/', $one,
+            $op->new(
+                '^',
+                $op->new(
+                    ( $tree->type() == U_AREASINE_H ? '+' : '-' ),
+                    $op->new( '^', $tree->op1(), $one->new(2) ),
+                    $one
+                ),
+                $one->new(0.5)
+            )
+        );
+    }
+    else {
+        die "Inverse trig. derivative applied to invalid operator.";
+    }
+    $tree = $op->new( '*', $d_inner, $trig );
 
+    return $tree;
+}
 
 =head1 SUBROUTINES
 
@@ -319,58 +265,57 @@ of the Math::Symbolic tree that was passed to the sub as first argument.
 =cut
 
 sub partial_derivative {
-	my $tree   = shift;
-	my $var    = shift;
-	defined $var or die "Cannot derive using undefined variable.";
-	if (ref($var) eq '') {
-		$var = Math::Symbolic::parse_from_string($var);
-		croak "2nd argument to partial_derivative must be variable."
-		  if (ref($var) ne 'Math::Symbolic::Variable');
-	}
-	elsif (ref($var) eq 'Math::Symbolic::Variable') {
-	}
-	else {
-		croak "2nd argument to partial_derivative must be variable."
-		  if (ref($var) ne 'Math::Symbolic::Variable');
-	}
+    my $tree = shift;
+    my $var  = shift;
+    defined $var or die "Cannot derive using undefined variable.";
+    if ( ref($var) eq '' ) {
+        $var = Math::Symbolic::parse_from_string($var);
+        croak "2nd argument to partial_derivative must be variable."
+          if ( ref($var) ne 'Math::Symbolic::Variable' );
+    }
+    elsif ( ref($var) eq 'Math::Symbolic::Variable' ) {
 
-	my $cloned = shift;
-	
-	if (not $cloned) {
-		$tree = $tree->new();
-		$cloned = 1;
-	}
-	
-	if ($tree->term_type() == T_OPERATOR) {
-		my $rulename = $Math::Symbolic::Operator::Op_Types[
-					$tree->type()
-				]->{derive};
-		my $subref = $Rules{$rulename};
+        # !!!FIXME!!! is this needed?
+    }
+    else {
+        croak "2nd argument to partial_derivative must be variable."
+          if ( ref($var) ne 'Math::Symbolic::Variable' );
+    }
 
-		die "Cannot derive using rule '$rulename'."
-		   unless defined $subref;
-		$tree = $subref->($tree, $var, $cloned, $Partial_Sub);
-		
-	}
-	elsif ($tree->term_type() == T_CONSTANT) {
-		$tree = Math::Symbolic::Constant->zero();
-	}
-	elsif ($tree->term_type() == T_VARIABLE) {
-		if ($tree->name() eq $var->name()) {
-			$tree = Math::Symbolic::Constant->one;
-		}
-		else {
-			$tree = Math::Symbolic::Constant->zero;
-		}
-	}
-	else {
-		die "Cannot apply partial derivative to anything but a tree.";
-	}
+    my $cloned = shift;
 
-	return $tree;
+    if ( not $cloned ) {
+        $tree   = $tree->new();
+        $cloned = 1;
+    }
+
+    if ( $tree->term_type() == T_OPERATOR ) {
+        my $rulename =
+          $Math::Symbolic::Operator::Op_Types[ $tree->type() ]->{derive};
+        my $subref = $Rules{$rulename};
+
+        die "Cannot derive using rule '$rulename'."
+          unless defined $subref;
+        $tree = $subref->( $tree, $var, $cloned, $Partial_Sub );
+
+    }
+    elsif ( $tree->term_type() == T_CONSTANT ) {
+        $tree = Math::Symbolic::Constant->zero();
+    }
+    elsif ( $tree->term_type() == T_VARIABLE ) {
+        if ( $tree->name() eq $var->name() ) {
+            $tree = Math::Symbolic::Constant->one;
+        }
+        else {
+            $tree = Math::Symbolic::Constant->zero;
+        }
+    }
+    else {
+        die "Cannot apply partial derivative to anything but a tree.";
+    }
+
+    return $tree;
 }
-
-
 
 =head2 total_derivative
 
@@ -383,97 +328,110 @@ of the Math::Symbolic tree that was passed to the sub as first argument.
 =cut
 
 sub total_derivative {
-	my $tree   = shift;
-	my $var    = shift;
-	defined $var or die "Cannot derive using undefined variable.";
-	if (ref($var) eq '') {
-		$var = Math::Symbolic::parse_from_string($var);
-		croak "Second argument to total_derivative must be variable."
-		  if (ref($var) ne 'Math::Symbolic::Variable');
-	}
-	elsif (ref($var) eq 'Math::Symbolic::Variable') {
-	}
-	else {
-		croak "Second argument to total_derivative must be variable."
-		  if (ref($var) ne 'Math::Symbolic::Variable');
-	}
+    my $tree = shift;
+    my $var  = shift;
+    defined $var or die "Cannot derive using undefined variable.";
+    if ( ref($var) eq '' ) {
+        $var = Math::Symbolic::parse_from_string($var);
+        croak "Second argument to total_derivative must be variable."
+          if ( ref($var) ne 'Math::Symbolic::Variable' );
+    }
+    elsif ( ref($var) eq 'Math::Symbolic::Variable' ) {
 
-	my $cloned = shift;
-	
-	if (not $cloned) {
-		$tree = $tree->new();
-		$cloned = 1;
-	}
-	
-	if ($tree->term_type() == T_OPERATOR) {
-		my $var_name = $var->name();
-		my @tree_sig = $tree->signature();
-		if ((grep {$_ eq $var_name} @tree_sig) > 0) {
-			my $rulename = $Math::Symbolic::Operator::Op_Types[
-						$tree->type()
-					]->{derive};
-			my $subref = $Rules{$rulename};
-		
-			die "Cannot derive using rule '$rulename'."
-			   unless defined $subref;
-			$tree = $subref->($tree, $var, $cloned, $Total_Sub);
-		}
-		else {
-			$tree = Math::Symbolic::Constant->zero();
-		}
-	}
-	elsif ($tree->term_type() == T_CONSTANT) {
-		$tree = Math::Symbolic::Constant->zero();
-	}
-	elsif ($tree->term_type() == T_VARIABLE) {
-		my $name = $tree->name();
-		my $var_name = $var->name();
+        # !!!FIXME!!! Is this needed?
+    }
+    else {
+        croak "Second argument to total_derivative must be variable."
+          if ( ref($var) ne 'Math::Symbolic::Variable' );
+    }
 
-		if ($name eq $var_name) {
-			$tree = Math::Symbolic::Constant->one;
-		}
-		else {
-			my @tree_sig = $tree->signature();
-			my $is_dependent;
-			foreach my $ident (@tree_sig) {
-				if ($ident eq $var_name) {
-					$is_dependent = 1;
-					last;
-				}
-			}
-			if (not $is_dependent) {
-				$tree = Math::Symbolic::Constant->zero;
-			}
-			else {
-				$tree = Math::Symbolic::Operator->new(
-					'total_derivative', $tree, $var
-				);
-			}
-		}
-	}
-	else {
-		die "Cannot apply total derivative to anything but a tree.";
-	}
+    my $cloned = shift;
 
-	return $tree;
+    if ( not $cloned ) {
+        $tree   = $tree->new();
+        $cloned = 1;
+    }
+
+    if ( $tree->term_type() == T_OPERATOR ) {
+        my $var_name = $var->name();
+        my @tree_sig = $tree->signature();
+        if ( ( grep { $_ eq $var_name } @tree_sig ) > 0 ) {
+            my $rulename =
+              $Math::Symbolic::Operator::Op_Types[ $tree->type() ]->{derive};
+            my $subref = $Rules{$rulename};
+
+            die "Cannot derive using rule '$rulename'."
+              unless defined $subref;
+            $tree = $subref->( $tree, $var, $cloned, $Total_Sub );
+        }
+        else {
+            $tree = Math::Symbolic::Constant->zero();
+        }
+    }
+    elsif ( $tree->term_type() == T_CONSTANT ) {
+        $tree = Math::Symbolic::Constant->zero();
+    }
+    elsif ( $tree->term_type() == T_VARIABLE ) {
+        my $name     = $tree->name();
+        my $var_name = $var->name();
+
+        if ( $name eq $var_name ) {
+            $tree = Math::Symbolic::Constant->one;
+        }
+        else {
+            my @tree_sig = $tree->signature();
+            my $is_dependent;
+            foreach my $ident (@tree_sig) {
+                if ( $ident eq $var_name ) {
+                    $is_dependent = 1;
+                    last;
+                }
+            }
+            if ( not $is_dependent ) {
+                $tree = Math::Symbolic::Constant->zero;
+            }
+            else {
+                $tree =
+                  Math::Symbolic::Operator->new( 'total_derivative', $tree,
+                    $var );
+            }
+        }
+    }
+    else {
+        die "Cannot apply total derivative to anything but a tree.";
+    }
+
+    return $tree;
 }
-
 
 # Class data again.
 $Partial_Sub = \&partial_derivative;
 $Total_Sub   = \&total_derivative;
-
 
 1;
 __END__
 
 =head1 AUTHOR
 
-Steffen Mueller, E<lt>symbolic-module at steffen-mueller dot netE<gt>
+Please send feedback, bug reports, and support requests to the Math::Symbolic
+support mailing list:
+math-symbolic-support at lists dot sourceforge dot net. Please
+consider letting us know how you use Math::Symbolic. Thank you.
 
-New versions of this module can be found on http://steffen-mueller.net or CPAN.
+If you're interested in helping with the development or extending the
+module's functionality, please contact the developer's mailing list:
+math-symbolic-develop at lists dot sourceforge dot net.
+
+List of contributors:
+
+  Steffen Müller, symbolic-module at steffen-mueller dot net
+  Stray Toaster, mwk at users dot sourceforge dot net
 
 =head1 SEE ALSO
+
+New versions of this module can be found on
+http://steffen-mueller.net or CPAN. The module development takes place on
+Sourceforge at http://sourceforge.net/projects/math-symbolic/
 
 L<Math::Symbolic>
 

@@ -8,13 +8,12 @@ use Data::Dumper;
 use Math::Symbolic qw/:all/;
 
 my $var = Math::Symbolic::Variable->new();
-my $a = $var->new('x' => 2);
+my $a   = $var->new( 'x' => 2 );
 
-print "Vars: x=" . $a->value() .
-           " (Value is optional)\n\n";
+print "Vars: x=" . $a->value() . " (Value is optional)\n\n";
 
-my $op   = Math::Symbolic::Operator->new();
-my $umi = $op->new({type=>U_MINUS, operands => [$a]});
+my $op  = Math::Symbolic::Operator->new();
+my $umi = $op->new( { type => U_MINUS, operands => [$a] } );
 
 print "Expression: -x\n\n";
 
@@ -23,4 +22,5 @@ print $umi->to_string('prefix') . "\n\n";
 
 print "infix notation:\n";
 print $umi->to_string('infix') . "\n\n";
+
 

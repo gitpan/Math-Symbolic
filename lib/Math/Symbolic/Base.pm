@@ -1,3 +1,4 @@
+
 =head1 NAME
 
 Math::Symbolic::Base - Base class for symbols in symbolic calculations
@@ -27,30 +28,28 @@ use warnings;
 use Carp;
 
 use overload
-	"+"    => \&_overload_addition,
-	"-"    => \&_overload_subtraction,
-	"*"    => \&_overload_multiplication,
-	"/"    => \&_overload_division,
-	"**"   => \&_overload_exponentiation,
-	"sqrt" => \&_overload_sqrt,
-	"log"  => \&_overload_log,
-	"exp"  => \&_overload_exp,
-	"sin"  => \&_overload_sin,
-	"cos"  => \&_overload_cos,
-	'""'   => sub{ $_[0]->to_string() },
-	"0+"   => sub { $_[0]->value() },
-	"bool" => sub { $_[0]->value() };
+  "+"    => \&_overload_addition,
+  "-"    => \&_overload_subtraction,
+  "*"    => \&_overload_multiplication,
+  "/"    => \&_overload_division,
+  "**"   => \&_overload_exponentiation,
+  "sqrt" => \&_overload_sqrt,
+  "log"  => \&_overload_log,
+  "exp"  => \&_overload_exp,
+  "sin"  => \&_overload_sin,
+  "cos"  => \&_overload_cos,
+  '""'   => sub { $_[0]->to_string() },
+  "0+"   => sub { $_[0]->value() },
+  "bool" => sub { $_[0]->value() };
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.114';
+our $VERSION = '0.115';
 our $AUTOLOAD;
 
 =head1 METHODS
 
 =cut
-
-
 
 =head2 Method to_string
 
@@ -59,11 +58,9 @@ Default method for stringification just returns the object's value.
 =cut
 
 sub to_string {
-	my $self = shift;
-	return $self->value();
+    my $self = shift;
+    return $self->value();
 }
-
-
 
 =head2 Method value
 
@@ -85,10 +82,8 @@ any occurrances of variables of the name "x", aso.
 =cut
 
 sub value {
-	croak "This is a method stub from Math::Symbolic::Base. Implement me.";
+    croak "This is a method stub from Math::Symbolic::Base. Implement me.";
 }
-
-
 
 =head2 Method signature
 
@@ -114,12 +109,10 @@ have the signature ('acceleration', 'force1', 'force2',..., 'mass', 'time').
 =cut
 
 sub signature {
-	my $self = shift;
-	my $sig = $self->{signature} || [];
-	return sort @$sig;
+    my $self = shift;
+    my $sig = $self->{signature} || [];
+    return sort @$sig;
 }
-
-
 
 =head2 Method set_signature
 
@@ -129,11 +122,8 @@ It sets a variable's signature to this list of identifiers.
 =cut
 
 sub set_signature {
-	croak
-	"Cannot set signature of non-Variable Math::Symbolic tree element.";
+    croak "Cannot set signature of non-Variable Math::Symbolic tree element.";
 }
-
-
 
 =head2 Method implement
 
@@ -146,42 +136,36 @@ of the variables will be replaced with their implementation.
 =cut
 
 sub implement {
-	my $self = shift;
-	my %args = @_;
+    my $self = shift;
+    my %args = @_;
 
-	return $self->descend(
-		in_place => 1,
-		after => sub {
-			my $tree = shift;
-			my $ttype = $tree->term_type();
-			if ($ttype == T_VARIABLE) {
-				my $name = $tree->name();
-				if (
-					exists $args{$name} and
-					defined $args{$name}
-				) {
-					$args{$name} =
-					Math::Symbolic::parse_from_string(
-						$args{$name}
-					)
-					  unless ref($args{$name});
-					$tree->replace($args{$name});
-				}
-			}
-			elsif ($ttype == T_OPERATOR or $ttype == T_CONSTANT) {
-			}
-			else {
-				croak "'implement' called on invalid term " .
-					"type.";
-			}
-		},
-		operand_finder => sub {
-			return $_[0]->descending_operands('all_vars')
-		},
-	);
+    return $self->descend(
+        in_place => 1,
+        after    => sub {
+            my $tree  = shift;
+            my $ttype = $tree->term_type();
+            if ( $ttype == T_VARIABLE ) {
+                my $name = $tree->name();
+                if ( exists $args{$name}
+                    and defined $args{$name} )
+                {
+                    $args{$name} =
+                      Math::Symbolic::parse_from_string( $args{$name} )
+                      unless ref( $args{$name} );
+                    $tree->replace( $args{$name} );
+                }
+            }
+            elsif ( $ttype == T_OPERATOR or $ttype == T_CONSTANT ) {
+            }
+            else {
+                croak "'implement' called on invalid term " . "type.";
+            }
+        },
+        operand_finder => sub {
+            return $_[0]->descending_operands('all_vars');
+        },
+    );
 }
-
-
 
 =head2 Method replace
 
@@ -194,14 +178,12 @@ object reference. This destroys the object it is called on.
 =cut
 
 sub replace {
-	my $tree = shift;
-	my $new = shift;
-	%$tree = %$new;
-	bless $tree => ref $new;
-	return $tree;
+    my $tree = shift;
+    my $new  = shift;
+    %$tree = %$new;
+    bless $tree => ref $new;
+    return $tree;
 }
-
-
 
 =head2 Method simplify
 
@@ -210,11 +192,9 @@ Minimum method for term simpilification just clones.
 =cut
 
 sub simplify {
-	my $self = shift;
-	return $self->new();
+    my $self = shift;
+    return $self->new();
 }
-
-
 
 =head2 Method descending_operands
 
@@ -239,41 +219,38 @@ the following key-words, behaviour is modified accordingly:
 =cut
 
 sub descending_operands {
-	my $tree = shift;
-	my $ttype = $tree->term_type();
+    my $tree  = shift;
+    my $ttype = $tree->term_type();
 
-	if ($ttype == T_CONSTANT or $ttype == T_VARIABLE) {
-		return();
-	}
-	elsif ($ttype == T_OPERATOR) {
-		my $action = shift || 'default';
-		my $type = $tree->type();
+    if ( $ttype == T_CONSTANT or $ttype == T_VARIABLE ) {
+        return ();
+    }
+    elsif ( $ttype == T_OPERATOR ) {
+        my $action = shift || 'default';
+        my $type   = $tree->type();
 
-		if ($action eq 'all') {
-			return @{$tree->{operands}};
-		}
-		elsif ($action eq 'all_vars') {
-			return @{$tree->{operands}};
-		}
-		else { # default
-			if (
-				$type == U_P_DERIVATIVE or
-				$type == U_T_DERIVATIVE
-			) {
-				return $tree->{operands}[0];
-			}
-			else {
-				return @{$tree->{operands}};
-			}
-		}
-	}
-	else {
-		croak "'descending_operands' called on invalid term type.";
-	}
-	die "Sanity check in 'descending_operands'. Should not be reached.";
+        if ( $action eq 'all' ) {
+            return @{ $tree->{operands} };
+        }
+        elsif ( $action eq 'all_vars' ) {
+            return @{ $tree->{operands} };
+        }
+        else {    # default
+            if (   $type == U_P_DERIVATIVE
+                or $type == U_T_DERIVATIVE )
+            {
+                return $tree->{operands}[0];
+            }
+            else {
+                return @{ $tree->{operands} };
+            }
+        }
+    }
+    else {
+        croak "'descending_operands' called on invalid term type.";
+    }
+    die "Sanity check in 'descending_operands'. Should not be reached.";
 }
-
-
 
 =head2 Method descend
 
@@ -395,116 +372,115 @@ node to determine the operands to descend into.
 =cut
 
 sub descend {
-	my ($tree, %args) = @_;
-	$tree = $tree->new() unless exists $args{in_place} and $args{in_place};
-	
-	my @opt;
+    my ( $tree, %args ) = @_;
+    $tree = $tree->new()
+      unless exists $args{in_place}
+      and $args{in_place};
 
-	# Will be used at several locations inside this routine.
-	my $operand_finder = sub {
-		if (exists $args{operand_finder}) {
-			my $op_f = $args{operand_finder};
-			return $tree->$op_f() if not ref $op_f;
-			croak "Invalid 'operand_finder' option passed to " . 
-			  "descend() routine."
-			    if not ref($op_f) eq 'CODE';
-			return $op_f->($tree);
-		}
-		else {
-			return $tree->descending_operands();
-		}
-	};
-	
-	if (exists $args{before}) {
-		croak "'before' parameter to descend() must be code reference."
-		   unless ref($args{before}) eq 'CODE';
-		@opt = $args{before}->($tree);
-	}
-	if (exists $args{after} and ref($args{after}) ne 'CODE') {
-		croak "'after' parameter to descend() must be code reference.";
-	}
-	
-	my $has_control = (@opt == 1 && ref($opt[0]) eq 'HASH' ? 1 : 0);
-	
-	my $ttype = $tree->term_type();
-	# Do nothing!
-	if ($ttype != T_OPERATOR) {}
-	
-	# Fine control!
-	elsif ($has_control) {
-		my $opt = $opt[0];
-		my %new_args = %args;
-		$new_args{in_place} = $opt->{in_place}
-		   if exists $opt->{in_place};
-		
-		if (exists $opt->{operands}) {
-			croak "'operands' return value of 'begin' callback\n" .
-				"in descend() must be array reference."
-				unless ref($opt->{operands}) eq 'ARRAY';
-			
-			$tree->{operands} = $opt->{operands};
-		}
-		
-		if (exists $opt->{descend_into}) {
-			croak "'descend_into' return value of 'begin'\n" .
-				"callback in descend() must be array reference."
-				unless ref($opt->{descend_into}) eq 'ARRAY';
+    my @opt;
 
-			$opt->{descend_into} = [$operand_finder->()]
-			  if @{$opt->{descend_into}} == 0;
+    # Will be used at several locations inside this routine.
+    my $operand_finder = sub {
+        if ( exists $args{operand_finder} ) {
+            my $op_f = $args{operand_finder};
+            return $tree->$op_f() if not ref $op_f;
+            croak "Invalid 'operand_finder' option passed to "
+              . "descend() routine."
+              if not ref($op_f) eq 'CODE';
+            return $op_f->($tree);
+        }
+        else {
+            return $tree->descending_operands();
+        }
+    };
 
-			foreach (@{$opt->{descend_into}}) {
-				if (ref $_) {
-					$_->replace($_->descend(%new_args));
-				}
-				else {
-					$tree->{operands}[$_] =
-						$tree->{operands}[$_]
-							->descend(%new_args);
-				}
-			}
-		}
-	}
-	
-	# descend into all operands.
-	elsif (@opt == 0) {
-		foreach ($operand_finder->()) {
-			$_->replace($_->descend(%args));
-		}
-	}
-	
-	# Do nothing.
-	elsif (@opt == 1 and not defined($opt[0])) {}
-	
-	# Descend into indexed operands
-	elsif (@opt >= 1 and not grep {$_ !~ /^[+-]?\d+$/} @opt) {
-		foreach (@opt) {
-			$tree->{operands}[$_] =
-				$tree->{operands}[$_]->descend(%args);
-		}
-	}
-	
-	# Error!
-	else {
-		croak "Invalid return list from descend() 'before' callback.";
-	}
-	
-	# skip the after callback?
-	if (
-		exists $args{after} and
-		!$has_control ||
-			!(
-				exists $opt[0]{skip_after} and
-				$opt[0]{skip_after}
-			)
-	) {
-		$args{after}->($tree);
-	}
+    if ( exists $args{before} ) {
+        croak "'before' parameter to descend() must be code reference."
+          unless ref( $args{before} ) eq 'CODE';
+        @opt = $args{before}->($tree);
+    }
+    if ( exists $args{after} and ref( $args{after} ) ne 'CODE' ) {
+        croak "'after' parameter to descend() must be code reference.";
+    }
 
-	return $tree;
+    my $has_control = ( @opt == 1 && ref( $opt[0] ) eq 'HASH' ? 1 : 0 );
+
+    my $ttype = $tree->term_type();
+
+    # Do nothing!
+    if ( $ttype != T_OPERATOR ) { }
+
+    # Fine control!
+    elsif ($has_control) {
+        my $opt      = $opt[0];
+        my %new_args = %args;
+        $new_args{in_place} = $opt->{in_place}
+          if exists $opt->{in_place};
+
+        if ( exists $opt->{operands} ) {
+            croak "'operands' return value of 'begin' callback\n"
+              . "in descend() must be array reference."
+              unless ref( $opt->{operands} ) eq 'ARRAY';
+
+            $tree->{operands} = $opt->{operands};
+        }
+
+        if ( exists $opt->{descend_into} ) {
+            croak "'descend_into' return value of 'begin'\n"
+              . "callback in descend() must be array reference."
+              unless ref( $opt->{descend_into} ) eq 'ARRAY';
+
+            $opt->{descend_into} = [ $operand_finder->() ]
+              if @{ $opt->{descend_into} } == 0;
+
+            foreach ( @{ $opt->{descend_into} } ) {
+                if ( ref $_ ) {
+                    $_->replace( $_->descend(%new_args) );
+                }
+                else {
+                    $tree->{operands}[$_] =
+                      $tree->{operands}[$_]->descend(%new_args);
+                }
+            }
+        }
+    }
+
+    # descend into all operands.
+    elsif ( @opt == 0 ) {
+        foreach ( $operand_finder->() ) {
+            $_->replace( $_->descend(%args) );
+        }
+    }
+
+    # Do nothing.
+    elsif ( @opt == 1 and not defined( $opt[0] ) ) {
+    }
+
+    # Descend into indexed operands
+    elsif ( @opt >= 1 and not grep { $_ !~ /^[+-]?\d+$/ } @opt ) {
+        foreach (@opt) {
+            $tree->{operands}[$_] = $tree->{operands}[$_]->descend(%args);
+        }
+    }
+
+    # Error!
+    else {
+        croak "Invalid return list from descend() 'before' callback.";
+    }
+
+    # skip the after callback?
+    if (
+        exists $args{after}
+        and not($has_control
+            and exists $opt[0]{skip_after}
+            and $opt[0]{skip_after} )
+      )
+    {
+        $args{after}->($tree);
+    }
+
+    return $tree;
 }
-
-
 
 =head2 Method term_type
 
@@ -513,10 +489,8 @@ Returns the type of the term. This is a stub to be overridden.
 =cut
 
 sub term_type {
-	croak "term_type not defined for " . __PACKAGE__;
+    croak "term_type not defined for " . __PACKAGE__;
 }
-
-
 
 =head2 Method set_value
 
@@ -540,39 +514,35 @@ argument, but only if there is only one argument.
 =cut
 
 sub set_value {
-	my ($self, %args) = @_;
+    my ( $self, %args ) = @_;
 
-	my $ttype = $self->term_type();
-	if ($ttype == T_CONSTANT) {
-		return $self unless @_ == 2;
-		my $value = $_[1];
-		$self->{value} = $value if defined $value;
-		return $self;
-	}
-	
-	$self->descend(
-		in_place => 1,
-		after => sub {
-			my $tree = shift;
-			my $ttype = $tree->term_type();
-			if ($ttype == T_OPERATOR or $ttype == T_CONSTANT) {
-			}
-			elsif ($ttype == T_VARIABLE) {
-				if (exists $args{$tree->{name}}) {
-					$tree->{value} = $args{$tree->{name}};
-				}
-			}
-			else {
-				croak "'set_value' called on invalid term " .
-					"type.";
-			}
-		},
-	);
+    my $ttype = $self->term_type();
+    if ( $ttype == T_CONSTANT ) {
+        return $self unless @_ == 2;
+        my $value = $_[1];
+        $self->{value} = $value if defined $value;
+        return $self;
+    }
 
-	return $self;
+    $self->descend(
+        in_place => 1,
+        after    => sub {
+            my $tree  = shift;
+            my $ttype = $tree->term_type();
+            if ( $ttype == T_OPERATOR or $ttype == T_CONSTANT ) {
+            }
+            elsif ( $ttype == T_VARIABLE ) {
+                $tree->{value} = $args{ $tree->{name} }
+                  if exists $args{ $tree->{name} };
+            }
+            else {
+                croak "'set_value' called on invalid term " . "type.";
+            }
+        },
+    );
+
+    return $self;
 }
-
-
 
 =begin comment
 
@@ -585,114 +555,106 @@ Math::Symbolic man page.
 =cut
 
 sub _overload_make_object {
-	my $operand = shift;
-	unless (ref($operand) =~ /^Math::Symbolic/) {
-		if ($operand =~ /\D/) {
-			$operand = Math::Symbolic::parse_from_string($operand);
-		}
-		else {
-			$operand = Math::Symbolic::Constant->new($operand);
-		}
-	}
-	return $operand;
+    my $operand = shift;
+    unless ( ref($operand) =~ /^Math::Symbolic/ ) {
+        if ( $operand =~ /\D/ ) {
+            $operand = Math::Symbolic::parse_from_string($operand);
+        }
+        else {
+            $operand = Math::Symbolic::Constant->new($operand);
+        }
+    }
+    return $operand;
 }
-
 
 sub _overload_addition {
-	my ($obj, $operand, $reverse) = @_;
-	$operand = _overload_make_object($operand);
-	($obj, $operand) = ($operand, $obj) if $reverse;
-	my $n_obj = Math::Symbolic::Operator->new('+', $obj, $operand);
-	return $n_obj;
+    my ( $obj, $operand, $reverse ) = @_;
+    $operand = _overload_make_object($operand);
+    ( $obj, $operand ) = ( $operand, $obj ) if $reverse;
+    my $n_obj = Math::Symbolic::Operator->new( '+', $obj, $operand );
+    return $n_obj;
 }
-
 
 sub _overload_subtraction {
-	my ($obj, $operand, $reverse) = @_;
-	$operand = _overload_make_object($operand);
-	($obj, $operand) = ($operand, $obj) if $reverse;
-	my $n_obj = Math::Symbolic::Operator->new('-', $obj, $operand);
-	return $n_obj;
+    my ( $obj, $operand, $reverse ) = @_;
+    $operand = _overload_make_object($operand);
+    ( $obj, $operand ) = ( $operand, $obj ) if $reverse;
+    my $n_obj = Math::Symbolic::Operator->new( '-', $obj, $operand );
+    return $n_obj;
 }
-
 
 sub _overload_multiplication {
-	my ($obj, $operand, $reverse) = @_;
-	$operand = _overload_make_object($operand);
-	($obj, $operand) = ($operand, $obj) if $reverse;
-	my $n_obj = Math::Symbolic::Operator->new('*', $obj, $operand);
-	return $n_obj;
+    my ( $obj, $operand, $reverse ) = @_;
+    $operand = _overload_make_object($operand);
+    ( $obj, $operand ) = ( $operand, $obj ) if $reverse;
+    my $n_obj = Math::Symbolic::Operator->new( '*', $obj, $operand );
+    return $n_obj;
 }
-
 
 sub _overload_division {
-	my ($obj, $operand, $reverse) = @_;
-	$operand = _overload_make_object($operand);
-	($obj, $operand) = ($operand, $obj) if $reverse;
-	my $n_obj = Math::Symbolic::Operator->new('/', $obj, $operand);
-	return $n_obj;
+    my ( $obj, $operand, $reverse ) = @_;
+    $operand = _overload_make_object($operand);
+    ( $obj, $operand ) = ( $operand, $obj ) if $reverse;
+    my $n_obj = Math::Symbolic::Operator->new( '/', $obj, $operand );
+    return $n_obj;
 }
-
 
 sub _overload_exponentiation {
-	my ($obj, $operand, $reverse) = @_;
-	$operand = _overload_make_object($operand);
-	($obj, $operand) = ($operand, $obj) if $reverse;
-	my $n_obj = Math::Symbolic::Operator->new('^', $obj, $operand);
-	return $n_obj;
+    my ( $obj, $operand, $reverse ) = @_;
+    $operand = _overload_make_object($operand);
+    ( $obj, $operand ) = ( $operand, $obj ) if $reverse;
+    my $n_obj = Math::Symbolic::Operator->new( '^', $obj, $operand );
+    return $n_obj;
 }
-
 
 sub _overload_sqrt {
-	my ($obj, undef, $reverse) = @_;
-	my $n_obj = Math::Symbolic::Operator->new(
-		'^', $obj, Math::Symbolic::Constant->new(0.5),
-	);
-	return $n_obj;
+    my ( $obj, undef, $reverse ) = @_;
+    my $n_obj =
+      Math::Symbolic::Operator->new( '^', $obj,
+        Math::Symbolic::Constant->new(0.5) );
+    return $n_obj;
 }
-
 
 sub _overload_exp {
-	my ($obj, undef, $reverse) = @_;
-	my $n_obj = Math::Symbolic::Operator->new(
-		'^', Math::Symbolic::Constant->euler(), $obj,
-	);
-	return $n_obj;
+    my ( $obj, undef, $reverse ) = @_;
+    my $n_obj =
+      Math::Symbolic::Operator->new( '^', Math::Symbolic::Constant->euler(),
+        $obj, );
+    return $n_obj;
 }
-
 
 sub _overload_log {
-	my ($obj, undef, $reverse) = @_;
-	my $n_obj = Math::Symbolic::Operator->new(
-		'log', Math::Symbolic::Constant->euler(), $obj,
-	);
-	return $n_obj;
+    my ( $obj, undef, $reverse ) = @_;
+    my $n_obj =
+      Math::Symbolic::Operator->new( 'log', Math::Symbolic::Constant->euler(),
+        $obj, );
+    return $n_obj;
 }
-
 
 sub _overload_sin {
-	my ($obj, undef, $reverse) = @_;
-	my $n_obj = Math::Symbolic::Operator->new('sin', $obj);
-	return $n_obj;
+    my ( $obj, undef, $reverse ) = @_;
+    my $n_obj = Math::Symbolic::Operator->new( 'sin', $obj );
+    return $n_obj;
 }
-
 
 sub _overload_cos {
-	my ($obj, undef, $reverse) = @_;
-	my $n_obj = Math::Symbolic::Operator->new('cos', $obj);
-	return $n_obj;
+    my ( $obj, undef, $reverse ) = @_;
+    my $n_obj = Math::Symbolic::Operator->new( 'cos', $obj );
+    return $n_obj;
 }
-
 
 =begin comment
 
 The following AUTOLOAD mechanism delegates all method calls that aren't found
 in the normal Math::Symbolic inheritance tree and that start with
-'is_', 'test_', 'apply_', or 'mod_' to the Math::Symbolic::Custom class.
+'is_', 'test_', 'contains_', 'apply_', or 'mod_' to the
+Math::Symbolic::Custom class.
 
 The 'is_' and 'test_' "namespaces" are intended for methods that test a
 tree on whether or not it has certain characteristics that define a group.
 Eg.: 'is_polynomial'
+
+The 'contains_' prefix is intended for tests as well.
 
 The 'apply_' and 'mod_' prefixes are intended for modifications to the tree
 itself. Eg.: 'apply_derivatives'
@@ -701,43 +663,69 @@ itself. Eg.: 'apply_derivatives'
 
 =cut
 
-
 sub AUTOLOAD {
-	my $call = $AUTOLOAD;
-	$call =~ s/.*\:\:(\w+)$/$1/;
-	study $call;
-	if (
-		$call =~ /^((?:apply|mod|is|test|contains)_\w+)/
-	) {
-		my $method = $1;
-		my $ref = Math::Symbolic::Custom->can($method);
-		if (defined $ref) {
-			goto &$ref;
-		}
-		else {
-			croak "Invalid method called on Math::Symbolic " .
-				"tree: '$call'.";
-		}
-	}
-	else {
-		croak "Invalid method called on Math::Symbolic tree: '$call'.";
-	}
+    my $call = $AUTOLOAD;
+    $call =~ s/.*\:\:(\w+)$/$1/;
+    if ( $call =~ /^((?:apply|mod|is|test|contains)_\w+)/ ) {
+        my $method = $1;
+        my $ref    = Math::Symbolic::Custom->can($method);
+        if ( defined $ref ) {
+            goto &$ref;
+        }
+        else {
+            croak "Invalid method called on Math::Symbolic " . "tree: '$call'.";
+        }
+    }
+    else {
+        croak "Invalid method called on Math::Symbolic tree: '$call'.";
+    }
 }
 
-# to make AUTOLOAD happy:
+=begin comment
 
-sub DESTROY {}
+We override the UNIVERSAL::can routine to reflect method delegations.
+
+=end comment
+
+=cut
+
+sub can {
+    my $obj    = shift;
+    my $method = shift;
+
+    my $sub = $obj->SUPER::can($method);
+    return $sub if defined $sub;
+
+    return Math::Symbolic::Custom->can($method);
+}
+
+# to make AUTOLOAD happy: (because it would otherwise try to delegate DESTROY)
+sub DESTROY { }
 
 1;
 __END__
 
 =head1 AUTHOR
 
-Steffen Mueller, E<lt>symbolic-module at steffen-mueller dot netE<gt>
+Please send feedback, bug reports, and support requests to the Math::Symbolic
+support mailing list:
+math-symbolic-support at lists dot sourceforge dot net. Please
+consider letting us know how you use Math::Symbolic. Thank you.
 
-New versions of this module can be found on http://steffen-mueller.net or CPAN.
+If you're interested in helping with the development or extending the
+module's functionality, please contact the developer's mailing list:
+math-symbolic-develop at lists dot sourceforge dot net.
+
+List of contributors:
+
+  Steffen Müller, symbolic-module at steffen-mueller dot net
+  Stray Toaster, mwk at users dot sourceforge dot net
 
 =head1 SEE ALSO
+
+New versions of this module can be found on
+http://steffen-mueller.net or CPAN. The module development takes place on
+Sourceforge at http://sourceforge.net/projects/math-symbolic/
 
 L<Math::Symbolic>
 

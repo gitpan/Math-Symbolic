@@ -1,3 +1,4 @@
+
 =head1 NAME
 
 Math::Symbolic::Custom - Aggregate class for tree tests and transformations
@@ -25,7 +26,7 @@ Math::Symbolic::Custom - Aggregate class for tree tests and transformations
   die unless $tree->is_type1();
   die unless $tree->test_condition1();
   die if $tree->contains_something1();
-  
+
 =head1 DESCRIPTION
 
 This is an aggregate class for all custom modification, transformation
@@ -54,24 +55,114 @@ use Carp;
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.114';
+our $VERSION = '0.115';
 our $AUTOLOAD;
 
 use Math::Symbolic::Custom::DefaultTests;
 use Math::Symbolic::Custom::DefaultMods;
 
-
-
 1;
 __END__
 
+=head1 EXTENDING THE MODULE
+
+In order to extend the functionality of Math::Symbolic, you have to go
+through the following steps: (also see the synopsis in this document.)
+
+=over 4
+
+=item
+
+Choose an appropriate namespace in the Math::Symbolic::Custom::*
+hierarchy or if you desparately wish, somewhere else.
+
+=item
+
+Create a new module (probably using "h2xs -AX MODULENAME") and put the
+following lines of code in it:
+
+  # To make sure we're cooperating with Math::Symbolic's idea of
+  # method delegation.
+  use Math::Symbolic::Custom::Base;
+  BEGIN {*import = \&Math::Symbolic::Custom::Base::aggregate_import}
+  
+  our $Aggregate_Export = [
+    # Put the list of method names to be exported.
+  /];
+
+=item
+
+Think well about the naming of your exported methods. Answer the following
+questions:
+
+Does the name start with 'is_', 'test_', 'mod_', 'apply_', or 'contains_'?
+If not, find a suitable name that does.
+
+Does the name clash with any of the methods exported by
+Math::Symbolic::Custom::DefaultTests or
+Math::Symbolic::Custom::DefaultMods? If so, please consider choosing a
+different name.
+
+Does the name map to the idea behind the method prefix ('is_', ...)?
+Only methods starting with one of the prefixes listed above can be
+delegated. Any others will never be called. The idea behind delegating
+methods with several prefixes is to provide for a reasonable
+choice for naming methods. 'is_' and 'contains_' are meant to be
+used for accurate tests like "is_constant". 'test_' is meant for
+all tests that either make use of heuristics or can't be fitted into
+either 'is_' or 'contains_'. The prefixes 'mod_' and 'apply_' are
+meant for use with methods that modify the Math::Symbolic tree.
+
+=item
+
+Make sure you document exactly what your methods do. Do they modify the
+Math::Symbolic tree in-place or do they clone using the new() constructor
+and return a copy? Make sure you mention the behaviour in the docs.
+
+=item
+
+Consider packaging your extensions as a CPAN distribution to
+help others in their development with Math::Symbolic. If you
+think the extensions are generic enough to be a worthwhile
+addition to the core distribution, try sending your extensions
+to the Math::Symbolic developers mailing list instead.
+
+=item
+
+Load your extension module after loading the Math::Symbolic module.
+
+=item
+
+Start using your custom enhancements as methods to the Math::Symbolic
+trees (any term types).
+
+=item
+
+Send bug reports and feedback to the Math::Symbolic support mailing list.
+
+=back
+
 =head1 AUTHOR
 
-Steffen Mueller, E<lt>symbolic-module at steffen-mueller dot netE<gt>
+Please send feedback, bug reports, and support requests to the Math::Symbolic
+support mailing list:
+math-symbolic-support at lists dot sourceforge dot net. Please
+consider letting us know how you use Math::Symbolic. Thank you.
 
-New versions of this module can be found on http://steffen-mueller.net or CPAN.
+If you're interested in helping with the development or extending the
+module's functionality, please contact the developer's mailing list:
+math-symbolic-develop at lists dot sourceforge dot net.
+
+List of contributors:
+
+  Steffen Müller, symbolic-module at steffen-mueller dot net
+  Stray Toaster, mwk at users dot sourceforge dot net
 
 =head1 SEE ALSO
+
+New versions of this module can be found on
+http://steffen-mueller.net or CPAN. The module development takes place on
+Sourceforge at http://sourceforge.net/projects/math-symbolic/
 
 L<Math::Symbolic::Custom::Base>
 L<Math::Symbolic::Custom::DefaultTests>

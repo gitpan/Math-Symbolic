@@ -1,3 +1,4 @@
+
 =head1 NAME
 
 Math::Symbolic::Custom::DefaultMods - Default Math::Symbolic transformations
@@ -31,10 +32,10 @@ use 5.006;
 use strict;
 use warnings;
 
-our $VERSION = '0.114';
+our $VERSION = '0.115';
 
 use Math::Symbolic::Custom::Base;
-BEGIN {*import = \&Math::Symbolic::Custom::Base::aggregate_import}
+BEGIN { *import = \&Math::Symbolic::Custom::Base::aggregate_import }
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
@@ -45,11 +46,12 @@ use Carp;
 # All subroutines that are to be exported to the Math::Symbolic::Custom
 # namespace should be listed here.
 
-our $Aggregate_Export = [qw/
-	apply_derivatives
-	apply_constant_fold
-/];
-
+our $Aggregate_Export = [
+    qw/
+      apply_derivatives
+      apply_constant_fold
+      /
+];
 
 =head2 apply_derivatives()
 
@@ -70,83 +72,66 @@ number of derivatives are applied (from top down the tree if possible).
 =cut
 
 sub apply_derivatives {
-	my $tree = shift;
-	my $n = shift || -1;
+    my $tree = shift;
+    my $n    = shift || -1;
 
-	return $tree->descend(
-		in_place => 0,
-		before => sub {
-			my $tree = shift;
-			my $ttype = $tree->term_type();
-			if ($ttype == T_CONSTANT || $ttype == T_VARIABLE) {
-				return undef;
-			}
-			elsif ($ttype == T_OPERATOR) {
-				my $max_derivatives = $n;
-				my $type = $tree->type();
-				
-				while (
-					$n &&
-					(
-						$type == U_P_DERIVATIVE or
-						$type == U_T_DERIVATIVE
-					)
-				) {
-					my $op =
-					$Math::Symbolic::Operator::Op_Types[
-						$type
-					];
+    return $tree->descend(
+        in_place => 0,
+        before   => sub {
+            my $tree  = shift;
+            my $ttype = $tree->term_type();
+            if ( $ttype == T_CONSTANT || $ttype == T_VARIABLE ) {
+                return undef;
+            }
+            elsif ( $ttype == T_OPERATOR ) {
+                my $max_derivatives = $n;
+                my $type            = $tree->type();
 
-					my $operands = $tree->{operands};
-					my $application = $op->{application};
-					
-					if (
-						$type == U_T_DERIVATIVE and
-						$operands->[0]->term_type() ==
-						T_VARIABLE
-					) {
-						my @sig =
-						$operands->[0]->signature();
-						
-						my $name =
-						$operands->[1]->name();
-						
-						if (
-							(
-							grep {$_ eq $name} @sig
-							) > 0 and
-							not (
-							@sig == 1 and
-							$sig[0] eq $name
-							)
-						) {
-							return undef;
-						}
-					}
-					$tree->replace(
-						$application->(@$operands)
-					);
-					return undef
-						unless $tree->term_type() ==
-							T_OPERATOR;
+                while (
+                    $n
+                    && (   $type == U_P_DERIVATIVE
+                        or $type == U_T_DERIVATIVE )
+                  )
+                {
+                    my $op = $Math::Symbolic::Operator::Op_Types[$type];
 
-					$type = $tree->type();
-					$n--;
-				}
-				return ();
-			}
-			else {
-				croak "apply_derivatives called on invalid " .
-					"tree type.";
-			}
-			
-			die "Sanity check in apply_derivatives() should not " .
-				"be reached.";
-		},
-	);
+                    my $operands    = $tree->{operands};
+                    my $application = $op->{application};
+
+                    if (    $type == U_T_DERIVATIVE
+                        and $operands->[0]->term_type() == T_VARIABLE )
+                    {
+                        my @sig = $operands->[0]->signature();
+
+                        my $name = $operands->[1]->name();
+
+                        if (
+                            ( grep { $_ eq $name } @sig ) > 0
+                            and not(@sig == 1
+                                and $sig[0] eq $name )
+                          )
+                        {
+                            return undef;
+                        }
+                    }
+                    $tree->replace( $application->(@$operands) );
+                    return undef
+                      unless $tree->term_type() == T_OPERATOR;
+
+                    $type = $tree->type();
+                    $n--;
+                }
+                return ();
+            }
+            else {
+                croak "apply_derivatives called on invalid " . "tree type.";
+            }
+
+            die "Sanity check in apply_derivatives() should not "
+              . "be reached.";
+        },
+    );
 }
-
-
 
 =head2 apply_constant_fold()
 
@@ -162,42 +147,51 @@ operators only will be replaced with Constant objects.
 =cut
 
 sub apply_constant_fold {
-	my $tree = shift;
-	my $in_place = shift;
+    my $tree     = shift;
+    my $in_place = shift;
 
-	return $tree->descend(
-		in_place => $in_place,
-		before => sub {
-			my $tree = shift;
-			if ($tree->is_simple_constant()) {
-				$tree->replace($tree->apply())
-				  unless $tree->term_type() == T_CONSTANT;
-				return undef;
-			}
-			
-			return undef if $tree->term_type() == T_VARIABLE;
-			return {
-				in_place => 1,
-				descend_into => [],
-			};
-		}
-	);
+    return $tree->descend(
+        in_place => $in_place,
+        before   => sub {
+            my $tree = shift;
+            if ( $tree->is_simple_constant() ) {
+                $tree->replace( $tree->apply() )
+                  unless $tree->term_type() == T_CONSTANT;
+                return undef;
+            }
 
-	return $tree;
+            return undef if $tree->term_type() == T_VARIABLE;
+            return { in_place => 1, descend_into => [] };
+        }
+    );
+
+    return $tree;
 }
-
-
 
 1;
 __END__
 
 =head1 AUTHOR
 
-Steffen Mueller, E<lt>symbolic-module at steffen-mueller dot netE<gt>
+Please send feedback, bug reports, and support requests to the Math::Symbolic
+support mailing list:
+math-symbolic-support at lists dot sourceforge dot net. Please
+consider letting us know how you use Math::Symbolic. Thank you.
 
-New versions of this module can be found on http://steffen-mueller.net or CPAN.
+If you're interested in helping with the development or extending the
+module's functionality, please contact the developer's mailing list:
+math-symbolic-develop at lists dot sourceforge dot net.
+
+List of contributors:
+
+  Steffen Müller, symbolic-module at steffen-mueller dot net
+  Stray Toaster, mwk at users dot sourceforge dot net
 
 =head1 SEE ALSO
+
+New versions of this module can be found on
+http://steffen-mueller.net or CPAN. The module development takes place on
+Sourceforge at http://sourceforge.net/projects/math-symbolic/
 
 L<Math::Symbolic::Custom>
 L<Math::Symbolic::Custom::DefaultTests>

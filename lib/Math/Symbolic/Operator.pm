@@ -1,3 +1,4 @@
+
 =head1 NAME
 
 Math::Symbolic::Operator - Operators in symbolic calculations
@@ -9,19 +10,21 @@ Math::Symbolic::Operator - Operators in symbolic calculations
   my $sum = Math::Symbolic::Operator->new('+', $term1, $term2);
   
   # or:
-  my $division = Math::Symbolic::Operator->new(
-     {
-       type => B_DIVISON,
-       operands => [$term1, $term2],
-     }
-  );
+  my $division =
+    Math::Symbolic::Operator->new(
+      {
+        type     => B_DIVISON,
+        operands => [$term1, $term2],
+      }
+    );
   
-  my $derivative = Math::Symbolic::Operator->new(
-     {
-       type => U_P_DERIVATIVE,
-       operands => [$term],
-     }
-  );
+  my $derivative =
+    Math::Symbolic::Operator->new(
+      {
+        type     => U_P_DERIVATIVE,
+        operands => [$term],
+      }
+    );
 
 =head1 DESCRIPTION
 
@@ -54,7 +57,7 @@ use Math::Symbolic::Derivative qw//;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.114';
+our $VERSION = '0.115';
 
 =head1 CLASS DATA
 
@@ -73,27 +76,27 @@ internal order if I deem it necessary.)
 =cut
 
 our %Op_Symbols = (
-	'+'     => B_SUM,
-	'-'     => B_DIFFERENCE,
-	'*'     => B_PRODUCT,
-	'/'     => B_DIVISION,
-	'log'   => B_LOG,
-	'^'     => B_EXP,
-	'neg'   => U_MINUS,
-	'partial_derivative' => U_P_DERIVATIVE,
-	'total_derivative'   => U_T_DERIVATIVE,
-	'sin'   => U_SINE,
-	'cos'   => U_COSINE,
-	'tan'   => U_TANGENT,
-	'cot'   => U_COTANGENT,
-	'asin'  => U_ARCSINE,
-	'acos'  => U_ARCCOSINE,
-	'atan'  => U_ARCTANGENT,
-	'acot'  => U_ARCCOTANGENT,
-	'sinh'  => U_SINE_H,
-	'cosh'  => U_COSINE_H,
-	'asinh' => U_AREASINE_H,
-	'acosh' => U_AREACOSINE_H,
+    '+'                  => B_SUM,
+    '-'                  => B_DIFFERENCE,
+    '*'                  => B_PRODUCT,
+    '/'                  => B_DIVISION,
+    'log'                => B_LOG,
+    '^'                  => B_EXP,
+    'neg'                => U_MINUS,
+    'partial_derivative' => U_P_DERIVATIVE,
+    'total_derivative'   => U_T_DERIVATIVE,
+    'sin'                => U_SINE,
+    'cos'                => U_COSINE,
+    'tan'                => U_TANGENT,
+    'cot'                => U_COTANGENT,
+    'asin'               => U_ARCSINE,
+    'acos'               => U_ARCCOSINE,
+    'atan'               => U_ARCTANGENT,
+    'acot'               => U_ARCCOTANGENT,
+    'sinh'               => U_SINE_H,
+    'cosh'               => U_COSINE_H,
+    'asinh'              => U_AREASINE_H,
+    'acosh'              => U_AREACOSINE_H,
 );
 
 =pod
@@ -106,177 +109,197 @@ and information on how to actually apply it to numbers.
 =cut
 
 our @Op_Types = (
-	# B_SUM
-	{
-		arity => 2,
-		derive => 'each operand',
-		infix_string => '+',
-		prefix_string => 'add',
-		application => '$_[0] + $_[1]',
-	},
-	# B_DIFFERENCE
-	{
-		arity => 2,
-		derive => 'each operand',
-		infix_string => '-',
-		prefix_string => 'subtract',
-		application => '$_[0] - $_[1]',
-	},
-	# B_PRODUCT
-	{
-		arity => 2,
-		derive => 'product rule',
-		infix_string => '*',
-		prefix_string => 'multiply',
-		application => '$_[0] * $_[1]',
-	},
-	# B_DIVISION
-	{
-		derive => 'quotient rule',
-		arity => 2,
-		infix_string => '/',
-		prefix_string => 'divide',
-		application => '$_[0] / $_[1]',
-	},
-	# U_MINUS
-	{
-		arity => 1,
-		derive => 'each operand',
-		infix_string => '-',
-		prefix_string => 'negate',
-		application => '-$_[0]',
-	},
-	# U_P_DERIVATIVE
-	{
-		arity => 2,
-		derive => 'derivative commutation',
-		infix_string => undef,
-		prefix_string => 'partial_derivative',
-		application => \&Math::Symbolic::Derivative::partial_derivative,
-	},
-	# U_T_DERIVATIVE
-	{
-		arity => 2,
-		derive => 'derivative commutation',
-		infix_string => undef,
-		prefix_string => 'total_derivative',
-		application => \&Math::Symbolic::Derivative::total_derivative,
-	},
-	# B_EXP
-	{
-		arity => 2,
-		derive => 'logarithmic chain rule after ln',
-		infix_string => '^',
-		prefix_string => 'exponentiate',
-		application => '$_[0] ** $_[1]',
-	},
-	# B_LOG
-	{
-		arity => 2,
-		derive => 'logarithmic chain rule',
-		infix_string => undef,
-		prefix_string => 'log',
-		application => 'log($_[1]) / log($_[0])',
-	},
-	# U_SINE
-	{
-		arity => 1,
-		derive => 'trigonometric derivatives',
-		infix_string => undef,
-		prefix_string => 'sin',
-		application => 'sin($_[0])',
-	},
-	# U_COSINE
-	{
-		arity => 1,
-		derive => 'trigonometric derivatives',
-		infix_string => undef,
-		prefix_string => 'cos',
-		application => 'cos($_[0])',
-	},
-	# U_TANGENT
-	{
-		arity => 1,
-		derive => 'trigonometric derivatives',
-		infix_string => undef,
-		prefix_string => 'tan',
-		application => 'sin($_[0])/cos($_[0])',
-	},
-	# U_COTANGENT
-	{
-		arity => 1,
-		derive => 'trigonometric derivatives',
-		infix_string => undef,
-		prefix_string => 'cot',
-		application => 'cos($_[0])/sin($_[0])',
-	},
-	# U_ARCSINE
-	{
-		arity => 1,
-		derive => 'inverse trigonometric derivatives',
-		infix_string => undef,
-		prefix_string => 'asin',
-		application => 'Math::Symbolic::AuxFunctions::asin($_[0])',
-	},
-	# U_ARCCOSINE
-	{
-		arity => 1,
-		derive => 'inverse trigonometric derivatives',
-		infix_string => undef,
-		prefix_string => 'acos',
-		application => 'Math::Symbolic::AuxFunctions::acos($_[0])',
-	},
-	# U_ARCTANGENT
-	{
-		arity => 1,
-		derive => 'inverse trigonometric derivatives',
-		infix_string => undef,
-		prefix_string => 'atan',
-		application => 'Math::Symbolic::AuxFunctions::atan($_[0])',
-	},
-	# U_ARCCOTANGENT
-	{
-		arity => 1,
-		derive => 'inverse trigonometric derivatives',
-		infix_string => undef,
-		prefix_string => 'acot',
-		application => 'Math::Symbolic::AuxFunctions::acot($_[0])',
-	},
-	# U_SINE_H
-	{
-		arity => 1,
-		derive => 'trigonometric derivatives',
-		infix_string => undef,
-		prefix_string => 'sinh',
-		application => '0.5*(EULER**$_[0] - EULER**(-$_[0]))',
-	},
-	# U_COSINE_H
-	{
-		arity => 1,
-		derive => 'trigonometric derivatives',
-		infix_string => undef,
-		prefix_string => 'cosh',
-		application => '0.5*(EULER**$_[0] + EULER**(-$_[0]))',
-	},
-	# U_AREASINE_H
-	{
-		arity => 1,
-		derive => 'inverse trigonometric derivatives',
-		infix_string => undef,
-		prefix_string => 'asinh',
-		application => 'Math::Symbolic::AuxFunctions::asinh($_[0])',
-	},
-	# U_AREACOSINE_H
-	{
-		arity => 1,
-		derive => 'inverse trigonometric derivatives',
-		infix_string => undef,
-		prefix_string => 'acosh',
-		application => 'Math::Symbolic::AuxFunctions::acosh($_[0])',
-	},
-		
-);
 
+    # B_SUM
+    {
+        arity         => 2,
+        derive        => 'each operand',
+        infix_string  => '+',
+        prefix_string => 'add',
+        application   => '$_[0] + $_[1]',
+    },
+
+    # B_DIFFERENCE
+    {
+        arity         => 2,
+        derive        => 'each operand',
+        infix_string  => '-',
+        prefix_string => 'subtract',
+        application   => '$_[0] - $_[1]',
+    },
+
+    # B_PRODUCT
+    {
+        arity         => 2,
+        derive        => 'product rule',
+        infix_string  => '*',
+        prefix_string => 'multiply',
+        application   => '$_[0] * $_[1]',
+    },
+
+    # B_DIVISION
+    {
+        derive        => 'quotient rule',
+        arity         => 2,
+        infix_string  => '/',
+        prefix_string => 'divide',
+        application   => '$_[0] / $_[1]',
+    },
+
+    # U_MINUS
+    {
+        arity         => 1,
+        derive        => 'each operand',
+        infix_string  => '-',
+        prefix_string => 'negate',
+        application   => '-$_[0]',
+    },
+
+    # U_P_DERIVATIVE
+    {
+        arity         => 2,
+        derive        => 'derivative commutation',
+        infix_string  => undef,
+        prefix_string => 'partial_derivative',
+        application   => \&Math::Symbolic::Derivative::partial_derivative,
+    },
+
+    # U_T_DERIVATIVE
+    {
+        arity         => 2,
+        derive        => 'derivative commutation',
+        infix_string  => undef,
+        prefix_string => 'total_derivative',
+        application   => \&Math::Symbolic::Derivative::total_derivative,
+    },
+
+    # B_EXP
+    {
+        arity         => 2,
+        derive        => 'logarithmic chain rule after ln',
+        infix_string  => '^',
+        prefix_string => 'exponentiate',
+        application   => '$_[0] ** $_[1]',
+    },
+
+    # B_LOG
+    {
+        arity         => 2,
+        derive        => 'logarithmic chain rule',
+        infix_string  => undef,
+        prefix_string => 'log',
+        application   => 'log($_[1]) / log($_[0])',
+    },
+
+    # U_SINE
+    {
+        arity         => 1,
+        derive        => 'trigonometric derivatives',
+        infix_string  => undef,
+        prefix_string => 'sin',
+        application   => 'sin($_[0])',
+    },
+
+    # U_COSINE
+    {
+        arity         => 1,
+        derive        => 'trigonometric derivatives',
+        infix_string  => undef,
+        prefix_string => 'cos',
+        application   => 'cos($_[0])',
+    },
+
+    # U_TANGENT
+    {
+        arity         => 1,
+        derive        => 'trigonometric derivatives',
+        infix_string  => undef,
+        prefix_string => 'tan',
+        application   => 'sin($_[0])/cos($_[0])',
+    },
+
+    # U_COTANGENT
+    {
+        arity         => 1,
+        derive        => 'trigonometric derivatives',
+        infix_string  => undef,
+        prefix_string => 'cot',
+        application   => 'cos($_[0])/sin($_[0])',
+    },
+
+    # U_ARCSINE
+    {
+        arity         => 1,
+        derive        => 'inverse trigonometric derivatives',
+        infix_string  => undef,
+        prefix_string => 'asin',
+        application   => 'Math::Symbolic::AuxFunctions::asin($_[0])',
+    },
+
+    # U_ARCCOSINE
+    {
+        arity         => 1,
+        derive        => 'inverse trigonometric derivatives',
+        infix_string  => undef,
+        prefix_string => 'acos',
+        application   => 'Math::Symbolic::AuxFunctions::acos($_[0])',
+    },
+
+    # U_ARCTANGENT
+    {
+        arity         => 1,
+        derive        => 'inverse trigonometric derivatives',
+        infix_string  => undef,
+        prefix_string => 'atan',
+        application   => 'Math::Symbolic::AuxFunctions::atan($_[0])',
+    },
+
+    # U_ARCCOTANGENT
+    {
+        arity         => 1,
+        derive        => 'inverse trigonometric derivatives',
+        infix_string  => undef,
+        prefix_string => 'acot',
+        application   => 'Math::Symbolic::AuxFunctions::acot($_[0])',
+    },
+
+    # U_SINE_H
+    {
+        arity         => 1,
+        derive        => 'trigonometric derivatives',
+        infix_string  => undef,
+        prefix_string => 'sinh',
+        application   => '0.5*(EULER**$_[0] - EULER**(-$_[0]))',
+    },
+
+    # U_COSINE_H
+    {
+        arity         => 1,
+        derive        => 'trigonometric derivatives',
+        infix_string  => undef,
+        prefix_string => 'cosh',
+        application   => '0.5*(EULER**$_[0] + EULER**(-$_[0]))',
+    },
+
+    # U_AREASINE_H
+    {
+        arity         => 1,
+        derive        => 'inverse trigonometric derivatives',
+        infix_string  => undef,
+        prefix_string => 'asinh',
+        application   => 'Math::Symbolic::AuxFunctions::asinh($_[0])',
+    },
+
+    # U_AREACOSINE_H
+    {
+        arity         => 1,
+        derive        => 'inverse trigonometric derivatives',
+        infix_string  => undef,
+        prefix_string => 'acosh',
+        application   => 'Math::Symbolic::AuxFunctions::acosh($_[0])',
+    },
+
+);
 
 =head1 METHODS
 
@@ -326,62 +349,59 @@ function in parens)
 =cut
 
 sub new {
-	my $proto = shift;
-	my $class = ref($proto) || $proto;
+    my $proto = shift;
+    my $class = ref($proto) || $proto;
 
-	if (@_ and not (ref($_[0]) eq 'HASH')) {
-		my $symbol = shift;
-		my $type = $Op_Symbols{$symbol};
-		defined $type
-			or croak "Invalid operator type specified ($symbol).";
-		my $operands = [ @_[0 .. $Op_Types[$type]{arity} - 1] ];
+    if ( @_ and not( ref( $_[0] ) eq 'HASH' ) ) {
+        my $symbol = shift;
+        my $type   = $Op_Symbols{$symbol};
+        croak "Invalid operator type specified ($symbol)."
+          unless defined $type;
+        my $operands = [ @_[ 0 .. $Op_Types[$type]{arity} - 1 ] ];
 
-		croak "Undefined operands not supported by " .
-		      "Math::Symbolic::Operator objects."
-		  if grep +(not defined($_)), @$operands;
-		
-		@$operands = map
-			{
-				ref($_) =~ /^Math::Symbolic/ ?
-				$_ :
-				Math::Symbolic->parse_from_string($_)
-			} @$operands;
+        croak "Undefined operands not supported by "
+          . "Math::Symbolic::Operator objects."
+          if grep +( not defined($_) ), @$operands;
 
-			return bless {
-			type => $type,
-			operands => $operands,
-		} => $class;
-	}
-	
-	my %args;
-	%args = %{$_[0]} if @_ and ref($_[0]) eq 'HASH';
+        @$operands =
+          map {
+            ref($_) =~ /^Math::Symbolic/
+              ? $_
+              : Math::Symbolic->parse_from_string($_)
+          } @$operands;
 
-	
-	my $operands = [];
-	if (ref $proto) {
-		foreach (@{$proto->{operands}}) {
-			push @$operands, $_->new();
-		}
-	}
-	
-	my $self = {
-		type => undef,
-		(ref($proto)?%$proto:()),
-		operands => $operands,
-		%args,
-	};
+        return bless {
+            type     => $type,
+            operands => $operands,
+        } => $class;
+    }
 
-	@{$self->{operands}} = map
-		{
-			ref($_) =~ /^Math::Symbolic/ ?
-			$_ :
-			Math::Symbolic->parse_from_string($_)
-		} @{$self->{operands}};
+    my %args;
+    %args = %{ $_[0] } if @_ and ref( $_[0] ) eq 'HASH';
 
-	bless $self => $class;
+    my $operands = [];
+    if ( ref $proto ) {
+        foreach ( @{ $proto->{operands} } ) {
+            push @$operands, $_->new();
+        }
+    }
+
+    my $self = {
+        type => undef,
+        ( ref($proto) ? %$proto : () ),
+        operands => $operands,
+        %args,
+    };
+
+    @{ $self->{operands} } =
+      map {
+        ref($_) =~ /^Math::Symbolic/
+          ? $_
+          : Math::Symbolic->parse_from_string($_)
+      } @{ $self->{operands} };
+
+    bless $self => $class;
 }
-
-
 
 =head2 Method arity
 
@@ -390,11 +410,9 @@ Returns the operator's arity as an integer.
 =cut
 
 sub arity {
-	my $self = shift;
-	return $Op_Types[$self->{type}]{arity};
+    my $self = shift;
+    return $Op_Types[ $self->{type} ]{arity};
 }
-
-
 
 =head2 Method type
 
@@ -404,14 +422,10 @@ Returns the operator's type as an integer.
 =cut
 
 sub type {
-	my $self = shift;
-	if (@_) {
-		$self->{type} = shift;
-	}
-	return $self->{type};
+    my $self = shift;
+    $self->{type} = shift if @_;
+    return $self->{type};
 }
-
-
 
 =head2 Method to_string
 
@@ -421,89 +435,81 @@ Optional argument: 'prefix' or 'infix'. Defaults to 'infix'.
 =cut
 
 sub to_string {
-	my $self = shift;
-	my $string_type = shift;
-	$string_type = 'infix'
-	  unless defined $string_type and $string_type eq 'prefix';
-	
-	my $string = '';
-	if ($string_type eq 'prefix') {
-		$string .= $self->_to_string_prefix();
-	}
-	else {
-		$string .= $self->_to_string_infix();
-	}
-	return $string;
-}
+    my $self        = shift;
+    my $string_type = shift;
+    $string_type = 'infix'
+      unless defined $string_type
+      and $string_type eq 'prefix';
 
+    my $string = '';
+    if ( $string_type eq 'prefix' ) {
+        $string .= $self->_to_string_prefix();
+    }
+    else {
+        $string .= $self->_to_string_infix();
+    }
+    return $string;
+}
 
 sub _to_string_infix {
-	my $self = shift;
-	my $op = $Op_Types[$self->{type}];
+    my $self = shift;
+    my $op   = $Op_Types[ $self->{type} ];
 
-	my $op_str = $op->{infix_string};
-	my $string;
-	if ($op->{arity} == 2) {
-		my $op1 = $self->{operands}[0]->term_type()
-			  == T_OPERATOR;
-		my $op2 = $self->{operands}[1]->term_type()
-			  == T_OPERATOR;
-		if (not defined $op_str) {
-			$op_str = $op->{prefix_string};
-			$string = "$op_str(";
-			$string .= join(', ',
-					map {
-						$_->to_string('infix')
-					}
-					@{$self->{operands}}
-			       	);
-			$string .= ')';
-		}
-		else {
-			$string = ($op1?'(':'') .
-				  $self->{operands}[0]->to_string('infix') .
-				  ($op1?')':'') . " $op_str " . ($op2?'(':'') .
-				  $self->{operands}[1]->to_string('infix') .
-				  ($op2?')':'');
-		}
-	}
-	elsif ($op->{arity} == 1) {
-		my $is_op1 = $self->{operands}[0]->term_type()
-			     == T_OPERATOR;
-		if (not defined $op_str) {
-			$op_str = $op->{prefix_string};
-			$string = "$op_str(" .
-				  $self->{operands}[0]->to_string('infix') .
-				  ")";
-		}
-		else {
-			$string = "$op_str" . ($is_op1?'(':'') .
-				  $self->{operands}[0]->to_string('infix') .
-				  ($is_op1?')':'');
-		}
-	}
-	else {
-		$string = $self->_to_string_prefix();
-	}
-	return $string;
+    my $op_str = $op->{infix_string};
+    my $string;
+    if ( $op->{arity} == 2 ) {
+        my $op1 = $self->{operands}[0]->term_type() == T_OPERATOR;
+        my $op2 = $self->{operands}[1]->term_type() == T_OPERATOR;
+
+        if ( not defined $op_str ) {
+            $op_str = $op->{prefix_string};
+            $string = "$op_str(";
+            $string .= join( ', ',
+                map { $_->to_string('infix') } @{ $self->{operands} } );
+            $string .= ')';
+        }
+        else {
+            $string =
+                ( $op1 ? '(' : '' )
+              . $self->{operands}[0]->to_string('infix')
+              . ( $op1 ? ')' : '' )
+              . " $op_str "
+              . ( $op2 ? '(' : '' )
+              . $self->{operands}[1]->to_string('infix')
+              . ( $op2 ? ')' : '' );
+        }
+    }
+    elsif ( $op->{arity} == 1 ) {
+        my $is_op1 = $self->{operands}[0]->term_type() == T_OPERATOR;
+        if ( not defined $op_str ) {
+            $op_str = $op->{prefix_string};
+            $string =
+              "$op_str(" . $self->{operands}[0]->to_string('infix') . ")";
+        }
+        else {
+            $string = "$op_str"
+              . ( $is_op1 ? '(' : '' )
+              . $self->{operands}[0]->to_string('infix')
+              . ( $is_op1 ? ')' : '' );
+        }
+    }
+    else {
+        $string = $self->_to_string_prefix();
+    }
+    return $string;
 }
-
-
 
 sub _to_string_prefix {
-	my $self = shift;
-	my $op = $Op_Types[$self->{type}];
+    my $self = shift;
+    my $op   = $Op_Types[ $self->{type} ];
 
-	my $op_str = $op->{prefix_string};
-	my $string = "$op_str(";
-	$string .= join(', ',
-			map {$_->to_string('prefix')} @{$self->{operands}}
-		       );
-	$string .= ')';
-	return $string;
+    my $op_str = $op->{prefix_string};
+    my $string = "$op_str(";
+    $string .=
+      join( ', ', map { $_->to_string('prefix') } @{ $self->{operands} } );
+    $string .= ')';
+    return $string;
 }
-
-
 
 =head2 Method term_type
 
@@ -512,10 +518,8 @@ Returns the type of the term. ( T_OPERATOR )
 =cut
 
 sub term_type {
-	return T_OPERATOR;
+    return T_OPERATOR;
 }
-
-
 
 =head2 Method simplify
 
@@ -524,152 +528,140 @@ Term simpilification.
 =cut
 
 sub simplify {
-	my $self = shift;
-	$self = $self->new();
+    my $self = shift;
+    $self = $self->new();
 
-	my $operands = $self->{operands};
-	my $op = $Op_Types[$self->type()];
+    my $operands = $self->{operands};
+    my $op       = $Op_Types[ $self->type() ];
 
-	@$operands = map {$_->simplify()} @$operands;
+    @$operands = map { $_->simplify() } @$operands;
 
-	if ($self->arity() == 2) {
-		my $o1  = $operands->[0];
-		my $o2  = $operands->[1];
-		my $tt1 = $o1->term_type();
-		my $tt2 = $o2->term_type();
-		my $type = $self->type();
-		
-		if ($self->is_simple_constant()) {
-			return $self->apply();
-		}
-		
-		if ($o1->is_identical($o2)) {
-			if ($type == B_PRODUCT) {
-				my $two = Math::Symbolic::Constant->new(2);
-				return $self->new('^', $o1, $two)->simplify();
-			}
-			elsif ($type == B_SUM) {
-				my $two = Math::Symbolic::Constant->new(2);
-				return $self->new('*', $two, $o1)->simplify();
+    if ( $self->arity() == 2 ) {
+        my $o1   = $operands->[0];
+        my $o2   = $operands->[1];
+        my $tt1  = $o1->term_type();
+        my $tt2  = $o2->term_type();
+        my $type = $self->type();
 
-			}
-		}
+        if ( $self->is_simple_constant() ) {
+            return $self->apply();
+        }
 
-		if (
-			$tt2 == T_CONSTANT and
-			$tt1 == T_OPERATOR and
-			$type == B_EXP and
-			$o2->value() == 0
-		) {
-			return Math::Symbolic::Constant->one();
-		}
-		elsif (
-			$tt2 == T_CONSTANT and
-			$tt1 == T_OPERATOR and
-			$type == B_EXP and
-			$o1->type() == B_EXP
-		) {
-			return $self->new(
-				'^', $o1->op1(),
-				$self->new('*', $o2, $o1->op2())
-			)->simplify();
-		}
-		elsif (
-			$tt1 == T_VARIABLE and
-			$tt2 == T_VARIABLE and
-			$o1->name() eq $o2->name()
-		) {
-			if ($type == B_SUM) {
-				my $two = Math::Symbolic::Constant->new(2);
-				return $self->new('*', $two, $o1);
-			}
-			elsif ($type == B_DIFFERENCE) {
-				return Math::Symbolic::Constant->zero();
-			}
-			elsif ($type == B_PRODUCT) {
-				my $two = Math::Symbolic::Constant->new(2);
-				return $self->new('^', $o1, $two);
-			}
-			elsif ($type == B_DIVISION) {
-				return Math::Symbolic::Constant->one();
-			}
-		}
-		elsif ($tt1 == T_CONSTANT or $tt2 == T_CONSTANT) {
-			my $const = ($tt1==T_CONSTANT?$o1:$o2);
-			my $not_c = ($tt1==T_CONSTANT?$o2:$o1);
-			my $constant_first = $tt1 == T_CONSTANT;
-			
-			if ($type == B_SUM) {
-				return $not_c if $const->value() == 0;
-			}
-			elsif ($type == B_DIFFERENCE) {
-				return $not_c
-				  if !$constant_first and $const->value == 0;
-				return Math::Symbolic::Operator->new( {
-					type => U_MINUS,
-					operands => [$not_c],
-				} ) if $constant_first and $const->value == 0;
-			}
-			elsif ($type == B_PRODUCT) {
-				return $not_c if $const->value() == 1;
-				return Math::Symbolic::Constant->zero()
-				  if $const->value == 0;
-				if ($not_c->term_type() == T_OPERATOR and
-				    $not_c->type() == B_PRODUCT and
-				    $not_c->op1()->term_type() == T_CONSTANT ||
-				    $not_c->op2()->term_type() == T_CONSTANT
-				   ) {
-					my ($c, $nc) = (
-						$not_c->op1()->term_type() ==
-							T_CONSTANT ?
-						($not_c->op1(), $not_c->op2()) :
-						($not_c->op2(), $not_c->op1())
-					);
-					my $c_product = $not_c->new(
-						'*', $const, $c
-					)->apply();
-					return $not_c->new(
-						'*',
-						$c_product,
-						$nc
-					);
-				}
-			}
-			elsif ($type == B_DIVISION) {
-				return $not_c
-				  if !$constant_first and $const->value == 1;
-				return Math::Symbolic::Constant->new('#Inf')
-				  if !$constant_first and $const->value == 0;
-				return Math::Symbolic::Constant->zero()
-				  if $const->value == 0;
-			}
-		}
-		
-	}
-	elsif ($self->arity() == 1) {
-		my $o  = $operands->[0];
-		my $tt = $o->term_type();
-		my $type = $self->type();
-		if ($type == U_MINUS) {
-			if ($tt == T_CONSTANT) {
-				return Math::Symbolic::Constant->new(
-					-$o->value(),
-				);
-			}
-			elsif ($tt == T_OPERATOR) {
-				return $o->{operands}[0]
-				  if $o->type() == U_MINUS;
-			}
-		}
-	}
+        if ( $o1->is_identical($o2) ) {
+            if ( $type == B_PRODUCT ) {
+                my $two = Math::Symbolic::Constant->new(2);
+                return $self->new( '^', $o1, $two )->simplify();
+            }
+            elsif ( $type == B_SUM ) {
+                my $two = Math::Symbolic::Constant->new(2);
+                return $self->new( '*', $two, $o1 )->simplify();
+            }
+        }
 
-	return $self;
+        if (    $tt2 == T_CONSTANT
+            and $tt1 == T_OPERATOR
+            and $type == B_EXP
+            and $o2->value() == 0 )
+        {
+            return Math::Symbolic::Constant->one();
+        }
+        elsif ( $tt2 == T_CONSTANT
+            and $tt1 == T_OPERATOR
+            and $type == B_EXP
+            and $o1->type() == B_EXP )
+        {
+            return $self->new( '^', $o1->op1(),
+                $self->new( '*', $o2, $o1->op2() ) )->simplify();
+        }
+        elsif ( $tt1 == T_VARIABLE
+            and $tt2 == T_VARIABLE
+            and $o1->name() eq $o2->name() )
+        {
+            if ( $type == B_SUM ) {
+                my $two = Math::Symbolic::Constant->new(2);
+                return $self->new( '*', $two, $o1 );
+            }
+            elsif ( $type == B_DIFFERENCE ) {
+                return Math::Symbolic::Constant->zero();
+            }
+            elsif ( $type == B_PRODUCT ) {
+                my $two = Math::Symbolic::Constant->new(2);
+                return $self->new( '^', $o1, $two );
+            }
+            elsif ( $type == B_DIVISION ) {
+                return Math::Symbolic::Constant->one();
+            }
+        }
+        elsif ( $tt1 == T_CONSTANT or $tt2 == T_CONSTANT ) {
+            my $const = ( $tt1 == T_CONSTANT ? $o1 : $o2 );
+            my $not_c = ( $tt1 == T_CONSTANT ? $o2 : $o1 );
+            my $constant_first = $tt1 == T_CONSTANT;
+
+            if ( $type == B_SUM ) {
+                return $not_c if $const->value() == 0;
+            }
+            elsif ( $type == B_DIFFERENCE ) {
+                return $not_c
+                  if !$constant_first
+                  and $const->value == 0;
+                if ( $constant_first and $const->value == 0 ) {
+                    return Math::Symbolic::Operator->new(
+                        {
+                            type     => U_MINUS,
+                            operands => [$not_c],
+                        }
+                    );
+                }
+            }
+            elsif ( $type == B_PRODUCT ) {
+                return $not_c if $const->value() == 1;
+                return Math::Symbolic::Constant->zero()
+                  if $const->value == 0;
+
+                if (    $not_c->term_type() == T_OPERATOR
+                    and $not_c->type() == B_PRODUCT
+                    and $not_c->op1()->term_type() == T_CONSTANT
+                    || $not_c->op2()->term_type() == T_CONSTANT )
+                {
+                    my ( $c, $nc ) = (
+                        $not_c->op1()->term_type() == T_CONSTANT
+                        ? ( $not_c->op1, $not_c->op2 )
+                        : ( $not_c->op2, $not_c->op1 )
+                    );
+                    my $c_product = $not_c->new( '*', $const, $c )->apply();
+                    return $not_c->new( '*', $c_product, $nc );
+                }
+            }
+            elsif ( $type == B_DIVISION ) {
+                return $not_c
+                  if !$constant_first
+                  and $const->value == 1;
+                return Math::Symbolic::Constant->new('#Inf')
+                  if !$constant_first
+                  and $const->value == 0;
+                return Math::Symbolic::Constant->zero()
+                  if $const->value == 0;
+            }
+        }
+
+    }
+    elsif ( $self->arity() == 1 ) {
+        my $o    = $operands->[0];
+        my $tt   = $o->term_type();
+        my $type = $self->type();
+        if ( $type == U_MINUS ) {
+            if ( $tt == T_CONSTANT ) {
+                return Math::Symbolic::Constant->new( -$o->value(), );
+            }
+            elsif ( $tt == T_OPERATOR ) {
+                return $o->{operands}[0]
+                  if $o->type() == U_MINUS;
+            }
+        }
+    }
+
+    return $self;
 }
-
-
-
-
-
 
 =head2 Methods op1 and op2
 
@@ -678,15 +670,13 @@ Returns first/second operand of the operator if it exists or undef.
 =cut
 
 sub op1 {
-	return $_[0]{operands}[0] if @{$_[0]{operands}} >= 1;
-	return undef;
+    return $_[0]{operands}[0] if @{ $_[0]{operands} } >= 1;
+    return undef;
 }
 
 sub op2 {
-	return $_[0]{operands}[1] if @{$_[0]{operands}} >= 2;
+    return $_[0]{operands}[1] if @{ $_[0]{operands} } >= 2;
 }
-
-
 
 =head2 Method apply
 
@@ -700,29 +690,27 @@ you may provide key/value pairs of variable names and values.
 =cut
 
 sub apply {
-	my $self = shift;
-	my @args = @_;
-	my $op = $Op_Types[$self->type];
-	my $operands = $self->{operands};
-	my $application = $op->{application};
+    my $self        = shift;
+    my @args        = @_;
+    my $op          = $Op_Types[ $self->type ];
+    my $operands    = $self->{operands};
+    my $application = $op->{application};
 
-	if (ref($application) ne 'CODE') {
-		local @_ = map {$_->value(@args)} @$operands;
-		local $@;
-		my $result = eval $application;
-		die "Invalid operator application: $@" if $@;
-		die "Undefined result from operator application."
-		  if not defined $result;
-	
-		return Math::Symbolic::Constant->new($result);
-	}
-	else {
-		my $result = $application->(@$operands);
-		return $result;
-	}
+    if ( ref($application) ne 'CODE' ) {
+        local @_ = map { $_->value(@args) } @$operands;
+        local $@;
+        my $result = eval $application;
+        die "Invalid operator application: $@" if $@;
+        die "Undefined result from operator application."
+          if not defined $result;
+
+        return Math::Symbolic::Constant->new($result);
+    }
+    else {
+        my $result = $application->(@$operands);
+        return $result;
+    }
 }
-
-
 
 =head2 Method value
 
@@ -745,13 +733,11 @@ any occurrances of variables of the name "x", aso.
 =cut
 
 sub value {
-	my $self = shift;
-	my @args = @_;
+    my $self = shift;
+    my @args = @_;
 
-	return $self->apply(@args)->value(@args);
+    return $self->apply(@args)->value(@args);
 }
-
-
 
 =head2 Method signature
 
@@ -777,25 +763,38 @@ have the signature ('acceleration', 'force1', 'force2',..., 'mass', 'time').
 =cut
 
 sub signature {
-	my $self = shift;
-	my %sig;
-	foreach my $o ($self->descending_operands('all_vars')) {
-		$sig{$_} = undef for $o->signature();
-	}
-	return sort keys %sig;
+    my $self = shift;
+    my %sig;
+    foreach my $o ( $self->descending_operands('all_vars') ) {
+        $sig{$_} = undef for $o->signature();
+    }
+    return sort keys %sig;
 }
-
 
 1;
 __END__
 
 =head1 AUTHOR
 
-Steffen Mueller, E<lt>symbolic-module at steffen-mueller dot netE<gt>
+Please send feedback, bug reports, and support requests to the Math::Symbolic
+support mailing list:
+math-symbolic-support at lists dot sourceforge dot net. Please
+consider letting us know how you use Math::Symbolic. Thank you.
 
-New versions of this module can be found on http://steffen-mueller.net or CPAN.
+If you're interested in helping with the development or extending the
+module's functionality, please contact the developer's mailing list:
+math-symbolic-develop at lists dot sourceforge dot net.
+
+List of contributors:
+
+  Steffen Müller, symbolic-module at steffen-mueller dot net
+  Stray Toaster, mwk at users dot sourceforge dot net
 
 =head1 SEE ALSO
+
+New versions of this module can be found on
+http://steffen-mueller.net or CPAN. The module development takes place on
+Sourceforge at http://sourceforge.net/projects/math-symbolic/
 
 L<Math::Symbolic>
 

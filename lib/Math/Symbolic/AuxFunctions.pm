@@ -34,8 +34,7 @@ use Carp;
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.114';
-
+our $VERSION = '0.115';
 
 =head1 TRIGONOMETRIC FUNCTIONS
 
@@ -45,11 +44,7 @@ Computes the tangent sin(x) / cos(x).
 
 =cut
 
-sub tan {
-	return sin($_[0]) / cos($_[0]);
-}
-
-
+sub tan { sin( $_[0] ) / cos( $_[0] ) }
 
 =head2 cot
 
@@ -57,11 +52,7 @@ Computes the cotangent cos(x) / sin(x).
 
 =cut
 
-sub cot {
-	return cos($_[0]) / sin($_[0]);
-}
-
-
+sub cot { cos( $_[0] ) / sin( $_[0] ) }
 
 =head2 asin
 
@@ -70,9 +61,7 @@ Above formula is for complex numbers.
 
 =cut
 
-sub asin { atan2($_[0], sqrt( 1 - $_[0] * $_[0] ) ) }
-
-
+sub asin { atan2( $_[0], sqrt( 1 - $_[0] * $_[0] ) ) }
 
 =head2 acos
 
@@ -83,8 +72,6 @@ Above formula is for complex numbers.
 
 sub acos { atan2( sqrt( 1 - $_[0] * $_[0] ), $_[0] ) }
 
-
-
 =head2 atan
 
 Computes the arc tangent atan(z) = i/2 log((i+z) / (i-z)).
@@ -92,9 +79,7 @@ Above formula is for complex numbers.
 
 =cut
 
-sub atan { atan2($_[0], 1) }
-
-
+sub atan { atan2( $_[0], 1 ) }
 
 =head2 acot
 
@@ -102,9 +87,7 @@ Computes the arc cotangent ( atan( 1 / x ) ).
 
 =cut
 
-sub acot { atan2(1 / $_[0], 1) }
-
-
+sub acot { atan2( 1 / $_[0], 1 ) }
 
 =head2 asinh
 
@@ -114,8 +97,6 @@ Computes the arc hyperbolic sine asinh(z) = log(z + sqrt(z*z+1))
 
 sub asinh { log( $_[0] + sqrt( $_[0] * $_[0] + 1 ) ) }
 
-
-
 =head2 acosh
 
 Computes the arc hyperbolic cosine acosh(z) = log(z + sqrt(z*z-1)).
@@ -124,18 +105,30 @@ Computes the arc hyperbolic cosine acosh(z) = log(z + sqrt(z*z-1)).
 
 sub acosh { log( $_[0] + sqrt( $_[0] * $_[0] - 1 ) ) }
 
-
-
 1;
 __END__
 
 =head1 AUTHOR
 
-Steffen Mueller, E<lt>symbolic-module at steffen-mueller dot netE<gt>
+Please send feedback, bug reports, and support requests to the Math::Symbolic
+support mailing list:
+math-symbolic-support at lists dot sourceforge dot net. Please
+consider letting us know how you use Math::Symbolic. Thank you.
 
-New versions of this module can be found on http://steffen-mueller.net or CPAN.
+If you're interested in helping with the development or extending the
+module's functionality, please contact the developer's mailing list:
+math-symbolic-develop at lists dot sourceforge dot net.
+
+List of contributors:
+
+  Steffen Müller, symbolic-module at steffen-mueller dot net
+  Stray Toaster, mwk at users dot sourceforge dot net
 
 =head1 SEE ALSO
+
+New versions of this module can be found on
+http://steffen-mueller.net or CPAN. The module development takes place on
+Sourceforge at http://sourceforge.net/projects/math-symbolic/
 
 L<Math::Symbolic>
 

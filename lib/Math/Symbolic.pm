@@ -1,3 +1,4 @@
+
 =head1 NAME
 
 Math::Symbolic - Symbolic calculations
@@ -122,18 +123,16 @@ require Exporter;
 our @ISA = qw(Exporter);
 
 our %EXPORT_TAGS = (
-	all => [
-		@{$Math::Symbolic::ExportConstants::EXPORT_TAGS{all}},
-		qw{&parse_from_string},
-	],
-	constants => [
-		@{$Math::Symbolic::ExportConstants::EXPORT_TAGS{all}},
-	],
+    all => [
+        @{ $Math::Symbolic::ExportConstants::EXPORT_TAGS{all} },
+        qw{&parse_from_string},
+    ],
+    constants => [ @{ $Math::Symbolic::ExportConstants::EXPORT_TAGS{all} }, ],
 );
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
-our @EXPORT = qw();
+our @EXPORT    = qw();
 
-our $VERSION = '0.114';
+our $VERSION = '0.115';
 
 =head1 CLASS DATA
 
@@ -143,7 +142,6 @@ object that is used to parse strings at runtime.
 =cut
 
 our $Parser = Math::Symbolic::Parser->new();
-
 
 =head1 SUBROUTINES
 
@@ -162,14 +160,13 @@ Please refer to L<Math::Symbolic::Parser> for more information.
 =cut
 
 sub parse_from_string {
-	my $string = shift;
-	croak "Missing string argument from parse_from_string() call"
-		unless defined $string;
-	$string = shift if $string eq __PACKAGE__ and @_;
-	$string =~ s/\s+//gs;
-	return $Parser->parse($string);
+    my $string = shift;
+    croak "Missing string argument from parse_from_string() call"
+      unless defined $string;
+    $string = shift if $string eq __PACKAGE__ and @_;
+    $string =~ s/\s+//gs;
+    return $Parser->parse($string);
 }
-
 
 1;
 __END__
@@ -234,13 +231,37 @@ representation of the object. '0+' (numerical context) has been overloaded
 to produce the value of the object. 'bool' (boolean context) has been
 overloaded to produce the value of the object.
 
+=head2 EXTENDING THE MODULE
+
+Due to several design decisions, it is probably rather difficult to extend
+the Math::Symbolic related modules through subclassing. Instead, we
+chose to make the module extendable through delegation.
+
+That means you can introduce your own methods to extend Math::Symbolic's
+functionality. How this works in detail can be read in
+L<Math::Symbolic::Custom>.
+
 =head1 AUTHOR
 
-Steffen Mueller, E<lt>symbolic-module at steffen-mueller dot netE<gt>
+Please send feedback, bug reports, and support requests to the Math::Symbolic
+support mailing list:
+math-symbolic-support at lists dot sourceforge dot net. Please
+consider letting us know how you use Math::Symbolic. Thank you.
 
-New versions of this module can be found on http://steffen-mueller.net or CPAN.
+If you're interested in helping with the development or extending the
+module's functionality, please contact the developer's mailing list:
+math-symbolic-develop at lists dot sourceforge dot net.
+
+List of contributors:
+
+  Steffen Müller, symbolic-module at steffen-mueller dot net
+  Stray Toaster, mwk at users dot sourceforge dot net
 
 =head1 SEE ALSO
+
+New versions of this module can be found on
+http://steffen-mueller.net or CPAN. The module development takes place on
+Sourceforge at http://sourceforge.net/projects/math-symbolic/
 
 L<Math::Symbolic::ExportConstants>
 L<Math::Symbolic::AuxFunctions>

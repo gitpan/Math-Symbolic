@@ -8,16 +8,15 @@ use Data::Dumper;
 use Math::Symbolic qw/:all/;
 
 my $var = Math::Symbolic::Variable->new();
-my $a = $var->new('x' => 2);
+my $a   = $var->new( 'x' => 2 );
 
-print "Vars: x=" . $a->value() .
-           " (Value is optional)\n\n";
+print "Vars: x=" . $a->value() . " (Value is optional)\n\n";
 
-my $op   = Math::Symbolic::Operator->new();
-my $div = $op->new('/', $a, $a);
-my $mul = $op->new('*', $a, $a);
-my $sum = $op->new('+', $a, $a);
-my $dif = $op->new('-', $a, $a);
+my $op  = Math::Symbolic::Operator->new();
+my $div = $op->new( '/', $a, $a );
+my $mul = $op->new( '*', $a, $a );
+my $sum = $op->new( '+', $a, $a );
+my $dif = $op->new( '-', $a, $a );
 
 print "Expressions: x/x, x*x, x+x, x-x\n\n";
 
@@ -37,4 +36,5 @@ $simplified = $sum->simplify();
 print "$simplified\n\n";
 $simplified = $dif->simplify();
 print "$simplified\n\n";
+
 
