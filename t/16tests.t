@@ -85,10 +85,10 @@ ok( $x->is_identical($y), 'is_identical true involved term' );
 
 $y =
   Math::Symbolic::parse_from_string(
-    'total_derivative(10*a^2+(-1/b(x))-3*sin(c(d,f,g,i,a)2),a)');
+    'total_derivative(10*a^2+(-1/b(x))-3*sin(c(d,f,g,i,a)-2),a)');
 $x =
   Math::Symbolic::parse_from_string(
-    'total_derivative(10*a^2+(-1/b(x))-3*sin(c(d,f,g,i,a)2),a)');
+    'total_derivative(10*a^2+(-1/b(x))-3*sin(c(d,f,g,i,a)-2),a)');
 ok( $x->is_identical($y), 'is_identical true involved term' );
 
 $y =

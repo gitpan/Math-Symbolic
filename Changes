@@ -1,5 +1,12 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.133  Mon May 10 10:12:44 2004
+	- Documentation fixes.
+	- Parser returns undef if the input text hasn't been consumed
+	  entirely now.
+	- Fixed bug in 16tests.t (test 22).
+	- Added test for the above behaviour.
+
 0.132  Mon Apr 12 18:02:27 2004
 	- Added additional syntax to value() and set_value() methods
 	  as suggested by Henrik Edlund.

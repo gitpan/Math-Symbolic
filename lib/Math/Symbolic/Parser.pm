@@ -117,12 +117,15 @@ use Math::Symbolic::ExportConstants qw/:all/;
 #use Parse::RecDescent;
 my $Required_Parse_RecDescent = 0;
 
-our $VERSION = '0.132';
+our $VERSION = '0.133';
 our $DEBUG   = 0;
 
 our $Grammar = <<'GRAMMAR_END';
-	parse: expr
-	     | <error>
+	parse: expr /^\Z/
+			{
+				$return = $item[1]
+			}
+	     | // {undef}
 
 	expr: addition
 			{

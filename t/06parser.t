@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 9;
+use Test::More tests => 10;
 
 #use lib 'lib';
 
@@ -84,4 +84,11 @@ ok(
     ),
     'Parsing complicated term involving sine and cosine'
 );
+
+my $res;
+eval {
+$res = Math::Symbolic->parse_from_string('blah[blubb');
+};
+ok(!defined($res),
+'Parse fails on invalid string.');
 

@@ -147,7 +147,7 @@ our %EXPORT_TAGS = (
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT    = qw();
 
-our $VERSION = '0.132';
+our $VERSION = '0.133';
 
 =head1 CLASS DATA
 
@@ -266,7 +266,7 @@ the sum, you'd have to either split the code into two loops or replicate the
 code required for the complex calculation when shift()ing the first object
 into $sum.
 
-=head2 EXTENDING THE MODULE
+=head1 EXTENDING THE MODULE
 
 Due to several design decisions, it is probably rather difficult to extend
 the Math::Symbolic related modules through subclassing. Instead, we
