@@ -1,4 +1,4 @@
-Math::Symbolic version 0.126
+Math::Symbolic version 0.127
 ============================
 
 Math::Symbolic is intended to offer symbolic calculation capabilities
@@ -93,4 +93,4 @@ CONTRIBUTIONS
 
 Steffen Müller, symbolic-module at steffen-mueller dot net
 Stray Toaster, mwk at users dot sourceforge dot net
-
+Oliver Ebenhöh

@@ -1,5 +1,10 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.127  Sat Jan  3 19:20:29 2004
+	- Happy New Year!
+	- There was an error in the 0.126 distribution related to
+	  the Math::Symbolic::Parser::Precompiled module.
+
 0.126  Sun Nov  9 16:54:26 2003
 	- Fixed parser bug with asinh, acosh.
 	- Added Oliver Ebenhoeh to the list of contributors.
