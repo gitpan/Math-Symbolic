@@ -33,12 +33,27 @@ Math::Symbolic::VectorCalculus - Symbolically comp. grad, Jacobi matrices etc.
   
   # Similar to Jacobi:
   @matrix = Hesse $function;
+  
+  $differential = TotalDifferential $function;
+  $differential = TotalDifferential $function, @signature;
+  $differential = TotalDifferential $function, @signature, @point;
+  
+  $dir_deriv = DeriectionalDerivative $function, @vector;
+  $dir_deriv = DeriectionalDerivative $function, @vector, @signature;
+  
+  $taylor = TaylorPolyTwoDim $function, $var1, $var2, $degree;
+  $taylor = TaylorPolyTwoDim $function, $var1, $var2,
+                             $degree, $var1_0, $var2_0; 
+  # example:
+  $taylor = TaylorPolyTwoDim 'sin(x)*cos(y)', 'x', 'y', 2;
 
 =head1 DESCRIPTION
 
 This module provides several subroutines related to
 vector calculus such as computing gradients, divergence, rotation,
 and Jacobi matrices of Math::Symbolic trees.
+Furthermore it provides means of computing directional derivatives
+and the total differential of a scalar function.
 
 Please note that the code herein may or may not be refactored into
 the OO-interface of the Math::Symbolic module in the future.
@@ -54,6 +69,10 @@ calling namespace. ':all' tag exports all of the following:
   div
   rot
   Jacobi
+  Hesse
+  TotalDifferential
+  DirectionalDerivative
+  TaylorPolyTwoDim
 
 =head1 SUBROUTINES
 
@@ -79,13 +98,16 @@ our %EXPORT_TAGS = (
           rot
           Jacobi
           Hesse
+          TotalDifferential
+          DirectionalDerivative
+          TaylorPolyTwoDim
           )
     ]
 );
 
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
-our $VERSION = '0.119';
+our $VERSION = '0.120';
 
 =begin comment
 
@@ -352,6 +374,318 @@ sub Hesse ($) {
     $function = parse_from_string($function)
       unless ref($function) =~ /^Math::Symbolic/;
     return Jacobi grad $function;
+}
+
+=head2 TotalDifferential
+
+This function computes the total differential of a scalar function of
+multiple variables in a certain point.
+
+First argument must be the function to derive. The second argument is
+an optional (literal) array of variable names (strings) and
+Math::Symbolic::Variable objects to be used for deriving. If the argument
+is not specified, the functions signature will be used. The third argument
+is also an optional array and denotes the set of variable (names) to use for
+indicating the point for which to evaluate the differential. It must have
+the same number of elements as the second argument.
+If not specified the variable names used as coordinated (the second argument)
+with an appended '_0' will be used as the point's components.
+
+=cut
+
+sub TotalDifferential ($;\@\@) {
+    my $function = shift;
+    $function = parse_from_string($function)
+      unless ref($function) =~ /^Math::Symbolic/;
+
+    my $sig = shift;
+    $sig = [ $function->signature() ] if not defined $sig;
+    my @sig = map { Math::Symbolic::Variable->new($_) } @$sig;
+
+    my $point = shift;
+    $point = [ map { $_->name() . '_0' } @sig ] if not defined $point;
+    my @point = map { Math::Symbolic::Variable->new($_) } @$point;
+
+    if ( @point != @sig ) {
+        croak "Signature dimension does not match point dimension.";
+    }
+
+    my @grad = grad $function, @sig;
+    if ( @grad != @sig ) {
+        croak "Signature dimension does not match function grad dim.";
+    }
+
+    foreach (@grad) {
+        my @point_copy = @point;
+        $_->implement( map { ( $_->name() => shift(@point_copy) ) } @sig );
+    }
+
+    my $d =
+      Math::Symbolic::Operator->new( '*', shift(@grad),
+        Math::Symbolic::Operator->new( '-', shift(@sig), shift(@point) ) );
+
+    $d +=
+      Math::Symbolic::Operator->new( '*', shift(@grad),
+        Math::Symbolic::Operator->new( '-', shift(@sig), shift(@point) ) )
+      while @grad;
+
+    return $d;
+}
+
+=head2 DirectionalDerivative
+
+DirectionalDerivative computes the directional derivative of a scalar function
+in the direction of a specified vector. With f being the function and X, A being
+vectors, it looks like this: (this is a partial derivative)
+
+  df(X)/dA = grad(f(X)) * (A / |A|)
+
+First argument must be the function to derive (either a string or a valid
+Math::Symbolic tree). Second argument must be vector into whose direction to
+derive. It is to be specified as an array of variable names and objects.
+Third argument is the optional signature to be used for computing the gradient.
+Please see the documentation of the grad function for details. It's
+dimension must match that of the directional vector.
+
+=cut
+
+sub DirectionalDerivative ($\@;\@) {
+    my $function = shift;
+    $function = parse_from_string($function)
+      unless ref($function) =~ /^Math::Symbolic/;
+
+    my $vec = shift;
+    my @vec = map { Math::Symbolic::Variable->new($_) } @$vec;
+
+    my $sig = shift;
+    $sig = [ $function->signature() ] if not defined $sig;
+    my @sig = map { Math::Symbolic::Variable->new($_) } @$sig;
+
+    if ( @vec != @sig ) {
+        croak "Signature dimension does not match vector dimension.";
+    }
+
+    my @grad = grad $function, @sig;
+    if ( @grad != @sig ) {
+        croak "Signature dimension does not match function grad dim.";
+    }
+
+    my $two     = Math::Symbolic::Constant->new(2);
+    my @squares = map { Math::Symbolic::Operator->new( '^', $_, $two ) } @vec;
+
+    my $abs_vec = shift @squares;
+    $abs_vec += shift(@squares) while @squares;
+
+    $abs_vec =
+      Math::Symbolic::Operator->new( '^', $abs_vec,
+        Math::Symbolic::Constant->new( 1 / 2 ) );
+
+    @vec = map { $_ / $abs_vec } @vec;
+
+    my $dd = Math::Symbolic::Operator->new( '*', shift(@grad), shift(@vec) );
+
+    $dd += Math::Symbolic::Operator->new( '*', shift(@grad), shift(@vec) )
+      while @grad;
+
+    return $dd;
+}
+
+=begin comment
+
+This computes the taylor binomial
+
+  (d/dx*(x-x0)+d/dy*(y-y0))^n * f(x0, y0)
+
+=end comment
+
+=cut
+
+sub _taylor_binomial {
+    my $f  = shift;
+    my $a  = shift;
+    my $b  = shift;
+    my $a0 = shift;
+    my $b0 = shift;
+    my $n  = shift;
+
+    $f = $f->new();
+    my $da = $a - $a0;
+    my $db = $b - $b0;
+
+    $f->implement( $a->name() => $a0, $b->name() => $b0 );
+
+    return Math::Symbolic::Constant->one() if $n == 0;
+    return $da *
+      Math::Symbolic::Operator->new( 'partial_derivative', $f->new(), $a0 ) +
+      $db *
+      Math::Symbolic::Operator->new( 'partial_derivative', $f->new(), $b0 )
+      if $n == 1;
+
+    my $n_obj = Math::Symbolic::Constant->new($n);
+
+    my $p_a_deriv = $f->new();
+    $p_a_deriv =
+      Math::Symbolic::Operator->new( 'partial_derivative', $p_a_deriv, $a0 )
+      for 1 .. $n;
+
+    my $res =
+      Math::Symbolic::Operator->new( '*', $p_a_deriv,
+        Math::Symbolic::Operator->new( '^', $da, $n_obj ) );
+
+    foreach my $k ( 1 .. $n - 1 ) {
+        $p_a_deriv = $p_a_deriv->op1()->new();
+
+        my $deriv = $p_a_deriv;
+        $deriv =
+          Math::Symbolic::Operator->new( 'partial_derivative', $deriv, $b0 )
+          for 1 .. $k;
+
+        my $k_obj = Math::Symbolic::Constant->new($k);
+        $res += Math::Symbolic::Operator->new(
+            '*',
+            Math::Symbolic::Constant->new( _over( $n, $k ) ),
+            Math::Symbolic::Operator->new(
+                '*', $deriv,
+                Math::Symbolic::Operator->new(
+                    '*',
+                    Math::Symbolic::Operator->new(
+                        '^', $da, Math::Symbolic::Constant->new( $n - $k )
+                    ),
+                    Math::Symbolic::Operator->new( '^', $db, $k_obj )
+                )
+            )
+        );
+    }
+
+    my $p_b_deriv = $f->new();
+    $p_b_deriv =
+      Math::Symbolic::Operator->new( 'partial_derivative', $p_b_deriv, $b0 )
+      for 1 .. $n;
+
+    $res +=
+      Math::Symbolic::Operator->new( '*', $p_b_deriv,
+        Math::Symbolic::Operator->new( '^', $db, $n_obj ) );
+
+    return $res;
+}
+
+=begin comment
+
+This computes
+
+  / n \
+  |   |
+  \ k /
+
+=end comment
+
+=cut
+
+sub _over {
+    my $n = shift;
+    my $k = shift;
+
+    return 1 if $k == 0;
+    return _over( $n, $n - $k ) if $k > $n / 2;
+
+    my $prod = 1;
+    my $i    = $n;
+    my $j    = $k;
+    while ( $i > $k ) {
+        $prod *= $i;
+        $prod /= $j if $j > 1;
+        $i--;
+        $j--;
+    }
+
+    return ($prod);
+}
+
+=begin comment
+
+_faculty() computes the product that is the faculty of the
+first argument.
+
+=end comment
+
+=cut
+
+sub _faculty {
+    my $num = shift;
+    croak "Cannot calculate faculty of negative numbers."
+      if $num < 0;
+    my $fac = Math::Symbolic::Constant->one();
+    return $fac if $num <= 1;
+    for ( my $i = 2 ; $i <= $num ; $i++ ) {
+        $fac *= Math::Symbolic::Constant->new($i);
+    }
+    return $fac;
+}
+
+=head2 TaylorPolyTwoDim
+
+This subroutine computes the Taylor Polynomial for functions of two
+variables. Please refer to the documentation of the TaylorPolynomial
+function in the Math::Symbolic::MiscCalculus package for an explanation
+of single dimensional Taylor Polynomials. This is the counterpart in
+two dimensions.
+
+First argument must be the function to approximate with the Taylor Polynomial
+either as a string or a Math::Symbolic tree. Second and third argument
+must be the names of the two coordinates. (These may alternatively be
+Math::Symbolic::Variable objects.) Fourth argument must be
+the degree of the Taylor Polynomial. Fifth and Sixth arguments are optional
+and specify the names of the variables to introduce as the point of
+approximation. These default to the names of the coordinates with '_0'
+appended.
+
+=cut
+
+sub TaylorPolyTwoDim ($$$$;$$) {
+    my $function = shift;
+    $function = parse_from_string($function)
+      unless ref($function) =~ /^Math::Symbolic/;
+
+    my $x1 = shift;
+    $x1 = Math::Symbolic::Variable->new($x1)
+      unless ref($x1) eq 'Math::Symbolic::Variable';
+    my $x2 = shift;
+    $x2 = Math::Symbolic::Variable->new($x2)
+      unless ref($x2) eq 'Math::Symbolic::Variable';
+
+    my $n = shift;
+
+    my $x1_0 = shift;
+    $x1_0 = $x1->name() . '_0' if not defined $x1_0;
+    $x1_0 = Math::Symbolic::Variable->new($x1_0)
+      unless ref($x1_0) eq 'Math::Symbolic::Variable';
+
+    my $x2_0 = shift;
+    $x2_0 = $x2->name() . '_0' if not defined $x2_0;
+    $x2_0 = Math::Symbolic::Variable->new($x2_0)
+      unless ref($x2_0) eq 'Math::Symbolic::Variable';
+
+    my $x1_n = $x1->name();
+    my $x2_n = $x2->name();
+
+    my $dx1 = $x1 - $x1_0;
+    my $dx2 = $x2 - $x2_0;
+
+    my $copy = $function->new();
+    $copy->implement( $x1_n => $x1_0, $x2_n => $x2_0 );
+
+    my $taylor = $copy;
+
+    return $taylor if $n == 0;
+
+    foreach my $k ( 1 .. $n ) {
+        $taylor +=
+          Math::Symbolic::Operator->new( '/',
+            _taylor_binomial( $function->new(), $x1, $x2, $x1_0, $x2_0, $k ),
+            _faculty($k) );
+    }
+
+    return $taylor;
 }
 
 1;

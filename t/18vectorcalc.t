@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 11;
+use Test::More tests => 19;
 
 #use lib 'lib';
 
@@ -129,4 +129,72 @@ ok(
     ),
     'basic Hesse usage'
 );
+
+my $differential = TotalDifferential 'x*y';
+ok( $differential->is_identical(<<'HERE'), 'basic TotalDifferential usage' );
+partial_derivative(x_0*y_0,x_0)*(x-x_0) +
+partial_derivative(x_0*y_0,y_0)*(y-y_0)
+HERE
+
+$differential = TotalDifferential 'x*y+z', @{ [qw/z x/] };
+ok(
+    $differential->is_identical(
+        <<'HERE'), 'more basic TotalDifferential usage' );
+partial_derivative(x_0*y+z_0,z_0)*(z-z_0) +
+partial_derivative(x_0*y+z_0,x_0)*(x-x_0)
+HERE
+
+$differential = TotalDifferential 'x*y+z', @{ [qw/z x/] }, @{ [qw/z0 x0/] };
+ok(
+    $differential->is_identical(
+        <<'HERE'), 'yet more basic TotalDifferential usage' );
+partial_derivative(x0*y+z0,z0)*(z-z0) +
+partial_derivative(x0*y+z0,x0)*(x-x0)
+HERE
+
+my $dderiv = DirectionalDerivative 'x*y+z',
+  @{ [ 'a', Math::Symbolic::Variable->new('b'), 'c' ] };
+ok( $dderiv->is_identical(<<'HERE'), 'basic DirectionalDerivative usage' );
+(((partial_derivative((x * y) + z, x)) * (a /
+( (((a ^ 2) + (b ^ 2)) + (c ^ 2)) ^ 0.5))) +
+((partial_derivative((x * y) + z, y)) * (b /
+((((a ^ 2) + (b ^ 2)) + (c ^ 2)) ^ 0.5)))) + ((partial_derivative(
+(x * y) + z, z)) * (c / ((((a ^ 2) + (b ^ 2)) + (c ^ 2)) ^ 0.5)))
+HERE
+
+$dderiv = DirectionalDerivative 'x*y+z',
+  @{ [ 'b', Math::Symbolic::Variable->new('a') ] }, @{ [ 'z', 'x' ] };
+ok( $dderiv->is_identical(<<'HERE'), 'basic DirectionalDerivative usage' );
+((partial_derivative((x * y) + z, z)) * (b / (((b ^ 2)
++ (a ^ 2)) ^ 0.5))) + ((partial_derivative((x * y) + z, x)
+) * (a / (((b^ 2) + (a ^ 2)) ^ 0.5)))
+HERE
+
+my $taylor = TaylorPolyTwoDim 'x*y', 'x', 'y', 0;
+ok(
+    $taylor->is_identical(
+        <<'HERE'), 'basic TaylorPolyTwoDim usage (degree 0)' );
+x_0 * y_0
+HERE
+
+$taylor = TaylorPolyTwoDim 'x*y', 'x', 'y', 1;
+ok(
+    $taylor->is_identical(
+        <<'HERE'), 'basic TaylorPolyTwoDim usage (degree 1)' );
+(x_0 * y_0) + ((((x - x_0) * (partial_derivative(x_0 * y_0, x_0))) +
+((y - y_0) * (partial_derivative(x_0 * y_0, y_0)))) / 1)
+HERE
+
+$taylor = TaylorPolyTwoDim 'x*y', 'x', 'y', 2;
+ok(
+    $taylor->is_identical(
+        <<'HERE'), 'basic TaylorPolyTwoDim usage (degree 2)' );
+((x_0 * y_0) + ((((x - x_0) * (partial_derivative(x_0 * y_0, x_0)))
++ ((y - y_0) * (partial_derivative(x_0 * y_0, y_0)))) / 1)) + (((((
+partial_derivative(partial_derivative(x_0 * y_0, x_0), x_0)) * ((x
+- x_0) ^ 2)) + (2 * ((partial_derivative(partial_derivative(x_0 *
+y_0, x_0), y_0)) * (((x - x_0) ^ 1) * ((y - y_0) ^ 1))))) + ((
+partial_derivative(partial_derivative(x_0 * y_0, y_0), y_0)) *
+((y - y_0) ^ 2))) / (1 * 2))
+HERE
 

@@ -70,7 +70,7 @@ our %EXPORT_TAGS = (
 
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
-our $VERSION = '0.119';
+our $VERSION = '0.120';
 
 =begin comment
 
@@ -95,7 +95,7 @@ sub _faculty {
 
 =head2 TaylorPolynomial
 
-This function (symbolically) computes the n-degree Taylor Polynomial
+This function (symbolically) computes the nth-degree Taylor Polynomial
 of a given function. Generally speaking, the Taylor Polynomial is an
 n-th degree polynomial that approximates the original function. It does
 so particularily well in the proximity of a certain point x0.
@@ -120,6 +120,9 @@ The fourth argument is optional and specifies the name of the variable to
 introduce as the point of approximation. May also be a variable object.
 It's the 'x0' above. If not specified, the name of this variable will be
 assumed to be the name of the function variable (the 'x') with '_0' appended.
+
+This routine is for functions of one variable only. There is an equivalent
+for functions of two variables in the Math::Symbolic::VectorCalculus package.
 
 =cut
 

@@ -1,12 +1,20 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.120  Thu Sep 11 16:42:51 2003
+	- Now mentioning "Hesse" as exportable function of M::S::VectorCalclus.
+	- Implemented TotalDifferential and DirectionalDerivative.
+	- Implemented TaylorPolyTwoDim.
+	- Cross-referenced the two taylor-related function docs.
+	- Tests and documentation for the new features.
+	- Added run17.pl to the distribution.
+
 0.119  Wed Sep 10 00:48:02 2003
 	- Improved exponentiation simplification.
 	- Now surpressing deep recursion warnings.
 	- Fixed a few bugs in the tree descending routines.
 	- Introduced M::S::MiscCalculus with TaylorPolynomial,
 	  TaylorErrorLagrange, and TaylorErrorCauchy.
-	- Added run16.pl to the package.
+	- Added run16.pl to the distribution.
 	- Referenced the new module in Math::Symbolic.
 	- Added tests.
 
