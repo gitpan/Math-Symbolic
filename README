@@ -1,4 +1,4 @@
-Math::Symbolic version 0.118
+Math::Symbolic version 0.119
 ============================
 
 Math::Symbolic is intended to offer symbolic calculation capabilities
@@ -41,6 +41,10 @@ the enclosed example scripts.
 Vectorial calculus including gradients, divergence, rotation, Jacobi-, and
 Hesse matrices has been supported by the Math::Symbolic::VectorCalculus module
 since version 0.117.
+
+Version 0.119 introduced more calculus related subroutines including
+the symbolic computation of Taylor Polynomials and the associated errors from
+Math::Symbolic trees.
 
 INSTALLATION
 

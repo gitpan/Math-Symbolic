@@ -40,6 +40,7 @@ package Math::Symbolic::Derivative;
 use 5.006;
 use strict;
 use warnings;
+no warnings 'recursion';
 
 use Carp;
 
@@ -62,7 +63,7 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw();
 
-our $VERSION = '0.118';
+our $VERSION = '0.119';
 
 =head1  CLASS DATA
 

@@ -47,8 +47,14 @@ generate trees with Perl code such as "$term * 5 * 'sin(omega*t+phi)'" which
 will create a tree of the existing tree $term times 5 times the sine of
 the vars omega times t plus phi.
 
-Routines related to vector calculus such as grad, div, rot, and Jacobi
-matrices are availlable through the Math::Symbolic::VectorCalculus module.
+There are several modules in the distribution that contain subroutines
+related to calculus. These are not loaded by Math::Symbolic by default.
+For example, Math::Symbolic::MiscCalculus contains routines to compute
+Taylor Polynomials and the associated errors.
+
+Routines related to vector calculus such as grad, div, rot, and Jacobi- and
+Hesse matrices are availlable through the Math::Symbolic::VectorCalculus
+module.
 
 =head2 EXPORT
 
@@ -135,7 +141,7 @@ our %EXPORT_TAGS = (
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT    = qw();
 
-our $VERSION = '0.118';
+our $VERSION = '0.119';
 
 =head1 CLASS DATA
 
@@ -286,6 +292,7 @@ L<Math::Symbolic::Custom::DefaultTests>
 L<Math::Symbolic::Custom::DefaultMods>
 
 L<Math::Symbolic::Derivative>
+L<Math::Symbolic::MiscCalculus>
 L<Math::Symbolic::VectorCalculus>
 
 L<Math::Symbolic::Parser>

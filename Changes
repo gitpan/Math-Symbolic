@@ -1,6 +1,16 @@
 Revision history for Perl extension Math::Symbolic.
 
-0.118  Tue Sep 9 13:18:24 2003
+0.119  Wed Sep 10 00:48:02 2003
+	- Improved exponentiation simplification.
+	- Now surpressing deep recursion warnings.
+	- Fixed a few bugs in the tree descending routines.
+	- Introduced M::S::MiscCalculus with TaylorPolynomial,
+	  TaylorErrorLagrange, and TaylorErrorCauchy.
+	- Added run16.pl to the package.
+	- Referenced the new module in Math::Symbolic.
+	- Added tests.
+
+0.118  Tue Sep  9 13:18:24 2003
 	- No more requiring Parse::RecDescent via Makefile.PL.
 	  After all, you can use Math::Symbolic without the parser
 	  (though you sacrifice the best piece of the interface
@@ -17,14 +27,14 @@ Revision history for Perl extension Math::Symbolic.
 	- Improved unary minus simplification.
 	- Added more unary minus parsing/simplification tests.
 
-0.117  Mon Sep 8 17:12:36 2003
+0.117  Mon Sep  8 17:12:36 2003
 	- Added M::S::VectorCalculus with rot, grad, div, Jacobi
 	- Referenced it in the docs to the main module.
 	- Added run15.pl example of usage.
 	- Added tests.
 	- Fixed bug in M::S::Variable
 
-0.116  Wed Sep 3 22:16:51 2003
+0.116  Wed Sep  3 22:16:51 2003
 	- Added META.yml
 	- Removed "Exporter" dependency in Makefile.PL. Who needs to install
 	  Exporter from CPAN anyway?
@@ -36,7 +46,7 @@ Revision history for Perl extension Math::Symbolic.
 	- Together, the above changes made the testsuite run 30% faster
 	  because many of the basic test scripts don't use the parser.
 
-0.115  Tue Sep 2 16:23:15 2003
+0.115  Tue Sep  2 16:23:15 2003
 	- Moved to sf.net
 	- Ran perltidy over the distro.
 	- Lots of doc patches including a section on extending the module.
@@ -249,7 +259,7 @@ Revision history for Perl extension Math::Symbolic.
 	- Some documentation added.
 
 0.050  Fri Jun  6 16:57:19 2003
-	- Moved the rules for partial derivatives to separatE
+	- Moved the rules for partial derivatives to separate
 	  subs and introduced a lookup-table.
 
 0.040  Thu Jun  5 01:12:23 2003

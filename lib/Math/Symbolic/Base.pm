@@ -24,6 +24,7 @@ package Math::Symbolic::Base;
 use 5.006;
 use strict;
 use warnings;
+no warnings 'recursion';
 
 use Carp;
 
@@ -44,7 +45,7 @@ use overload
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.118';
+our $VERSION = '0.119';
 our $AUTOLOAD;
 
 =head1 METHODS

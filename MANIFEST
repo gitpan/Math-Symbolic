@@ -15,6 +15,7 @@ lib/Math/Symbolic/Custom/DefaultMods.pm
 lib/Math/Symbolic/Custom/DefaultTests.pm
 lib/Math/Symbolic/Derivative.pm
 lib/Math/Symbolic/ExportConstants.pm
+lib/Math/Symbolic/MiscCalculus.pm
 lib/Math/Symbolic/Operator.pm
 lib/Math/Symbolic/Parser.pm
 lib/Math/Symbolic/Variable.pm
@@ -26,6 +27,7 @@ run12.pl
 run13.pl
 run14.pl
 run15.pl
+run16.pl
 run2.pl
 run3.pl
 run4.pl
@@ -52,3 +54,4 @@ t/15total_derivatives.t
 t/16tests.t
 t/17modifications.t
 t/18vectorcalc.t
+t/19misccalc.t

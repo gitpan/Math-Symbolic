@@ -41,7 +41,7 @@ vector calculus such as computing gradients, divergence, rotation,
 and Jacobi matrices of Math::Symbolic trees.
 
 Please note that the code herein may or may not be refactored into
-the OO-interface of the Math::Symbolic module.
+the OO-interface of the Math::Symbolic module in the future.
 
 =head2 EXPORT
 
@@ -85,7 +85,7 @@ our %EXPORT_TAGS = (
 
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
-our $VERSION = '0.118';
+our $VERSION = '0.119';
 
 =begin comment
 

@@ -49,6 +49,7 @@ package Math::Symbolic::Operator;
 use 5.006;
 use strict;
 use warnings;
+no warnings 'recursion';
 
 use Carp;
 
@@ -57,7 +58,7 @@ use Math::Symbolic::Derivative qw//;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.118';
+our $VERSION = '0.119';
 
 =head1 CLASS DATA
 
@@ -440,6 +441,7 @@ sub to_string {
     $string_type = 'infix'
       unless defined $string_type
       and $string_type eq 'prefix';
+    no warnings 'recursion';
 
     my $string = '';
     if ( $string_type eq 'prefix' ) {
@@ -574,6 +576,12 @@ sub simplify {
             and $o2->value() == 0 )
         {
             return Math::Symbolic::Constant->one();
+        }
+        elsif ( $tt2 == T_CONSTANT
+            and $type == B_EXP
+            and ( $o2->value() == 1 or $o2->special() eq 'one' ) )
+        {
+            return $o1;
         }
         elsif ( $tt2 == T_CONSTANT
             and $tt1 == T_OPERATOR

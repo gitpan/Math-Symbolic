@@ -31,8 +31,9 @@ package Math::Symbolic::Custom::DefaultMods;
 use 5.006;
 use strict;
 use warnings;
+no warnings 'recursion';
 
-our $VERSION = '0.118';
+our $VERSION = '0.119';
 
 use Math::Symbolic::Custom::Base;
 BEGIN { *import = \&Math::Symbolic::Custom::Base::aggregate_import }
