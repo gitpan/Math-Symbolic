@@ -58,7 +58,7 @@ use Math::Symbolic::Derivative qw//;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.133';
+our $VERSION = '0.134';
 
 =head1 CLASS DATA
 
@@ -862,13 +862,16 @@ If any don't, the call to apply() returns undef.
 
 To (temorarily, for this single method call) assign values to
 variables in the tree, you may provide key/value pairs of variable names
-and values.
+and values. Instead of passing a list of key/value pairs, you may also pass
+a single hash reference containing the variable mappings.
+
+You usually want to call the value() instead of this.
 
 =cut
 
 sub apply {
     my $self        = shift;
-    my @args        = @_;
+    my $args        = ( @_ == 1 ? $_[0] : +{ @_ } );
     my $op_type     = $self->type();
     my $op          = $Op_Types[$op_type];
     my $operands    = $self->{operands};
@@ -876,15 +879,20 @@ sub apply {
 
     if ( ref($application) ne 'CODE' ) {
         local @_;
+        local $@;
         eval {
             @_ = map {
-                my $v = $_->value(@args);
-                ( defined $v ? $v : die )
+                my $v = $_->value($args);
+                (
+                    defined $v
+                    ? $v
+                    : die
+                      "Undefined operand in Math::Symbolic::Operator->apply()"
+                  )
             } @$operands;
         };
         return undef if $@;
         return undef if $op_type == B_DIVISION and $_[1] == 0;
-        local $@;
         my $result = eval $application;
         die "Invalid operator application: $@" if $@;
         die "Undefined result from operator application."
@@ -906,8 +914,9 @@ value() without arguments requires that every variable in the tree contains
 a defined value attribute. Please note that this refers to every variable
 I<object>, not just every named variable.
 
-value() with one argument sets the object's value (not in case of
-operators).
+value() with one argument sets the object's value if you're dealing with
+Variables or Constants. In case of operators, a call with one argument will
+assume that the argument is a hash reference. (see next paragraph)
 
 value() with named arguments (key/value pairs) associates variables in the tree
 with the value-arguments if the corresponging key matches the variable name.
@@ -925,11 +934,11 @@ it temporarily), the call to value() returns undef.
 
 sub value {
     my $self = shift;
-    my @args = @_;
+    my $args = ( @_ == 1 ? $_[0] : +{@_} );
 
-    my $applied = $self->apply(@args);
+    my $applied = $self->apply($args);
     return undef unless defined $applied;
-    return $applied->value(@args);
+    return $applied->value($args);
 }
 
 =head2 Method signature

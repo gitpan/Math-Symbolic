@@ -63,7 +63,7 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw();
 
-our $VERSION = '0.133';
+our $VERSION = '0.134';
 
 =head1  CLASS DATA
 
@@ -126,7 +126,7 @@ sub _quotient_rule {
     my $m1  = Math::Symbolic::Operator->new( '*', $do1, $ops->[1] );
     my $m2  = Math::Symbolic::Operator->new( '*', $ops->[0], $do2 );
     my $m3  = Math::Symbolic::Operator->new( '*', $ops->[1], $ops->[1] );
-    my $a   = Math::Symbolic::Operator->new( '+', $m1, $m2 );
+    my $a   = Math::Symbolic::Operator->new( '-', $m1, $m2 );
     $tree = Math::Symbolic::Operator->new( '/', $a, $m3 );
     return $tree;
 }

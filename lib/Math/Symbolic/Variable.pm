@@ -42,7 +42,7 @@ use Math::Symbolic::ExportConstants qw/:all/;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.133';
+our $VERSION = '0.134';
 
 =head1 METHODS
 
@@ -106,12 +106,15 @@ value() without arguments requires that every variable in the tree contains
 a defined value attribute. Please note that this refers to every variable
 I<object>, not just every named variable.
 
-value() with one argument sets the object's value.
+value() with one argument sets the object's value if you're dealing with
+Variables or Constants. In case of operators, a call with one argument will
+assume that the argument is a hash reference. (see next paragraph)
 
 value() with named arguments (key/value pairs) associates variables in the tree
 with the value-arguments if the corresponging key matches the variable name.
-(Can one say this any more complicated?) Since version 0.132, it's also valid
-to pass a single hash reference instead of a list.
+(Can one say this any more complicated?) Since version 0.132, an
+equivalent and valid syntax is to pass a single hash reference instead of a
+list.
 
 Example: $tree->value(x => 1, y => 2, z => 3, t => 0) assigns the value 1 to
 any occurrances of variables of the name "x", aso.
@@ -123,17 +126,17 @@ it temporarily), the call to value() returns undef.
 
 sub value {
     my $self = shift;
-    if ( @_ == 1 and not ref( $_[0] ) eq 'HASH' ) {
+    if ( @_ == 0 ) {
+        return $self->{value};
+    }
+    elsif ( @_ == 1 and not ref( $_[0] ) eq 'HASH' ) {
         $self->{value} = shift;
         return $self->{value};
     }
-    elsif ( @_ == 0 ) {
-        return $self->{value};
-    }
     else {
-        my %args = ( @_ == 1 ? %{$_[0]} : @_ );
-        if ( exists $args{ $self->{name} } ) {
-            return $args{ $self->{name} };
+        my $args = ( @_ == 1 ? $_[0] : +{@_} );
+        if ( exists $args->{ $self->{name} } ) {
+            return $args->{ $self->{name} };
         }
         else {
             return $self->{value};

@@ -49,8 +49,12 @@ the vars omega times t plus phi.
 
 There are several modules in the distribution that contain subroutines
 related to calculus. These are not loaded by Math::Symbolic by default.
-For example, Math::Symbolic::MiscCalculus contains routines to compute
-Taylor Polynomials and the associated errors.
+Furthermore, there are several extensions to Math::Symbolic availlable
+from CPAN as separate distributions. Please refer to L<SEE ALSO>
+for an incomplete list of these.
+
+For example, Math::Symbolic::MiscCalculus come with Math::Symbolic and
+contains routines to compute Taylor Polynomials and the associated errors.
 
 Routines related to vector calculus such as grad, div, rot, and Jacobi- and
 Hesse matrices are availlable through the Math::Symbolic::VectorCalculus
@@ -147,7 +151,7 @@ our %EXPORT_TAGS = (
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT    = qw();
 
-our $VERSION = '0.133';
+our $VERSION = '0.134';
 
 =head1 CLASS DATA
 
@@ -299,6 +303,8 @@ New versions of this module can be found on
 http://steffen-mueller.net or CPAN. The module development takes place on
 Sourceforge at http://sourceforge.net/projects/math-symbolic/
 
+The following modules come with this distribution:
+
 L<Math::Symbolic::ExportConstants>,
 L<Math::Symbolic::AuxFunctions>
 
@@ -321,5 +327,22 @@ L<Math::Symbolic::MiscAlgebra>
 L<Math::Symbolic::Parser>,
 L<Math::Symbolic::Parser::Precompiled>,
 L<Math::Symbolic::Compiler>
+
+The following modules are extensions on CPAN that do not come with this
+distribution in order to keep the distribution size reasonable.
+
+L<Math::SymbolicX::BigNum> (Big number support for the Math::Symbolic parser)
+
+L<Math::SymbolicX::Complex> (Complex number support for the Math::Symbolic
+parser)
+
+L<Math::SymbolicX::ParserExtensionFactory> (Generate parser extensions for the
+Math::Symbolic parser)
+
+L<Math::Symbolic::Custom::CCompiler> (Compile Math::Symbolic trees to C
+for speed)
+
+L<Math::Symbolic::Custom::ErrorPropagation> (Calculate Gaussian Error
+Propagation)
 
 =cut

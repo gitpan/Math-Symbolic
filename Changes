@@ -1,5 +1,15 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.134  Thu Jul 29 17:51:53 2004
+	- Corrected embarassing derivative bug.
+	- Modified value() and apply() behaviour. Should not break
+	  compatibility but increase speed.
+	- Constants that are created with an undefined value now
+	  throw a fatal error. Previous behaviour was to do so on value()
+	  calls which turned out to be hard to debug.
+	  This may break compatibility in bad code.
+	- Tests for the above.
+
 0.133  Mon May 10 10:12:44 2004
 	- Documentation fixes.
 	- Parser returns undef if the input text hasn't been consumed

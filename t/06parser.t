@@ -89,6 +89,5 @@ my $res;
 eval {
 $res = Math::Symbolic->parse_from_string('blah[blubb');
 };
-ok(!defined($res),
-'Parse fails on invalid string.');
+ok((not defined($res)), 'Parse fails on invalid string.');
 

@@ -11,7 +11,7 @@ use Math::Symbolic::ExportConstants qw/:all/;
 my $var = Math::Symbolic::Variable->new();
 my $a   = $var->new( 'a' => 2 );
 
-my $c   = Math::Symbolic::Constant->new();
+my $c   = Math::Symbolic::Constant->zero();
 my $e   = $c->euler();
 my $two = $c->new(2);
 

@@ -1,17 +1,14 @@
---- #YAML:1.0
-name: Math-Symbolic
-version: 0.133
-abstract: Symbolic calculations
-license: perl
-distribution_type: module
+# http://module-build.sourceforge.net/META-spec.html
+#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
+name:         Math-Symbolic
+version:      0.134
+version_from: lib/Math/Symbolic.pm
+installdirs:  site
 requires:
-  Test::More: 0.44
-  Data::Dumper: 0
-  Memoize: 1.01
-recommends:
-  Parse::RecDescent: 0
-  Pod::Coverage: 0.11
-  Test::Distribution: 0
-build_requires:
-  Parse::RecDescent: 0
-dynamic_config: 0
+    Data::Dumper:                  0
+    Memoize:                       1.01
+    Parse::RecDescent:             0
+    Test::More:                    0
+
+distribution_type: module
+generated_by: ExtUtils::MakeMaker version 6.17

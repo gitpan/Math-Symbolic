@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 18;
+use Test::More tests => 19;
 
 #use lib 'lib';
 
@@ -13,7 +13,12 @@ my $a   = $var->new( 'a' => 2 );
 
 print "Vars: a=" . $a->value() . " (Value is optional)\n\n";
 
-my $const = Math::Symbolic::Constant->new();
+my $const;
+local $@;
+eval {$const = Math::Symbolic::Constant->new();};
+ok( defined($@) && $@ ne '', 'Constant with undefined value throws exception' );
+
+$const = Math::Symbolic::Constant->new(2);
 ok( ref($const) eq 'Math::Symbolic::Constant', 'Constant prototype' );
 
 my $ten = $const->new(10);
@@ -121,6 +126,6 @@ is_deeply( [ $term2->explicit_signature() ], [qw/a b/], 'explicit_signature' );
 
 $variable1->set_value({a => 2});
 ok( $variable1->value() == 2, 'new (as of 0.132) syntax for set_value()' );
-ok( $variable1->value({a=>3}) == 3, 'new (as of 0.132) syntax for value()' );
+ok( $variable1->value({ a => 3 }) == 3, 'new (as of 0.132) syntax for value()' );
 
 

@@ -13,7 +13,7 @@ my $a   = $var->new( 'a' => 2 );
 
 print "Vars: a=" . $a->value() . " (Value is optional)\n\n";
 
-my $const = Math::Symbolic::Constant->new();
+my $const = Math::Symbolic::Constant->zero();
 my $ten   = $const->new(10);
 
 my $op   = Math::Symbolic::Operator->new();

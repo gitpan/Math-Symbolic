@@ -27,12 +27,13 @@ package Math::Symbolic::Constant;
 use 5.006;
 use strict;
 use warnings;
+use Carp;
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.133';
+our $VERSION = '0.134';
 
 =head1 METHODS
 
@@ -55,6 +56,9 @@ sub new {
 
     my $value = ( @_ && !%args ? shift: $args{value} );
     $value = $proto->value() if !defined($value) and ref($proto);
+
+    croak("Math::Symbolic::Constant created with undefined value!")
+      if not defined($value);
 
     my $self = {
         special => '',
@@ -132,12 +136,15 @@ value() without arguments requires that every variable in the tree contains
 a defined value attribute. Please note that this refers to every variable
 I<object>, not just every named variable.
 
-value() with one argument sets the object's value.
+value() with one argument sets the object's value if you're dealing with
+Variables or Constants. In case of operators, a call with one argument will
+assume that the argument is a hash reference. (see next paragraph)
 
 value() with named arguments (key/value pairs) associates variables in the tree
 with the value-arguments if the corresponging key matches the variable name.
-(Can one say this any more complicated?) Since version 0.132, an equivalent
-and valid syntax is to pass a single hash reference instead of a list.
+(Can one say this any more complicated?) Since version 0.132, an
+equivalent and valid syntax is to pass a single hash reference instead of a
+list.
 
 Example: $tree->value(x => 1, y => 2, z => 3, t => 0) assigns the value 1 to
 any occurrances of variables of the name "x", aso.
@@ -153,8 +160,9 @@ sub value {
         $self->{value}   = shift;
         $self->{special} = undef;    # !!!FIXME!!! one day, this
                                      # needs better handling.
+        croak "Constant assigned undefined value!"
+          if not defined $self->{value};
     }
-    die "Constant has undefined value!" if not defined $self->{value};
     return $self->{value};
 }
 
