@@ -31,6 +31,10 @@ Version 0.105:
 	+ Tests for the above.
 	+ Documentation for the above changes
 
+Version 0.108:
+	- Refactor the to_sub.pl code to a package that allows to compile
+	  Math::Symbolic trees to subroutines and/or code.
+
 Version 0.110: (major milestone!)
 	- Instead of all terms being either a Math::Symbolic::Operator, a
 	  Math::Symbolic::Variable, or a Math::Symbolic::Constant object,

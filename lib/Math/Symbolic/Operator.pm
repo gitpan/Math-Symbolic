@@ -48,7 +48,7 @@ use Math::Symbolic::Derivative qw//;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.103';
+our $VERSION = '0.104';
 
 our %Op_Symbols = (
 	'+'     => B_SUM,

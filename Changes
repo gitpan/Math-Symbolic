@@ -1,5 +1,9 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.104  Sat Jul  5 19:17:00 2003
+	- Added to_sub.pl to the distribution. (Math::Symbolic -> Perl sub
+	  compiler.) This is just a proof-of-concept.
+
 0.103  Thu Jun  26 15:08:12 2003
 	- Fixed test errors.
 	- Added (very little) documentation.

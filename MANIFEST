@@ -12,6 +12,7 @@ lib/Math/Symbolic/ExportConstants.pm
 lib/Math/Symbolic/Operator.pm
 lib/Math/Symbolic/Parser.pm
 lib/Math/Symbolic/Variable.pm
+to_sub.pl
 run.pl
 run10.pl
 run2.pl
