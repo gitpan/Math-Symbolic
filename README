@@ -1,4 +1,4 @@
-Math::Symbolic version 0.128
+Math::Symbolic version 0.129
 ============================
 
 Math::Symbolic is intended to offer symbolic calculation capabilities
@@ -84,7 +84,7 @@ math-symbolic-develop at lists dot sourceforge dot net
 
 COPYRIGHT AND LICENCE
 
-Copyright (C) 2003 Steffen Mueller
+Copyright (C) 2003-2004 Steffen Mueller
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself. 

@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 8;
+use Test::More tests => 7;
 
 #use lib 'lib';
 
@@ -32,20 +32,6 @@ HERE
     [ 'z*x', 'z*y', 'z*z', 'c' ],
     [ 'e*x', 'e*y', 'e*z', 'd' ],
 );
-
-ok( det(@matrix)->is_identical(<<'HERE'), '4x4 det' );
-((((y * x) * ((((((((z * y) * (z * z)) * d) + (((z * y) * (e * z)) * b))
-+ (((e * y) * (z * z)) * c)) - ((b * (z * z)) * (e * y))) - ((c * (e * z))
-* (z * y))) - ((d * (z * z)) * (z * y)))) - ((y * y) * ((((((((y * x) *
-(z * z)) * d) + (((z * x) * (e * z)) * a)) + (((e * x) * (y * z)) * c))
-- ((a * (z * z)) * (e * x))) - ((c * (e * z)) * (y * x))) - ((d * (y * z))
-* (z * x))))) + ((y * z) * ((((((((y * x) * (z * y)) * d) + (((z * x) *
-(e * y)) * a)) + (((e * x) * (y * y)) * c)) - ((a * (z * y)) * (e * x)))
-- ((c * (e * y)) * (y * x))) - ((d * (y * y)) * (z * x))))) - (a *
-((((((((y * x) * (z * y)) * (e * z)) + (((z * x) * (e * y)) * (y * z
-))) + (((e * x) * (y * y)) * (z * z))) - (((y * z) * (z * y)) * (e * x)))
- - (((z * z) * (e * y)) * (y * x))) - (((e * z) * (y * y)) * (z * x))))
-HERE
 
 ok(bell_polynomial(0)->is_identical('1'), 'bell_polynomial(0)');
 ok(bell_polynomial(1)->is_identical('x'), 'bell_polynomial(1)');

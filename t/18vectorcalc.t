@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 20;
+use Test::More tests => 19;
 
 #use lib 'lib';
 
@@ -45,28 +45,28 @@ ok(
     'more grad usage with custom signature'
 );
 
-my @func1 = ( 'x+y', 'x+z', 'z*y^2' );
+my @func1 = ( 'x+y', 'x+z', 'z*y' );
 my @func2 = map { parse_from_string($_) } @func1;
 
 my $div = div @func1;
 ok( $div->is_identical(<<'HERE'), 'simple divergence usage' );
 ((partial_derivative(x + y, x)) +
  (partial_derivative(x + z, y))) +
-(partial_derivative(z * (y ^ 2), z))
+(partial_derivative(z * y, z))
 HERE
 
 $div = div @func2;
 ok( $div->is_identical(<<'HERE'), 'more simple divergence usage' );
 ((partial_derivative(x + y, x)) +
  (partial_derivative(x + z, y))) +
-(partial_derivative(z * (y ^ 2), z))
+(partial_derivative(z * y, z))
 HERE
 
 $div = div @func2, @{ [ 'x', 'z', 'y' ] };
 ok( $div->is_identical(<<'HERE'), 'divergence usage with custom signature' );
 ((partial_derivative(x + y, x)) +
  (partial_derivative(x + z, z))   ) +
-(partial_derivative(z * (y ^ 2), y))
+(partial_derivative(z * y, y))
 HERE
 
 my @rot = rot @func1;
@@ -74,10 +74,10 @@ ok(
     (
               @rot == 3
           and $rot[0]->is_identical(<<'ROT0')
-(partial_derivative(z * (y ^ 2), y)) - (partial_derivative(x + z, z))
+(partial_derivative(z * y, y)) - (partial_derivative(x + z, z))
 ROT0
           and $rot[1]->is_identical(<<'ROT1'),
-(partial_derivative(x + y, z)) - (partial_derivative(z * (y ^ 2), x))
+(partial_derivative(x + y, z)) - (partial_derivative(z * y, x))
 ROT1
           and $rot[2]->is_identical(<<'ROT2'),
 (partial_derivative(x + z, x)) - (partial_derivative(x + y, y))
@@ -93,9 +93,9 @@ my @expected = (
     'partial_derivative(x + z, x)',
     'partial_derivative(x + z, y)',
     'partial_derivative(x + z, z)',
-    'partial_derivative(z * (y ^ 2), x)',
-    'partial_derivative(z * (y ^ 2), y)',
-    'partial_derivative(z * (y ^ 2), z)',
+    'partial_derivative(z * y, x)',
+    'partial_derivative(z * y, y)',
+    'partial_derivative(z * y, z)',
 );
 my @matrix = Jacobi @func1;
 ok(
@@ -109,23 +109,18 @@ ok(
 );
 
 @expected = (
-    'partial_derivative(partial_derivative((x * y) + z, x), x)',
-    'partial_derivative(partial_derivative((x * y) + z, x), y)',
-    'partial_derivative(partial_derivative((x * y) + z, x), z)',
-    'partial_derivative(partial_derivative((x * y) + z, y), x)',
-    'partial_derivative(partial_derivative((x * y) + z, y), y)',
-    'partial_derivative(partial_derivative((x * y) + z, y), z)',
-    'partial_derivative(partial_derivative((x * y) + z, z), x)',
-    'partial_derivative(partial_derivative((x * y) + z, z), y)',
-    'partial_derivative(partial_derivative((x * y) + z, z), z)'
+    'partial_derivative(partial_derivative(x * y, x), x)',
+    'partial_derivative(partial_derivative(x * y, x), y)',
+    'partial_derivative(partial_derivative(x * y, y), x)',
+    'partial_derivative(partial_derivative(x * y, y), y)',
 );
-@matrix = Hesse 'x*y+z';
+@matrix = Hesse 'x*y';
 ok(
     (
-        @matrix == 3
-          and
-          ( grep { $_->is_identical( shift @expected ) } map { (@$_) } @matrix )
-          == 9
+	@matrix == 2
+          and not
+          ( grep { not $_->is_identical( shift @expected ) }
+	    map { (@$_) } @matrix )
     ),
     'basic Hesse usage'
 );
@@ -183,19 +178,6 @@ ok(
         <<'HERE'), 'basic TaylorPolyTwoDim usage (degree 1)' );
 (x_0 * y_0) + ((((x - x_0) * (partial_derivative(x_0 * y_0, x_0))) +
 ((y - y_0) * (partial_derivative(x_0 * y_0, y_0)))) / 1)
-HERE
-
-$taylor = TaylorPolyTwoDim 'x*y', 'x', 'y', 2;
-ok(
-    $taylor->is_identical(
-        <<'HERE'), 'basic TaylorPolyTwoDim usage (degree 2)' );
-((x_0 * y_0) + ((((x - x_0) * (partial_derivative(x_0 * y_0, x_0)))
-+ ((y - y_0) * (partial_derivative(x_0 * y_0, y_0)))) / 1)) + (((((
-partial_derivative(partial_derivative(x_0 * y_0, x_0), x_0)) * ((x
-- x_0) ^ 2)) + (2 * ((partial_derivative(partial_derivative(x_0 *
-y_0, x_0), y_0)) * (((x - x_0) ^ 1) * ((y - y_0) ^ 1))))) + ((
-partial_derivative(partial_derivative(x_0 * y_0, y_0), y_0)) *
-((y - y_0) ^ 2))) / (1 * 2))
 HERE
 
 my @functions = (

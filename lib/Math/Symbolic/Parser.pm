@@ -117,7 +117,7 @@ use Math::Symbolic::ExportConstants qw/:all/;
 #use Parse::RecDescent;
 my $Required_Parse_RecDescent = 0;
 
-our $VERSION = '0.128';
+our $VERSION = '0.129';
 our $DEBUG   = 0;
 
 our $Grammar = <<'GRAMMAR_END';
@@ -134,7 +134,7 @@ our $Grammar = <<'GRAMMAR_END';
 			{
 				warn 'addition '
 				  if $Math::Symbolic::Parser::DEBUG;
-				Math::Symbolic::Parser::_leftop_list(
+				Math::Symbolic::Parser::_left_right_op_list(
 				  'addition', @item
 				)
 			}
@@ -146,7 +146,7 @@ our $Grammar = <<'GRAMMAR_END';
 			{
 				warn 'multiplication '
 				  if $Math::Symbolic::Parser::DEBUG;
-				Math::Symbolic::Parser::_leftop_list(
+				Math::Symbolic::Parser::_left_right_op_list(
 				  'multiplication', @item
 				)
 			}
@@ -155,10 +155,10 @@ our $Grammar = <<'GRAMMAR_END';
 	       | '/'
 
 
-	exp: <leftop:factor exp_op factor>
+	exp: <rightop:factor exp_op factor>
 			{
 				warn 'exp ' if $Math::Symbolic::Parser::DEBUG;
-				Math::Symbolic::Parser::_leftop_list(
+				Math::Symbolic::Parser::_left_right_op_list(
 				  'exp', @item
 				)
 			}
@@ -361,14 +361,14 @@ GRAMMAR_END
 
 =begin comment
 
-This subroutine (_leftop_list) is used by the parser to generate
+This subroutine (_left_right_op_list) is used by the parser to generate
 Math::Symbolic trees.
 
 =end comment
 
 =cut
 
-sub _leftop_list {
+sub _left_right_op_list {
     my $type = shift;
     my $item = $_[1];
 
@@ -403,28 +403,43 @@ sub _leftop_list {
     my $tree;
 
     if ( $type eq 'exp' ) {
+        @ops  = reverse @ops;
         $tree = $ops[0][1];
         shift @ops;
+        foreach my $elem (@ops) {
+            my $op      = $elem->[0];
+            my $op_type = $Math::Symbolic::Operator::Op_Symbols{$op};
+
+            die "Invalid operator: '$op'"
+              unless defined $op_type;
+
+            $tree = Math::Symbolic::Operator->new(
+                {
+                    type     => $op_type,
+                    operands => [ $elem->[1], $tree ],
+                }
+            );
+        }
     }
     elsif ( $type eq 'multiplication' or $type eq 'addition' ) {
         $tree = $ops[0][1];
         shift @ops;
+        foreach my $elem (@ops) {
+            my $op      = $elem->[0];
+            my $op_type = $Math::Symbolic::Operator::Op_Symbols{$op};
+
+            die "Invalid operator: '$op'"
+              unless defined $op_type;
+
+            $tree = Math::Symbolic::Operator->new(
+                {
+                    type     => $op_type,
+                    operands => [ $tree, $elem->[1] ],
+                }
+            );
+        }
     }
 
-    foreach my $elem (@ops) {
-        my $op      = $elem->[0];
-        my $op_type = $Math::Symbolic::Operator::Op_Symbols{$op};
-
-        die "Invalid operator: '$op'"
-          unless defined $op_type;
-
-        $tree = Math::Symbolic::Operator->new(
-            {
-                type     => $op_type,
-                operands => [ $tree, $elem->[1] ],
-            }
-        );
-    }
     return $tree;
 }
 

@@ -58,7 +58,7 @@ use Math::Symbolic::Derivative qw//;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.128';
+our $VERSION = '0.129';
 
 =head1 CLASS DATA
 
@@ -682,6 +682,144 @@ sub simplify {
                 return $self->new( '*', $o2, $o1 );
             }
         }
+	
+	if ( $type == B_SUM ) {
+		my @ops;
+		my @vars;
+		my @neg_vars;
+		my @const;
+		my @todo = ($o1, $o2);
+		while (@todo) {
+			if ($todo[0]->term_type() == T_OPERATOR) {
+				my $t = $todo[0]->type();
+				if ($t == B_SUM) {
+					push @todo, @{$todo[0]->{operands}};
+					shift @todo;
+				}
+				elsif ($t == B_DIFFERENCE) {
+					push @todo, $todo[0]->op1(),
+						Math::Symbolic::Operator->new(
+							'neg', $todo[0]->op2()
+						);
+				}
+				elsif ($t == U_MINUS) {
+					my $op = $todo[0]->op1();
+					my $tt = $op->term_type();
+					if ($tt == T_VARIABLE) {
+						push @neg_vars, $op;
+						shift @todo;
+					}
+					elsif ($tt == T_CONSTANT) {
+						push @const, $todo[0]->value();
+						shift @todo;
+					}
+					else {
+						my $ti = $op->type();
+						if ($ti == U_MINUS) {
+							push @todo, $op->op1();
+							shift @todo;
+						}
+						elsif ($ti == B_SUM) {
+						push @todo, 
+						Math::Symbolic::Operator->new(
+							'neg', $op->op1()
+						),
+						Math::Symbolic::Operator->new(
+							'neg', $op->op2()
+						);
+						shift @todo;
+						}
+						elsif ($ti == B_DIFFERENCE) {
+						push @todo, $op->op1(),
+						Math::Symbolic::Operator->new(
+							'neg', $op->op2()
+						);
+						shift @todo;
+						}
+					}
+				}
+				else {
+					push @ops, shift @todo;
+				}
+			}
+			elsif ($todo[0]->term_type() == T_VARIABLE) {
+				push @vars, shift @todo;
+			}
+			else {
+				push @const, shift @todo;
+			}
+		}
+		my %vars;
+		foreach (@vars) {
+			my $name = $_->name();
+			if (exists $vars{$name}) {
+				push @{$vars{$name}}, $_;
+			}
+			else {
+				$vars{$_->name()} = [$_];
+			}
+		}
+		my @leftoverneg;
+		foreach (@neg_vars) {
+			my $name = $_->name();
+			push(@leftoverneg, $_), next if not exists $vars{$name};
+			shift @{ $vars{ $_->name() } };
+			delete $vars{$name} if not @{$vars{$name}};
+		}
+		my $const = Math::Symbolic::Constant->zero();
+		$const += $_ foreach @const;
+		$const = $const->simplify();
+		
+		foreach (keys %vars) {
+			my $ary = $vars{$_};
+			if (@$ary == 1) {
+				$const = Math::Symbolic::Operator->new(
+					'+', $const, $ary->[0]
+				);
+			}
+			else {
+				$const = Math::Symbolic::Operator->new(
+					'+', $const,
+					Math::Symbolic::Operator->new(
+						'*',
+						Math::Symbolic::Constant->new(
+							scalar(@$ary)
+						),
+						$ary->[0]
+					)
+				);
+			}
+		}
+		my @newops;
+		foreach my $out (0..$#ops) {
+			next if not defined $ops[$out];
+			my $identical = 0;
+			foreach my $in (0..$#ops) {
+				next if $in == $out or not defined $ops[$in];
+				if ($ops[$out]->is_identical($ops[$in])) {
+					$identical++;
+					$ops[$in] = undef;
+				}
+			}
+			if (not $identical) {
+				push @newops, $ops[$out];
+			}
+			else {
+				push @newops, Math::Symbolic::Operator->new(
+					'*', $identical+1, $ops[$out]
+				);
+			}
+		}
+		if (@newops) {
+			my $sumops = shift @newops;
+			$sumops += $_ foreach @newops;
+			$const += $sumops;
+		}
+		
+		$const -= $_ foreach @leftoverneg;
+
+		return $const;
+	}
     }
     elsif ( $self->arity() == 1 ) {
         my $o    = $operands->[0];

@@ -1,6 +1,14 @@
 Revision history for Perl extension Math::Symbolic.
 
-0.128  Sat Feb  4 13:14:12 2004
+0.129  Sat Feb  7 19:04:50 2004
+	- Fixed associativity bug in parser for exponentiation.
+	- Regenerated the Precompiled Parser.
+	- Improved simplification of sums and differences.
+	- Removed some tests that tested methods redundantly with too much
+	  data. These tests unduly slowed down testing to the point that
+	  automatted testing facilities considered the tests failed.
+
+0.128  Wed Feb  4 13:14:12 2004
 	- Fixed bug in Constant.pm about special tag not being unset when
 	  the value of the constant is changed.
 	- Documented an important gotcha with the replace() method in Base.pm
