@@ -98,7 +98,7 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw();
 
-our $VERSION = '0.131';
+our $VERSION = '0.132';
 
 =head2 ($code, $trees) = compile_to_code($tree, $vars)
 
@@ -124,7 +124,7 @@ that is slow.
 
 sub compile_to_code {
     my $tree = shift;
-    $tree = shift if $tree eq __PACKAGE__;
+    $tree = shift if not ref $tree and $tree eq __PACKAGE__;
 
     my $order = shift || [];
     my %order;

@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 16;
+use Test::More tests => 18;
 
 #use lib 'lib';
 
@@ -118,4 +118,9 @@ my $term2 = $variable1 + Math::Symbolic::Variable->new( b => 6 );
 
 is_deeply( [ $term2->signature() ], [qw/a b x y z/], 'signature' );
 is_deeply( [ $term2->explicit_signature() ], [qw/a b/], 'explicit_signature' );
+
+$variable1->set_value({a => 2});
+ok( $variable1->value() == 2, 'new (as of 0.132) syntax for set_value()' );
+ok( $variable1->value({a=>3}) == 3, 'new (as of 0.132) syntax for value()' );
+
 

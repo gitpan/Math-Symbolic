@@ -2,8 +2,7 @@
 use strict;
 use warnings;
 
-use lib '../lib';
-
+use lib '../lib/';
 use Math::Symbolic qw/:all/;
 use Math::Symbolic::VectorCalculus qw/:all/;
 

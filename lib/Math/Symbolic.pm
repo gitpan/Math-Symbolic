@@ -147,7 +147,7 @@ our %EXPORT_TAGS = (
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT    = qw();
 
-our $VERSION = '0.131';
+our $VERSION = '0.132';
 
 =head1 CLASS DATA
 
@@ -248,6 +248,23 @@ Furthermore, some contexts have been overloaded with particular behaviour:
 representation of the object. '0+' (numerical context) has been overloaded
 to produce the value of the object. 'bool' (boolean context) has been
 overloaded to produce the value of the object.
+
+If one of the operands of an overloaded operator is a Math::Symbolic tree and
+the over is undef, the module will throw an error I<unless the operator
+is a + or a ->. If the operator is an addition, the result will be the
+original Math::Symbolic tree. If the operator is a subtraction, the result will
+be the negative of the Math::Symbolic tree. Reason for this inconsistent
+behaviour is that it makes idioms like the following possible:
+
+  @objects = (... list of Math::Symbolic trees ...);
+  $sum += $_ foreach @objects;
+
+Without this behaviour, you would have to shift the first object into $sum
+before using it. This is not a problem in this case, but if you are applying
+some complex calculation to each object in the loop body before adding it to
+the sum, you'd have to either split the code into two loops or replicate the
+code required for the complex calculation when shift()ing the first object
+into $sum.
 
 =head2 EXTENDING THE MODULE
 

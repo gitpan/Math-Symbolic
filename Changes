@@ -1,5 +1,23 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.132  Mon Apr 12 18:02:27 2004
+	- Added additional syntax to value() and set_value() methods
+	  as suggested by Henrik Edlund.
+	- Fixed bug in precompile_grammar.pl that broke the precompiled
+	  parser on many systems.
+	- Fixed bug in Math::Symbolic::Compiler that caused exports to fail.
+	- Reworked some of the examples. Particularily added an example that
+	  graphically demonstrates the differences between different Taylor
+	  polynomials. (examples/run16.pl)
+	- Changed the overloaded interface: If you add or subtract an
+	  existing Math::Symbolic object to/from <undef>, the result will be
+	  the Math::Symbolic::* object. (in case of the subtraction, the result
+	  will be a unary minus and the Math::Symbolic::* object.)
+	  Example where this is very useful:
+	  my @objects = (...some objects...);
+	  my $sum;
+	  $sum += $_ foreach @objects;
+
 0.131  Wed Mar 31 14:55:13 2004
 	- Changed $VERSION = 0.xxx; to ...= '0.xxx'; since that broke
 	  the Test::Distribution version tests.

@@ -40,9 +40,8 @@ L<Math::Symbolic::Parser>
 =cut
 
 package Math::Symbolic::Parser::Precompiled;
-our $VERSION = '0.131';
+our $VERSION = '0.132';
 use Parse::RecDescent;
-
 {
     my $ERRORS;
 
@@ -50,7 +49,6 @@ use Parse::RecDescent;
     use strict;
     use vars qw($skip $AUTOLOAD  );
     $skip = '\s*';
-
     {
         local $SIG{__WARN__} = sub { 0 };
 
@@ -63,7 +61,6 @@ s/^Parse::RecDescent::Math::Symbolic::Parser::Precompiled/Parse::RecDescent/;
             goto &{$AUTOLOAD};
           }
     }
-
     push @Parse::RecDescent::Math::Symbolic::Parser::Precompiled::ISA,
       'Parse::RecDescent';
 
@@ -74,16 +71,13 @@ s/^Parse::RecDescent::Math::Symbolic::Parser::Precompiled/Parse::RecDescent/;
         local $tracelevel = ( $tracelevel || 0 ) + 1;
         $ERRORS = 0;
         my $thisrule = $thisparser->{"rules"}{"parse"};
-
         Parse::RecDescent::_trace(
             q{Trying rule: [parse]},
             Parse::RecDescent::_tracefirst( $_[1] ),
             q{parse}, $tracelevel
           )
           if defined $::RD_TRACE;
-
         my $err_at = @{ $thisparser->{errors} };
-
         my $score;
         my $score_return;
         my $_tok;
@@ -101,12 +95,10 @@ s/^Parse::RecDescent::Math::Symbolic::Parser::Precompiled/Parse::RecDescent/;
         my $expectation =
           new Parse::RecDescent::Expectation( $thisrule->expected() );
         $expectation->at( $_[1] );
-
         my $thisline;
         tie $thisline, q{Parse::RecDescent::LineCounter}, \$text, $thisparser;
 
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: [expr]},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -119,13 +111,13 @@ s/^Parse::RecDescent::Math::Symbolic::Parser::Precompiled/Parse::RecDescent/;
             @item = (q{parse});
             %item = ( __RULE__ => q{parse} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying subrule: [expr]},
                 Parse::RecDescent::_tracefirst($text),
                 q{parse}, $tracelevel
               )
               if defined $::RD_TRACE;
+
             if (1) {
                 no strict qw{refs};
                 $expectation->is(q{})->at($text);
@@ -140,7 +132,6 @@ s/^Parse::RecDescent::Math::Symbolic::Parser::Precompiled/Parse::RecDescent/;
                     )
                   )
                 {
-
                     Parse::RecDescent::_trace(
                         q{<<Didn't match subrule: [expr]>>},
                         Parse::RecDescent::_tracefirst($text),
@@ -151,9 +142,8 @@ s/^Parse::RecDescent::Math::Symbolic::Parser::Precompiled/Parse::RecDescent/;
                     last;
                 }
                 Parse::RecDescent::_trace(
-                        q{>>Matched subrule: [expr]<< (return value: [} . $_tok
+                    q{>>Matched subrule: [expr]<< (return value: [} . $_tok
                       . q{]},
-
                     Parse::RecDescent::_tracefirst($text),
                     q{parse},
                     $tracelevel
@@ -161,9 +151,7 @@ s/^Parse::RecDescent::Math::Symbolic::Parser::Precompiled/Parse::RecDescent/;
                   if defined $::RD_TRACE;
                 $item{q{expr}} = $_tok;
                 push @item, $_tok;
-
             }
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: [expr]<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -173,9 +161,7 @@ s/^Parse::RecDescent::Math::Symbolic::Parser::Precompiled/Parse::RecDescent/;
             $_matched = 1;
             last;
         }
-
         while ( !$_matched ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: [<error...>]},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -183,12 +169,10 @@ s/^Parse::RecDescent::Math::Symbolic::Parser::Precompiled/Parse::RecDescent/;
               )
               if defined $::RD_TRACE;
             my $thisprod = $thisrule->{"prods"}[1];
-
             my $_savetext;
             @item = (q{parse});
             %item = ( __RULE__ => q{parse} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying directive: [<error...>]},
                 Parse::RecDescent::_tracefirst($text),
@@ -196,6 +180,7 @@ s/^Parse::RecDescent::Math::Symbolic::Parser::Precompiled/Parse::RecDescent/;
               )
               if defined $::RD_TRACE;
             $_tok = do {
+
                 if (1) {
                     do {
                         my $rule = $item[0];
@@ -225,10 +210,8 @@ s/^Parse::RecDescent::Math::Symbolic::Parser::Precompiled/Parse::RecDescent/;
                   )
                   if defined $::RD_TRACE;
             }
-
             last unless defined $_tok;
             push @item, $item{__DIRECTIVE1__} = $_tok;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: [<error...>]<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -238,9 +221,7 @@ s/^Parse::RecDescent::Math::Symbolic::Parser::Precompiled/Parse::RecDescent/;
             $_matched = 1;
             last;
         }
-
         unless ( $_matched || defined($return) || defined($score) ) {
-
             $_[1] = $text;    # NOT SURE THIS IS NEEDED
             Parse::RecDescent::_trace(
                 q{<<Didn't match rule>>},
@@ -285,16 +266,13 @@ s/^Parse::RecDescent::Math::Symbolic::Parser::Precompiled/Parse::RecDescent/;
         local $tracelevel = ( $tracelevel || 0 ) + 1;
         $ERRORS = 0;
         my $thisrule = $thisparser->{"rules"}{"expr_list"};
-
         Parse::RecDescent::_trace(
             q{Trying rule: [expr_list]},
             Parse::RecDescent::_tracefirst( $_[1] ),
             q{expr_list}, $tracelevel
           )
           if defined $::RD_TRACE;
-
         my $err_at = @{ $thisparser->{errors} };
-
         my $score;
         my $score_return;
         my $_tok;
@@ -312,12 +290,10 @@ s/^Parse::RecDescent::Math::Symbolic::Parser::Precompiled/Parse::RecDescent/;
         my $expectation =
           new Parse::RecDescent::Expectation( $thisrule->expected() );
         $expectation->at( $_[1] );
-
         my $thisline;
         tie $thisline, q{Parse::RecDescent::LineCounter}, \$text, $thisparser;
 
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: [<leftop: expr list_op expr>]},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -330,7 +306,6 @@ s/^Parse::RecDescent::Math::Symbolic::Parser::Precompiled/Parse::RecDescent/;
             @item = (q{expr_list});
             %item = ( __RULE__ => q{expr_list} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying operator: [<leftop: expr list_op expr>]},
                 Parse::RecDescent::_tracefirst($text),
@@ -338,14 +313,12 @@ s/^Parse::RecDescent::Math::Symbolic::Parser::Precompiled/Parse::RecDescent/;
               )
               if defined $::RD_TRACE;
             $expectation->is(q{})->at($text);
-
             $_tok = undef;
           OPLOOP: while (1) {
                 $repcount = 0;
                 my @item;
 
                 # MATCH LEFTARG
-
                 Parse::RecDescent::_trace(
                     q{Trying subrule: [expr]},
                     Parse::RecDescent::_tracefirst($text),
@@ -366,7 +339,6 @@ s/^Parse::RecDescent::Math::Symbolic::Parser::Precompiled/Parse::RecDescent/;
                         )
                       )
                     {
-
                         Parse::RecDescent::_trace(
                             q{<<Didn't match subrule: [expr]>>},
                             Parse::RecDescent::_tracefirst($text),
@@ -380,7 +352,6 @@ s/^Parse::RecDescent::Math::Symbolic::Parser::Precompiled/Parse::RecDescent/;
                     Parse::RecDescent::_trace(
                         q{>>Matched subrule: [expr]<< (return value: [} . $_tok
                           . q{]},
-
                         Parse::RecDescent::_tracefirst($text),
                         q{expr_list},
                         $tracelevel
@@ -388,18 +359,14 @@ s/^Parse::RecDescent::Math::Symbolic::Parser::Precompiled/Parse::RecDescent/;
                       if defined $::RD_TRACE;
                     $item{q{expr}} = $_tok;
                     push @item, $_tok;
-
                 }
-
                 $repcount++;
-
                 my $savetext = $text;
                 my $backtrack;
 
                 # MATCH (OP RIGHTARG)(s)
                 while ( $repcount < 100000000 ) {
                     $backtrack = 0;
-
                     Parse::RecDescent::_trace(
                         q{Trying subrule: [list_op]},
                         Parse::RecDescent::_tracefirst($text),
@@ -420,7 +387,6 @@ s/^Parse::RecDescent::Math::Symbolic::Parser::Precompiled/Parse::RecDescent/;
                             )
                           )
                         {
-
                             Parse::RecDescent::_trace(
                                 q{<<Didn't match subrule: [list_op]>>},
                                 Parse::RecDescent::_tracefirst($text),
@@ -434,7 +400,6 @@ s/^Parse::RecDescent::Math::Symbolic::Parser::Precompiled/Parse::RecDescent/;
                         Parse::RecDescent::_trace(
                             q{>>Matched subrule: [list_op]<< (return value: [}
                               . $_tok . q{]},
-
                             Parse::RecDescent::_tracefirst($text),
                             q{expr_list},
                             $tracelevel
@@ -442,11 +407,8 @@ s/^Parse::RecDescent::Math::Symbolic::Parser::Precompiled/Parse::RecDescent/;
                           if defined $::RD_TRACE;
                         $item{q{list_op}} = $_tok;
                         push @item, $_tok;
-
                     }
-
                     $backtrack = 1;
-
                     Parse::RecDescent::_trace(
                         q{Trying subrule: [expr]},
                         Parse::RecDescent::_tracefirst($text),
@@ -467,7 +429,6 @@ s/^Parse::RecDescent::Math::Symbolic::Parser::Precompiled/Parse::RecDescent/;
                             )
                           )
                         {
-
                             Parse::RecDescent::_trace(
                                 q{<<Didn't match subrule: [expr]>>},
                                 Parse::RecDescent::_tracefirst($text),
@@ -481,7 +442,6 @@ s/^Parse::RecDescent::Math::Symbolic::Parser::Precompiled/Parse::RecDescent/;
                         Parse::RecDescent::_trace(
                             q{>>Matched subrule: [expr]<< (return value: [}
                               . $_tok . q{]},
-
                             Parse::RecDescent::_tracefirst($text),
                             q{expr_list},
                             $tracelevel
@@ -489,20 +449,16 @@ s/^Parse::RecDescent::Math::Symbolic::Parser::Precompiled/Parse::RecDescent/;
                           if defined $::RD_TRACE;
                         $item{q{expr}} = $_tok;
                         push @item, $_tok;
-
                     }
-
                     $savetext = $text;
                     $repcount++;
                 }
                 $text = $savetext;
                 pop @item if $backtrack;
-
                 unless (@item) { undef $_tok; last }
                 $_tok = [@item];
                 last;
             }
-
             unless ( $repcount >= 1 ) {
                 Parse::RecDescent::_trace(
                     q{<<Didn't match operator: [<leftop: expr list_op expr>]>>},
@@ -522,19 +478,15 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                 $tracelevel
               )
               if defined $::RD_TRACE;
-
             push @item, $item{__DIRECTIVE1__} = $_tok || [];
-
             Parse::RecDescent::_trace(
                 q{Trying action},
                 Parse::RecDescent::_tracefirst($text),
                 q{expr_list}, $tracelevel
               )
               if defined $::RD_TRACE;
-
             $_tok = ($_noactions) ? 0 : do {
-                warn 'expr_list '
-                  if $Math::Symbolic::Parser::DEBUG;
+                warn 'expr_list ' if $Math::Symbolic::Parser::DEBUG;
                 my $i = 1;
                 [ grep { $i == 1 ? ( --$i, 1 ) : ( ++$i, 0 ) } @{ $item[1] } ];
             };
@@ -550,7 +502,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
               if defined $::RD_TRACE;
             push @item, $_tok;
             $item{__ACTION1__} = $_tok;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: [<leftop: expr list_op expr>]<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -560,9 +511,7 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             $_matched = 1;
             last;
         }
-
         unless ( $_matched || defined($return) || defined($score) ) {
-
             $_[1] = $text;    # NOT SURE THIS IS NEEDED
             Parse::RecDescent::_trace(
                 q{<<Didn't match rule>>},
@@ -607,16 +556,13 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
         local $tracelevel = ( $tracelevel || 0 ) + 1;
         $ERRORS = 0;
         my $thisrule = $thisparser->{"rules"}{"number"};
-
         Parse::RecDescent::_trace(
             q{Trying rule: [number]},
             Parse::RecDescent::_tracefirst( $_[1] ),
             q{number}, $tracelevel
           )
           if defined $::RD_TRACE;
-
         my $err_at = @{ $thisparser->{errors} };
-
         my $score;
         my $score_return;
         my $_tok;
@@ -634,12 +580,10 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
         my $expectation =
           new Parse::RecDescent::Expectation( $thisrule->expected() );
         $expectation->at( $_[1] );
-
         my $thisline;
         tie $thisline, q{Parse::RecDescent::LineCounter}, \$text, $thisparser;
 
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: [/\\d+(\\.\\d+)?/]},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -652,7 +596,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             @item = (q{number});
             %item = ( __RULE__ => q{number} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying terminal: [/\\d+(\\.\\d+)?/]},
                 Parse::RecDescent::_tracefirst($text),
@@ -665,12 +608,10 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e
                 and $text =~ s/\A(?:\d+(\.\d+)?)// )
             {
-
                 $expectation->failed();
                 Parse::RecDescent::_trace( q{<<Didn't match terminal>>},
                     Parse::RecDescent::_tracefirst($text) )
                   if defined $::RD_TRACE;
-
                 last;
             }
             Parse::RecDescent::_trace(
@@ -678,17 +619,14 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                 Parse::RecDescent::_tracefirst($text) )
               if defined $::RD_TRACE;
             push @item, $item{__PATTERN1__} = $&;
-
             Parse::RecDescent::_trace(
                 q{Trying action},
                 Parse::RecDescent::_tracefirst($text),
                 q{number}, $tracelevel
               )
               if defined $::RD_TRACE;
-
             $_tok = ($_noactions) ? 0 : do {
-                warn 'number '
-                  if $Math::Symbolic::Parser::DEBUG;
+                warn 'number ' if $Math::Symbolic::Parser::DEBUG;
                 Math::Symbolic::Constant->new( $item[1] );
             };
             unless ( defined $_tok ) {
@@ -703,7 +641,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
               if defined $::RD_TRACE;
             push @item, $_tok;
             $item{__ACTION1__} = $_tok;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: [/\\d+(\\.\\d+)?/]<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -713,9 +650,7 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             $_matched = 1;
             last;
         }
-
         unless ( $_matched || defined($return) || defined($score) ) {
-
             $_[1] = $text;    # NOT SURE THIS IS NEEDED
             Parse::RecDescent::_trace(
                 q{<<Didn't match rule>>},
@@ -760,16 +695,13 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
         local $tracelevel = ( $tracelevel || 0 ) + 1;
         $ERRORS = 0;
         my $thisrule = $thisparser->{"rules"}{"add_op"};
-
         Parse::RecDescent::_trace(
             q{Trying rule: [add_op]},
             Parse::RecDescent::_tracefirst( $_[1] ),
             q{add_op}, $tracelevel
           )
           if defined $::RD_TRACE;
-
         my $err_at = @{ $thisparser->{errors} };
-
         my $score;
         my $score_return;
         my $_tok;
@@ -787,12 +719,10 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
         my $expectation =
           new Parse::RecDescent::Expectation( $thisrule->expected() );
         $expectation->at( $_[1] );
-
         my $thisline;
         tie $thisline, q{Parse::RecDescent::LineCounter}, \$text, $thisparser;
 
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: ['+']},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -805,7 +735,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             @item = (q{add_op});
             %item = ( __RULE__ => q{add_op} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying terminal: ['+']},
                 Parse::RecDescent::_tracefirst($text),
@@ -818,7 +747,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e
                 and $text =~ s/\A\+// )
             {
-
                 $expectation->failed();
                 Parse::RecDescent::_trace(
                     qq{<<Didn't match terminal>>},
@@ -832,7 +760,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                 Parse::RecDescent::_tracefirst($text) )
               if defined $::RD_TRACE;
             push @item, $item{__STRING1__} = $&;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: ['+']<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -842,9 +769,7 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             $_matched = 1;
             last;
         }
-
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: ['-']},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -857,7 +782,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             @item = (q{add_op});
             %item = ( __RULE__ => q{add_op} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying terminal: ['-']},
                 Parse::RecDescent::_tracefirst($text),
@@ -870,7 +794,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e
                 and $text =~ s/\A\-// )
             {
-
                 $expectation->failed();
                 Parse::RecDescent::_trace(
                     qq{<<Didn't match terminal>>},
@@ -884,7 +807,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                 Parse::RecDescent::_tracefirst($text) )
               if defined $::RD_TRACE;
             push @item, $item{__STRING1__} = $&;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: ['-']<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -894,9 +816,7 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             $_matched = 1;
             last;
         }
-
         unless ( $_matched || defined($return) || defined($score) ) {
-
             $_[1] = $text;    # NOT SURE THIS IS NEEDED
             Parse::RecDescent::_trace(
                 q{<<Didn't match rule>>},
@@ -941,16 +861,13 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
         local $tracelevel = ( $tracelevel || 0 ) + 1;
         $ERRORS = 0;
         my $thisrule = $thisparser->{"rules"}{"mult_op"};
-
         Parse::RecDescent::_trace(
             q{Trying rule: [mult_op]},
             Parse::RecDescent::_tracefirst( $_[1] ),
             q{mult_op}, $tracelevel
           )
           if defined $::RD_TRACE;
-
         my $err_at = @{ $thisparser->{errors} };
-
         my $score;
         my $score_return;
         my $_tok;
@@ -968,12 +885,10 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
         my $expectation =
           new Parse::RecDescent::Expectation( $thisrule->expected() );
         $expectation->at( $_[1] );
-
         my $thisline;
         tie $thisline, q{Parse::RecDescent::LineCounter}, \$text, $thisparser;
 
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: ['*']},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -986,7 +901,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             @item = (q{mult_op});
             %item = ( __RULE__ => q{mult_op} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying terminal: ['*']},
                 Parse::RecDescent::_tracefirst($text),
@@ -999,7 +913,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e
                 and $text =~ s/\A\*// )
             {
-
                 $expectation->failed();
                 Parse::RecDescent::_trace(
                     qq{<<Didn't match terminal>>},
@@ -1013,7 +926,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                 Parse::RecDescent::_tracefirst($text) )
               if defined $::RD_TRACE;
             push @item, $item{__STRING1__} = $&;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: ['*']<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -1023,9 +935,7 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             $_matched = 1;
             last;
         }
-
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: ['/']},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -1038,7 +948,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             @item = (q{mult_op});
             %item = ( __RULE__ => q{mult_op} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying terminal: ['/']},
                 Parse::RecDescent::_tracefirst($text),
@@ -1051,7 +960,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e
                 and $text =~ s/\A\/// )
             {
-
                 $expectation->failed();
                 Parse::RecDescent::_trace(
                     qq{<<Didn't match terminal>>},
@@ -1065,7 +973,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                 Parse::RecDescent::_tracefirst($text) )
               if defined $::RD_TRACE;
             push @item, $item{__STRING1__} = $&;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: ['/']<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -1075,9 +982,7 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             $_matched = 1;
             last;
         }
-
         unless ( $_matched || defined($return) || defined($score) ) {
-
             $_[1] = $text;    # NOT SURE THIS IS NEEDED
             Parse::RecDescent::_trace(
                 q{<<Didn't match rule>>},
@@ -1122,16 +1027,13 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
         local $tracelevel = ( $tracelevel || 0 ) + 1;
         $ERRORS = 0;
         my $thisrule = $thisparser->{"rules"}{"variable"};
-
         Parse::RecDescent::_trace(
             q{Trying rule: [variable]},
             Parse::RecDescent::_tracefirst( $_[1] ),
             q{variable}, $tracelevel
           )
           if defined $::RD_TRACE;
-
         my $err_at = @{ $thisparser->{errors} };
-
         my $score;
         my $score_return;
         my $_tok;
@@ -1149,12 +1051,10 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
         my $expectation =
           new Parse::RecDescent::Expectation( $thisrule->expected() );
         $expectation->at( $_[1] );
-
         my $thisline;
         tie $thisline, q{Parse::RecDescent::LineCounter}, \$text, $thisparser;
 
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: [identifier '(' identifier_list ')']},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -1168,13 +1068,13 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             @item = (q{variable});
             %item = ( __RULE__ => q{variable} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying subrule: [identifier]},
                 Parse::RecDescent::_tracefirst($text),
                 q{variable}, $tracelevel
               )
               if defined $::RD_TRACE;
+
             if (1) {
                 no strict qw{refs};
                 $expectation->is(q{})->at($text);
@@ -1189,7 +1089,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                     )
                   )
                 {
-
                     Parse::RecDescent::_trace(
                         q{<<Didn't match subrule: [identifier]>>},
                         Parse::RecDescent::_tracefirst($text),
@@ -1202,7 +1101,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                 Parse::RecDescent::_trace(
                     q{>>Matched subrule: [identifier]<< (return value: [}
                       . $_tok . q{]},
-
                     Parse::RecDescent::_tracefirst($text),
                     q{variable},
                     $tracelevel
@@ -1210,9 +1108,7 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                   if defined $::RD_TRACE;
                 $item{q{identifier}} = $_tok;
                 push @item, $_tok;
-
             }
-
             Parse::RecDescent::_trace(
                 q{Trying terminal: ['(']},
                 Parse::RecDescent::_tracefirst($text),
@@ -1221,11 +1117,9 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
               if defined $::RD_TRACE;
             $lastsep = "";
             $expectation->is(q{'('})->at($text);
-
             unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e
                 and $text =~ s/\A\(// )
             {
-
                 $expectation->failed();
                 Parse::RecDescent::_trace(
                     qq{<<Didn't match terminal>>},
@@ -1239,7 +1133,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                 Parse::RecDescent::_tracefirst($text) )
               if defined $::RD_TRACE;
             push @item, $item{__STRING1__} = $&;
-
             Parse::RecDescent::_trace(
                 q{Trying subrule: [identifier_list]},
                 Parse::RecDescent::_tracefirst($text),
@@ -1260,7 +1153,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                     )
                   )
                 {
-
                     Parse::RecDescent::_trace(
                         q{<<Didn't match subrule: [identifier_list]>>},
                         Parse::RecDescent::_tracefirst($text),
@@ -1274,7 +1166,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                 Parse::RecDescent::_trace(
                     q{>>Matched subrule: [identifier_list]<< (return value: [}
                       . $_tok . q{]},
-
                     Parse::RecDescent::_tracefirst($text),
                     q{variable},
                     $tracelevel
@@ -1282,9 +1173,7 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                   if defined $::RD_TRACE;
                 $item{q{identifier_list}} = $_tok;
                 push @item, $_tok;
-
             }
-
             Parse::RecDescent::_trace(
                 q{Trying terminal: [')']},
                 Parse::RecDescent::_tracefirst($text),
@@ -1293,11 +1182,9 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
               if defined $::RD_TRACE;
             $lastsep = "";
             $expectation->is(q{')'})->at($text);
-
             unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e
                 and $text =~ s/\A\)// )
             {
-
                 $expectation->failed();
                 Parse::RecDescent::_trace(
                     qq{<<Didn't match terminal>>},
@@ -1311,23 +1198,16 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                 Parse::RecDescent::_tracefirst($text) )
               if defined $::RD_TRACE;
             push @item, $item{__STRING2__} = $&;
-
             Parse::RecDescent::_trace(
                 q{Trying action},
                 Parse::RecDescent::_tracefirst($text),
                 q{variable}, $tracelevel
               )
               if defined $::RD_TRACE;
-
             $_tok = ($_noactions) ? 0 : do {
-                warn 'variable '
-                  if $Math::Symbolic::Parser::DEBUG;
+                warn 'variable ' if $Math::Symbolic::Parser::DEBUG;
                 Math::Symbolic::Variable->new(
-                    {
-                        name      => $item[1],
-                        signature => $item[3],
-                    }
-                );
+                    { name => $item[1], signature => $item[3], } );
             };
             unless ( defined $_tok ) {
                 Parse::RecDescent::_trace(
@@ -1341,7 +1221,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
               if defined $::RD_TRACE;
             push @item, $_tok;
             $item{__ACTION1__} = $_tok;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: [identifier '(' identifier_list ')']<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -1352,9 +1231,7 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             $_matched = 1;
             last;
         }
-
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: [identifier]},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -1367,13 +1244,13 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             @item = (q{variable});
             %item = ( __RULE__ => q{variable} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying subrule: [identifier]},
                 Parse::RecDescent::_tracefirst($text),
                 q{variable}, $tracelevel
               )
               if defined $::RD_TRACE;
+
             if (1) {
                 no strict qw{refs};
                 $expectation->is(q{})->at($text);
@@ -1388,7 +1265,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                     )
                   )
                 {
-
                     Parse::RecDescent::_trace(
                         q{<<Didn't match subrule: [identifier]>>},
                         Parse::RecDescent::_tracefirst($text),
@@ -1401,7 +1277,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                 Parse::RecDescent::_trace(
                     q{>>Matched subrule: [identifier]<< (return value: [}
                       . $_tok . q{]},
-
                     Parse::RecDescent::_tracefirst($text),
                     q{variable},
                     $tracelevel
@@ -1409,19 +1284,15 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                   if defined $::RD_TRACE;
                 $item{q{identifier}} = $_tok;
                 push @item, $_tok;
-
             }
-
             Parse::RecDescent::_trace(
                 q{Trying action},
                 Parse::RecDescent::_tracefirst($text),
                 q{variable}, $tracelevel
               )
               if defined $::RD_TRACE;
-
             $_tok = ($_noactions) ? 0 : do {
-                warn 'variable '
-                  if $Math::Symbolic::Parser::DEBUG;
+                warn 'variable ' if $Math::Symbolic::Parser::DEBUG;
                 Math::Symbolic::Variable->new( { name => $item[1], } );
             };
             unless ( defined $_tok ) {
@@ -1436,7 +1307,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
               if defined $::RD_TRACE;
             push @item, $_tok;
             $item{__ACTION1__} = $_tok;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: [identifier]<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -1446,9 +1316,7 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             $_matched = 1;
             last;
         }
-
         unless ( $_matched || defined($return) || defined($score) ) {
-
             $_[1] = $text;    # NOT SURE THIS IS NEEDED
             Parse::RecDescent::_trace(
                 q{<<Didn't match rule>>},
@@ -1493,16 +1361,13 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
         local $tracelevel = ( $tracelevel || 0 ) + 1;
         $ERRORS = 0;
         my $thisrule = $thisparser->{"rules"}{"unary"};
-
         Parse::RecDescent::_trace(
             q{Trying rule: [unary]},
             Parse::RecDescent::_tracefirst( $_[1] ),
             q{unary}, $tracelevel
           )
           if defined $::RD_TRACE;
-
         my $err_at = @{ $thisparser->{errors} };
-
         my $score;
         my $score_return;
         my $_tok;
@@ -1520,12 +1385,10 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
         my $expectation =
           new Parse::RecDescent::Expectation( $thisrule->expected() );
         $expectation->at( $_[1] );
-
         my $thisline;
         tie $thisline, q{Parse::RecDescent::LineCounter}, \$text, $thisparser;
 
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: [forced_unary_op factor]},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -1538,13 +1401,13 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             @item = (q{unary});
             %item = ( __RULE__ => q{unary} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying subrule: [forced_unary_op]},
                 Parse::RecDescent::_tracefirst($text),
                 q{unary}, $tracelevel
               )
               if defined $::RD_TRACE;
+
             if (1) {
                 no strict qw{refs};
                 $expectation->is(q{})->at($text);
@@ -1559,7 +1422,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                     )
                   )
                 {
-
                     Parse::RecDescent::_trace(
                         q{<<Didn't match subrule: [forced_unary_op]>>},
                         Parse::RecDescent::_tracefirst($text),
@@ -1573,7 +1435,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                 Parse::RecDescent::_trace(
                     q{>>Matched subrule: [forced_unary_op]<< (return value: [}
                       . $_tok . q{]},
-
                     Parse::RecDescent::_tracefirst($text),
                     q{unary},
                     $tracelevel
@@ -1581,9 +1442,7 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                   if defined $::RD_TRACE;
                 $item{q{forced_unary_op}} = $_tok;
                 push @item, $_tok;
-
             }
-
             Parse::RecDescent::_trace(
                 q{Trying subrule: [factor]},
                 Parse::RecDescent::_tracefirst($text),
@@ -1604,7 +1463,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                     )
                   )
                 {
-
                     Parse::RecDescent::_trace(
                         q{<<Didn't match subrule: [factor]>>},
                         Parse::RecDescent::_tracefirst($text),
@@ -1617,7 +1475,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                 Parse::RecDescent::_trace(
                     q{>>Matched subrule: [factor]<< (return value: [} . $_tok
                       . q{]},
-
                     Parse::RecDescent::_tracefirst($text),
                     q{unary},
                     $tracelevel
@@ -1625,19 +1482,15 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                   if defined $::RD_TRACE;
                 $item{q{factor}} = $_tok;
                 push @item, $_tok;
-
             }
-
             Parse::RecDescent::_trace(
                 q{Trying action},
                 Parse::RecDescent::_tracefirst($text),
                 q{unary}, $tracelevel
               )
               if defined $::RD_TRACE;
-
             $_tok = ($_noactions) ? 0 : do {
-                warn 'unary '
-                  if $Math::Symbolic::Parser::DEBUG;
+                warn 'unary ' if $Math::Symbolic::Parser::DEBUG;
                 if ( $item[1] and $item[1] eq '-' ) {
                     Math::Symbolic::Operator->new(
                         {
@@ -1646,9 +1499,7 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                         }
                     );
                 }
-                else {
-                    $item[2];
-                }
+                else { $item[2] }
             };
             unless ( defined $_tok ) {
                 Parse::RecDescent::_trace(
@@ -1662,7 +1513,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
               if defined $::RD_TRACE;
             push @item, $_tok;
             $item{__ACTION1__} = $_tok;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: [forced_unary_op factor]<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -1672,9 +1522,7 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             $_matched = 1;
             last;
         }
-
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: [unary_op number]},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -1687,13 +1535,13 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             @item = (q{unary});
             %item = ( __RULE__ => q{unary} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying subrule: [unary_op]},
                 Parse::RecDescent::_tracefirst($text),
                 q{unary}, $tracelevel
               )
               if defined $::RD_TRACE;
+
             if (1) {
                 no strict qw{refs};
                 $expectation->is(q{})->at($text);
@@ -1708,7 +1556,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                     )
                   )
                 {
-
                     Parse::RecDescent::_trace(
                         q{<<Didn't match subrule: [unary_op]>>},
                         Parse::RecDescent::_tracefirst($text),
@@ -1721,7 +1568,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                 Parse::RecDescent::_trace(
                     q{>>Matched subrule: [unary_op]<< (return value: [} . $_tok
                       . q{]},
-
                     Parse::RecDescent::_tracefirst($text),
                     q{unary},
                     $tracelevel
@@ -1729,9 +1575,7 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                   if defined $::RD_TRACE;
                 $item{q{unary_op}} = $_tok;
                 push @item, $_tok;
-
             }
-
             Parse::RecDescent::_trace(
                 q{Trying subrule: [number]},
                 Parse::RecDescent::_tracefirst($text),
@@ -1752,7 +1596,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                     )
                   )
                 {
-
                     Parse::RecDescent::_trace(
                         q{<<Didn't match subrule: [number]>>},
                         Parse::RecDescent::_tracefirst($text),
@@ -1765,7 +1608,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                 Parse::RecDescent::_trace(
                     q{>>Matched subrule: [number]<< (return value: [} . $_tok
                       . q{]},
-
                     Parse::RecDescent::_tracefirst($text),
                     q{unary},
                     $tracelevel
@@ -1773,19 +1615,15 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                   if defined $::RD_TRACE;
                 $item{q{number}} = $_tok;
                 push @item, $_tok;
-
             }
-
             Parse::RecDescent::_trace(
                 q{Trying action},
                 Parse::RecDescent::_tracefirst($text),
                 q{unary}, $tracelevel
               )
               if defined $::RD_TRACE;
-
             $_tok = ($_noactions) ? 0 : do {
-                warn 'unary '
-                  if $Math::Symbolic::Parser::DEBUG;
+                warn 'unary ' if $Math::Symbolic::Parser::DEBUG;
                 if ( $item[1] and $item[1] eq '-' ) {
                     Math::Symbolic::Operator->new(
                         {
@@ -1794,9 +1632,7 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                         }
                     );
                 }
-                else {
-                    $item[2];
-                }
+                else { $item[2] }
             };
             unless ( defined $_tok ) {
                 Parse::RecDescent::_trace(
@@ -1810,7 +1646,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
               if defined $::RD_TRACE;
             push @item, $_tok;
             $item{__ACTION1__} = $_tok;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: [unary_op number]<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -1820,9 +1655,7 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             $_matched = 1;
             last;
         }
-
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: [unary_op function]},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -1835,13 +1668,13 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             @item = (q{unary});
             %item = ( __RULE__ => q{unary} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying subrule: [unary_op]},
                 Parse::RecDescent::_tracefirst($text),
                 q{unary}, $tracelevel
               )
               if defined $::RD_TRACE;
+
             if (1) {
                 no strict qw{refs};
                 $expectation->is(q{})->at($text);
@@ -1856,7 +1689,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                     )
                   )
                 {
-
                     Parse::RecDescent::_trace(
                         q{<<Didn't match subrule: [unary_op]>>},
                         Parse::RecDescent::_tracefirst($text),
@@ -1869,7 +1701,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                 Parse::RecDescent::_trace(
                     q{>>Matched subrule: [unary_op]<< (return value: [} . $_tok
                       . q{]},
-
                     Parse::RecDescent::_tracefirst($text),
                     q{unary},
                     $tracelevel
@@ -1877,9 +1708,7 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                   if defined $::RD_TRACE;
                 $item{q{unary_op}} = $_tok;
                 push @item, $_tok;
-
             }
-
             Parse::RecDescent::_trace(
                 q{Trying subrule: [function]},
                 Parse::RecDescent::_tracefirst($text),
@@ -1900,7 +1729,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                     )
                   )
                 {
-
                     Parse::RecDescent::_trace(
                         q{<<Didn't match subrule: [function]>>},
                         Parse::RecDescent::_tracefirst($text),
@@ -1913,7 +1741,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                 Parse::RecDescent::_trace(
                     q{>>Matched subrule: [function]<< (return value: [} . $_tok
                       . q{]},
-
                     Parse::RecDescent::_tracefirst($text),
                     q{unary},
                     $tracelevel
@@ -1921,19 +1748,15 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                   if defined $::RD_TRACE;
                 $item{q{function}} = $_tok;
                 push @item, $_tok;
-
             }
-
             Parse::RecDescent::_trace(
                 q{Trying action},
                 Parse::RecDescent::_tracefirst($text),
                 q{unary}, $tracelevel
               )
               if defined $::RD_TRACE;
-
             $_tok = ($_noactions) ? 0 : do {
-                warn 'unary '
-                  if $Math::Symbolic::Parser::DEBUG;
+                warn 'unary ' if $Math::Symbolic::Parser::DEBUG;
                 if ( $item[1] and $item[1] eq '-' ) {
                     Math::Symbolic::Operator->new(
                         {
@@ -1942,9 +1765,7 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                         }
                     );
                 }
-                else {
-                    $item[2];
-                }
+                else { $item[2] }
             };
             unless ( defined $_tok ) {
                 Parse::RecDescent::_trace(
@@ -1958,7 +1779,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
               if defined $::RD_TRACE;
             push @item, $_tok;
             $item{__ACTION1__} = $_tok;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: [unary_op function]<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -1968,9 +1788,7 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             $_matched = 1;
             last;
         }
-
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: [unary_op variable]},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -1983,13 +1801,13 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             @item = (q{unary});
             %item = ( __RULE__ => q{unary} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying subrule: [unary_op]},
                 Parse::RecDescent::_tracefirst($text),
                 q{unary}, $tracelevel
               )
               if defined $::RD_TRACE;
+
             if (1) {
                 no strict qw{refs};
                 $expectation->is(q{})->at($text);
@@ -2004,7 +1822,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                     )
                   )
                 {
-
                     Parse::RecDescent::_trace(
                         q{<<Didn't match subrule: [unary_op]>>},
                         Parse::RecDescent::_tracefirst($text),
@@ -2017,7 +1834,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                 Parse::RecDescent::_trace(
                     q{>>Matched subrule: [unary_op]<< (return value: [} . $_tok
                       . q{]},
-
                     Parse::RecDescent::_tracefirst($text),
                     q{unary},
                     $tracelevel
@@ -2025,9 +1841,7 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                   if defined $::RD_TRACE;
                 $item{q{unary_op}} = $_tok;
                 push @item, $_tok;
-
             }
-
             Parse::RecDescent::_trace(
                 q{Trying subrule: [variable]},
                 Parse::RecDescent::_tracefirst($text),
@@ -2048,7 +1862,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                     )
                   )
                 {
-
                     Parse::RecDescent::_trace(
                         q{<<Didn't match subrule: [variable]>>},
                         Parse::RecDescent::_tracefirst($text),
@@ -2061,7 +1874,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                 Parse::RecDescent::_trace(
                     q{>>Matched subrule: [variable]<< (return value: [} . $_tok
                       . q{]},
-
                     Parse::RecDescent::_tracefirst($text),
                     q{unary},
                     $tracelevel
@@ -2069,19 +1881,15 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                   if defined $::RD_TRACE;
                 $item{q{variable}} = $_tok;
                 push @item, $_tok;
-
             }
-
             Parse::RecDescent::_trace(
                 q{Trying action},
                 Parse::RecDescent::_tracefirst($text),
                 q{unary}, $tracelevel
               )
               if defined $::RD_TRACE;
-
             $_tok = ($_noactions) ? 0 : do {
-                warn 'unary '
-                  if $Math::Symbolic::Parser::DEBUG;
+                warn 'unary ' if $Math::Symbolic::Parser::DEBUG;
                 if ( $item[1] and $item[1] eq '-' ) {
                     Math::Symbolic::Operator->new(
                         {
@@ -2090,9 +1898,7 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                         }
                     );
                 }
-                else {
-                    $item[2];
-                }
+                else { $item[2] }
             };
             unless ( defined $_tok ) {
                 Parse::RecDescent::_trace(
@@ -2106,7 +1912,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
               if defined $::RD_TRACE;
             push @item, $_tok;
             $item{__ACTION1__} = $_tok;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: [unary_op variable]<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -2116,9 +1921,7 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             $_matched = 1;
             last;
         }
-
         unless ( $_matched || defined($return) || defined($score) ) {
-
             $_[1] = $text;    # NOT SURE THIS IS NEEDED
             Parse::RecDescent::_trace(
                 q{<<Didn't match rule>>},
@@ -2163,16 +1966,13 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
         local $tracelevel = ( $tracelevel || 0 ) + 1;
         $ERRORS = 0;
         my $thisrule = $thisparser->{"rules"}{"factor"};
-
         Parse::RecDescent::_trace(
             q{Trying rule: [factor]},
             Parse::RecDescent::_tracefirst( $_[1] ),
             q{factor}, $tracelevel
           )
           if defined $::RD_TRACE;
-
         my $err_at = @{ $thisparser->{errors} };
-
         my $score;
         my $score_return;
         my $_tok;
@@ -2190,12 +1990,10 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
         my $expectation =
           new Parse::RecDescent::Expectation( $thisrule->expected() );
         $expectation->at( $_[1] );
-
         my $thisline;
         tie $thisline, q{Parse::RecDescent::LineCounter}, \$text, $thisparser;
 
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: [unary]},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -2208,13 +2006,13 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             @item = (q{factor});
             %item = ( __RULE__ => q{factor} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying subrule: [unary]},
                 Parse::RecDescent::_tracefirst($text),
                 q{factor}, $tracelevel
               )
               if defined $::RD_TRACE;
+
             if (1) {
                 no strict qw{refs};
                 $expectation->is(q{})->at($text);
@@ -2229,7 +2027,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                     )
                   )
                 {
-
                     Parse::RecDescent::_trace(
                         q{<<Didn't match subrule: [unary]>>},
                         Parse::RecDescent::_tracefirst($text),
@@ -2240,9 +2037,8 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                     last;
                 }
                 Parse::RecDescent::_trace(
-                        q{>>Matched subrule: [unary]<< (return value: [} . $_tok
+                    q{>>Matched subrule: [unary]<< (return value: [} . $_tok
                       . q{]},
-
                     Parse::RecDescent::_tracefirst($text),
                     q{factor},
                     $tracelevel
@@ -2250,19 +2046,15 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                   if defined $::RD_TRACE;
                 $item{q{unary}} = $_tok;
                 push @item, $_tok;
-
             }
-
             Parse::RecDescent::_trace(
                 q{Trying action},
                 Parse::RecDescent::_tracefirst($text),
                 q{factor}, $tracelevel
               )
               if defined $::RD_TRACE;
-
             $_tok = ($_noactions) ? 0 : do {
-                warn 'factor '
-                  if $Math::Symolic::Parser::DEBUG;
+                warn 'factor ' if $Math::Symolic::Parser::DEBUG;
                 $item[1];
             };
             unless ( defined $_tok ) {
@@ -2277,7 +2069,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
               if defined $::RD_TRACE;
             push @item, $_tok;
             $item{__ACTION1__} = $_tok;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: [unary]<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -2287,9 +2078,7 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             $_matched = 1;
             last;
         }
-
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: ['(' expr ')']},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -2302,7 +2091,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             @item = (q{factor});
             %item = ( __RULE__ => q{factor} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying terminal: ['(']},
                 Parse::RecDescent::_tracefirst($text),
@@ -2315,7 +2103,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e
                 and $text =~ s/\A\(// )
             {
-
                 $expectation->failed();
                 Parse::RecDescent::_trace(
                     qq{<<Didn't match terminal>>},
@@ -2329,7 +2116,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                 Parse::RecDescent::_tracefirst($text) )
               if defined $::RD_TRACE;
             push @item, $item{__STRING1__} = $&;
-
             Parse::RecDescent::_trace(
                 q{Trying subrule: [expr]},
                 Parse::RecDescent::_tracefirst($text),
@@ -2350,7 +2136,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                     )
                   )
                 {
-
                     Parse::RecDescent::_trace(
                         q{<<Didn't match subrule: [expr]>>},
                         Parse::RecDescent::_tracefirst($text),
@@ -2361,9 +2146,8 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                     last;
                 }
                 Parse::RecDescent::_trace(
-                        q{>>Matched subrule: [expr]<< (return value: [} . $_tok
+                    q{>>Matched subrule: [expr]<< (return value: [} . $_tok
                       . q{]},
-
                     Parse::RecDescent::_tracefirst($text),
                     q{factor},
                     $tracelevel
@@ -2371,9 +2155,7 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                   if defined $::RD_TRACE;
                 $item{q{expr}} = $_tok;
                 push @item, $_tok;
-
             }
-
             Parse::RecDescent::_trace(
                 q{Trying terminal: [')']},
                 Parse::RecDescent::_tracefirst($text),
@@ -2382,11 +2164,9 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
               if defined $::RD_TRACE;
             $lastsep = "";
             $expectation->is(q{')'})->at($text);
-
             unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e
                 and $text =~ s/\A\)// )
             {
-
                 $expectation->failed();
                 Parse::RecDescent::_trace(
                     qq{<<Didn't match terminal>>},
@@ -2400,17 +2180,14 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                 Parse::RecDescent::_tracefirst($text) )
               if defined $::RD_TRACE;
             push @item, $item{__STRING2__} = $&;
-
             Parse::RecDescent::_trace(
                 q{Trying action},
                 Parse::RecDescent::_tracefirst($text),
                 q{factor}, $tracelevel
               )
               if defined $::RD_TRACE;
-
             $_tok = ($_noactions) ? 0 : do {
-                warn 'factor '
-                  if $Math::Symbolic::Parser::DEBUG;
+                warn 'factor ' if $Math::Symbolic::Parser::DEBUG;
                 $item[2];
             };
             unless ( defined $_tok ) {
@@ -2425,7 +2202,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
               if defined $::RD_TRACE;
             push @item, $_tok;
             $item{__ACTION1__} = $_tok;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: ['(' expr ')']<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -2435,9 +2211,7 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             $_matched = 1;
             last;
         }
-
         unless ( $_matched || defined($return) || defined($score) ) {
-
             $_[1] = $text;    # NOT SURE THIS IS NEEDED
             Parse::RecDescent::_trace(
                 q{<<Didn't match rule>>},
@@ -2482,16 +2256,13 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
         local $tracelevel = ( $tracelevel || 0 ) + 1;
         $ERRORS = 0;
         my $thisrule = $thisparser->{"rules"}{"unary_op"};
-
         Parse::RecDescent::_trace(
             q{Trying rule: [unary_op]},
             Parse::RecDescent::_tracefirst( $_[1] ),
             q{unary_op}, $tracelevel
           )
           if defined $::RD_TRACE;
-
         my $err_at = @{ $thisparser->{errors} };
-
         my $score;
         my $score_return;
         my $_tok;
@@ -2509,12 +2280,10 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
         my $expectation =
           new Parse::RecDescent::Expectation( $thisrule->expected() );
         $expectation->at( $_[1] );
-
         my $thisline;
         tie $thisline, q{Parse::RecDescent::LineCounter}, \$text, $thisparser;
 
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: [/([+-]?)/]},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -2527,7 +2296,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             @item = (q{unary_op});
             %item = ( __RULE__ => q{unary_op} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying terminal: [/([+-]?)/]},
                 Parse::RecDescent::_tracefirst($text),
@@ -2540,12 +2308,10 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e
                 and $text =~ s/\A(?:([+-]?))// )
             {
-
                 $expectation->failed();
                 Parse::RecDescent::_trace( q{<<Didn't match terminal>>},
                     Parse::RecDescent::_tracefirst($text) )
                   if defined $::RD_TRACE;
-
                 last;
             }
             Parse::RecDescent::_trace(
@@ -2553,17 +2319,13 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                 Parse::RecDescent::_tracefirst($text) )
               if defined $::RD_TRACE;
             push @item, $item{__PATTERN1__} = $&;
-
             Parse::RecDescent::_trace(
                 q{Trying action},
                 Parse::RecDescent::_tracefirst($text),
                 q{unary_op}, $tracelevel
               )
               if defined $::RD_TRACE;
-
-            $_tok = ($_noactions) ? 0 : do {
-                $item[1];
-            };
+            $_tok = ($_noactions) ? 0 : do { $item[1] };
             unless ( defined $_tok ) {
                 Parse::RecDescent::_trace(
                     q{<<Didn't match action>> (return value: [undef])})
@@ -2576,7 +2338,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
               if defined $::RD_TRACE;
             push @item, $_tok;
             $item{__ACTION1__} = $_tok;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: [/([+-]?)/]<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -2586,9 +2347,7 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             $_matched = 1;
             last;
         }
-
         unless ( $_matched || defined($return) || defined($score) ) {
-
             $_[1] = $text;    # NOT SURE THIS IS NEEDED
             Parse::RecDescent::_trace(
                 q{<<Didn't match rule>>},
@@ -2633,16 +2392,13 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
         local $tracelevel = ( $tracelevel || 0 ) + 1;
         $ERRORS = 0;
         my $thisrule = $thisparser->{"rules"}{"exp_op"};
-
         Parse::RecDescent::_trace(
             q{Trying rule: [exp_op]},
             Parse::RecDescent::_tracefirst( $_[1] ),
             q{exp_op}, $tracelevel
           )
           if defined $::RD_TRACE;
-
         my $err_at = @{ $thisparser->{errors} };
-
         my $score;
         my $score_return;
         my $_tok;
@@ -2660,12 +2416,10 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
         my $expectation =
           new Parse::RecDescent::Expectation( $thisrule->expected() );
         $expectation->at( $_[1] );
-
         my $thisline;
         tie $thisline, q{Parse::RecDescent::LineCounter}, \$text, $thisparser;
 
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: ['^']},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -2678,7 +2432,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             @item = (q{exp_op});
             %item = ( __RULE__ => q{exp_op} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying terminal: ['^']},
                 Parse::RecDescent::_tracefirst($text),
@@ -2691,7 +2444,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e
                 and $text =~ s/\A\^// )
             {
-
                 $expectation->failed();
                 Parse::RecDescent::_trace(
                     qq{<<Didn't match terminal>>},
@@ -2705,7 +2457,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                 Parse::RecDescent::_tracefirst($text) )
               if defined $::RD_TRACE;
             push @item, $item{__STRING1__} = $&;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: ['^']<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -2715,9 +2466,7 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             $_matched = 1;
             last;
         }
-
         unless ( $_matched || defined($return) || defined($score) ) {
-
             $_[1] = $text;    # NOT SURE THIS IS NEEDED
             Parse::RecDescent::_trace(
                 q{<<Didn't match rule>>},
@@ -2762,16 +2511,13 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
         local $tracelevel = ( $tracelevel || 0 ) + 1;
         $ERRORS = 0;
         my $thisrule = $thisparser->{"rules"}{"function"};
-
         Parse::RecDescent::_trace(
             q{Trying rule: [function]},
             Parse::RecDescent::_tracefirst( $_[1] ),
             q{function}, $tracelevel
           )
           if defined $::RD_TRACE;
-
         my $err_at = @{ $thisparser->{errors} };
-
         my $score;
         my $score_return;
         my $_tok;
@@ -2789,12 +2535,10 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
         my $expectation =
           new Parse::RecDescent::Expectation( $thisrule->expected() );
         $expectation->at( $_[1] );
-
         my $thisline;
         tie $thisline, q{Parse::RecDescent::LineCounter}, \$text, $thisparser;
 
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: [function_name '(' expr_list ')']},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -2807,13 +2551,13 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             @item = (q{function});
             %item = ( __RULE__ => q{function} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying subrule: [function_name]},
                 Parse::RecDescent::_tracefirst($text),
                 q{function}, $tracelevel
               )
               if defined $::RD_TRACE;
+
             if (1) {
                 no strict qw{refs};
                 $expectation->is(q{})->at($text);
@@ -2828,7 +2572,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                     )
                   )
                 {
-
                     Parse::RecDescent::_trace(
                         q{<<Didn't match subrule: [function_name]>>},
                         Parse::RecDescent::_tracefirst($text),
@@ -2842,7 +2585,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                 Parse::RecDescent::_trace(
                     q{>>Matched subrule: [function_name]<< (return value: [}
                       . $_tok . q{]},
-
                     Parse::RecDescent::_tracefirst($text),
                     q{function},
                     $tracelevel
@@ -2850,9 +2592,7 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                   if defined $::RD_TRACE;
                 $item{q{function_name}} = $_tok;
                 push @item, $_tok;
-
             }
-
             Parse::RecDescent::_trace(
                 q{Trying terminal: ['(']},
                 Parse::RecDescent::_tracefirst($text),
@@ -2861,11 +2601,9 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
               if defined $::RD_TRACE;
             $lastsep = "";
             $expectation->is(q{'('})->at($text);
-
             unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e
                 and $text =~ s/\A\(// )
             {
-
                 $expectation->failed();
                 Parse::RecDescent::_trace(
                     qq{<<Didn't match terminal>>},
@@ -2879,7 +2617,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                 Parse::RecDescent::_tracefirst($text) )
               if defined $::RD_TRACE;
             push @item, $item{__STRING1__} = $&;
-
             Parse::RecDescent::_trace(
                 q{Trying subrule: [expr_list]},
                 Parse::RecDescent::_tracefirst($text),
@@ -2900,7 +2637,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                     )
                   )
                 {
-
                     Parse::RecDescent::_trace(
                         q{<<Didn't match subrule: [expr_list]>>},
                         Parse::RecDescent::_tracefirst($text),
@@ -2913,7 +2649,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                 Parse::RecDescent::_trace(
                     q{>>Matched subrule: [expr_list]<< (return value: [} . $_tok
                       . q{]},
-
                     Parse::RecDescent::_tracefirst($text),
                     q{function},
                     $tracelevel
@@ -2921,9 +2656,7 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                   if defined $::RD_TRACE;
                 $item{q{expr_list}} = $_tok;
                 push @item, $_tok;
-
             }
-
             Parse::RecDescent::_trace(
                 q{Trying terminal: [')']},
                 Parse::RecDescent::_tracefirst($text),
@@ -2932,11 +2665,9 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
               if defined $::RD_TRACE;
             $lastsep = "";
             $expectation->is(q{')'})->at($text);
-
             unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e
                 and $text =~ s/\A\)// )
             {
-
                 $expectation->failed();
                 Parse::RecDescent::_trace(
                     qq{<<Didn't match terminal>>},
@@ -2950,28 +2681,19 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                 Parse::RecDescent::_tracefirst($text) )
               if defined $::RD_TRACE;
             push @item, $item{__STRING2__} = $&;
-
             Parse::RecDescent::_trace(
                 q{Trying action},
                 Parse::RecDescent::_tracefirst($text),
                 q{function}, $tracelevel
               )
               if defined $::RD_TRACE;
-
             $_tok = ($_noactions) ? 0 : do {
-                warn 'function '
-                  if $Math::Symbolic::Parser::DEBUG;
+                warn 'function ' if $Math::Symbolic::Parser::DEBUG;
                 my $function =
                   $Math::Symbolic::Operator::Op_Symbols{ $item[1] };
-                die "Invalid function '$item[1]'!"
-                  unless defined $function;
-
+                die "Invalid function '$item[1]'!" unless defined $function;
                 Math::Symbolic::Operator->new(
-                    {
-                        type     => $function,
-                        operands => $item[3],
-                    }
-                );
+                    { type => $function, operands => $item[3], } );
             };
             unless ( defined $_tok ) {
                 Parse::RecDescent::_trace(
@@ -2985,7 +2707,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
               if defined $::RD_TRACE;
             push @item, $_tok;
             $item{__ACTION1__} = $_tok;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: [function_name '(' expr_list ')']<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -2996,9 +2717,7 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             $_matched = 1;
             last;
         }
-
         unless ( $_matched || defined($return) || defined($score) ) {
-
             $_[1] = $text;    # NOT SURE THIS IS NEEDED
             Parse::RecDescent::_trace(
                 q{<<Didn't match rule>>},
@@ -3043,16 +2762,13 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
         local $tracelevel = ( $tracelevel || 0 ) + 1;
         $ERRORS = 0;
         my $thisrule = $thisparser->{"rules"}{"exp"};
-
         Parse::RecDescent::_trace(
             q{Trying rule: [exp]},
             Parse::RecDescent::_tracefirst( $_[1] ),
             q{exp}, $tracelevel
           )
           if defined $::RD_TRACE;
-
         my $err_at = @{ $thisparser->{errors} };
-
         my $score;
         my $score_return;
         my $_tok;
@@ -3070,12 +2786,10 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
         my $expectation =
           new Parse::RecDescent::Expectation( $thisrule->expected() );
         $expectation->at( $_[1] );
-
         my $thisline;
         tie $thisline, q{Parse::RecDescent::LineCounter}, \$text, $thisparser;
 
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: [<rightop: factor exp_op factor>]},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -3088,7 +2802,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
             @item = (q{exp});
             %item = ( __RULE__ => q{exp} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying operator: [<rightop: factor exp_op factor>]},
                 Parse::RecDescent::_tracefirst($text),
@@ -3096,19 +2809,16 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
               )
               if defined $::RD_TRACE;
             $expectation->is(q{})->at($text);
-
             $_tok = undef;
           OPLOOP: while (1) {
                 $repcount = 0;
                 my @item;
-
                 my $savetext = $text;
                 my $backtrack;
 
                 # MATCH (LEFTARG OP)(s)
                 while ( $repcount < 100000000 ) {
                     $backtrack = 0;
-
                     Parse::RecDescent::_trace(
                         q{Trying subrule: [factor]},
                         Parse::RecDescent::_tracefirst($text),
@@ -3129,7 +2839,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                             )
                           )
                         {
-
                             Parse::RecDescent::_trace(
                                 q{<<Didn't match subrule: [factor]>>},
                                 Parse::RecDescent::_tracefirst($text),
@@ -3143,7 +2852,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                         Parse::RecDescent::_trace(
                             q{>>Matched subrule: [factor]<< (return value: [}
                               . $_tok . q{]},
-
                             Parse::RecDescent::_tracefirst($text),
                             q{exp},
                             $tracelevel
@@ -3151,12 +2859,9 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                           if defined $::RD_TRACE;
                         $item{q{factor}} = $_tok;
                         push @item, $_tok;
-
                     }
-
                     $repcount++;
                     $backtrack = 1;
-
                     Parse::RecDescent::_trace(
                         q{Trying subrule: [exp_op]},
                         Parse::RecDescent::_tracefirst($text),
@@ -3177,7 +2882,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                             )
                           )
                         {
-
                             Parse::RecDescent::_trace(
                                 q{<<Didn't match subrule: [exp_op]>>},
                                 Parse::RecDescent::_tracefirst($text),
@@ -3191,7 +2895,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                         Parse::RecDescent::_trace(
                             q{>>Matched subrule: [exp_op]<< (return value: [}
                               . $_tok . q{]},
-
                             Parse::RecDescent::_tracefirst($text),
                             q{exp},
                             $tracelevel
@@ -3199,17 +2902,13 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                           if defined $::RD_TRACE;
                         $item{q{exp_op}} = $_tok;
                         push @item, $_tok;
-
                     }
-
                     $savetext = $text;
-
                 }
                 $text = $savetext;
                 pop @item if $backtrack;
 
                 # MATCH RIGHTARG
-
                 Parse::RecDescent::_trace(
                     q{Trying subrule: [factor]},
                     Parse::RecDescent::_tracefirst($text),
@@ -3230,7 +2929,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                         )
                       )
                     {
-
                         Parse::RecDescent::_trace(
                             q{<<Didn't match subrule: [factor]>>},
                             Parse::RecDescent::_tracefirst($text),
@@ -3243,7 +2941,6 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                     Parse::RecDescent::_trace(
                         q{>>Matched subrule: [factor]<< (return value: [}
                           . $_tok . q{]},
-
                         Parse::RecDescent::_tracefirst($text),
                         q{exp},
                         $tracelevel
@@ -3251,15 +2948,12 @@ q{>>Matched operator: [<leftop: expr list_op expr>]<< (return value: [}
                       if defined $::RD_TRACE;
                     $item{q{factor}} = $_tok;
                     push @item, $_tok;
-
                 }
-
                 $repcount++;
                 unless (@item) { undef $_tok; last }
                 $_tok = [@item];
                 last;
             }
-
             unless ( $repcount >= 1 ) {
                 Parse::RecDescent::_trace(
 q{<<Didn't match operator: [<rightop: factor exp_op factor>]>>},
@@ -3279,16 +2973,13 @@ q{>>Matched operator: [<rightop: factor exp_op factor>]<< (return value: [}
                 $tracelevel
               )
               if defined $::RD_TRACE;
-
             push @item, $item{__DIRECTIVE1__} = $_tok || [];
-
             Parse::RecDescent::_trace(
                 q{Trying action},
                 Parse::RecDescent::_tracefirst($text),
                 q{exp}, $tracelevel
               )
               if defined $::RD_TRACE;
-
             $_tok = ($_noactions) ? 0 : do {
                 warn 'exp ' if $Math::Symbolic::Parser::DEBUG;
                 Math::Symbolic::Parser::_left_right_op_list( 'exp', @item );
@@ -3305,7 +2996,6 @@ q{>>Matched operator: [<rightop: factor exp_op factor>]<< (return value: [}
               if defined $::RD_TRACE;
             push @item, $_tok;
             $item{__ACTION1__} = $_tok;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: [<rightop: factor exp_op factor>]<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -3315,9 +3005,7 @@ q{>>Matched operator: [<rightop: factor exp_op factor>]<< (return value: [}
             $_matched = 1;
             last;
         }
-
         unless ( $_matched || defined($return) || defined($score) ) {
-
             $_[1] = $text;    # NOT SURE THIS IS NEEDED
             Parse::RecDescent::_trace(
                 q{<<Didn't match rule>>},
@@ -3362,16 +3050,13 @@ q{>>Matched operator: [<rightop: factor exp_op factor>]<< (return value: [}
         local $tracelevel = ( $tracelevel || 0 ) + 1;
         $ERRORS = 0;
         my $thisrule = $thisparser->{"rules"}{"multiplication"};
-
         Parse::RecDescent::_trace(
             q{Trying rule: [multiplication]},
             Parse::RecDescent::_tracefirst( $_[1] ),
             q{multiplication}, $tracelevel
           )
           if defined $::RD_TRACE;
-
         my $err_at = @{ $thisparser->{errors} };
-
         my $score;
         my $score_return;
         my $_tok;
@@ -3389,12 +3074,10 @@ q{>>Matched operator: [<rightop: factor exp_op factor>]<< (return value: [}
         my $expectation =
           new Parse::RecDescent::Expectation( $thisrule->expected() );
         $expectation->at( $_[1] );
-
         my $thisline;
         tie $thisline, q{Parse::RecDescent::LineCounter}, \$text, $thisparser;
 
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: [<leftop: exp mult_op exp>]},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -3407,7 +3090,6 @@ q{>>Matched operator: [<rightop: factor exp_op factor>]<< (return value: [}
             @item = (q{multiplication});
             %item = ( __RULE__ => q{multiplication} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying operator: [<leftop: exp mult_op exp>]},
                 Parse::RecDescent::_tracefirst($text),
@@ -3415,14 +3097,12 @@ q{>>Matched operator: [<rightop: factor exp_op factor>]<< (return value: [}
               )
               if defined $::RD_TRACE;
             $expectation->is(q{})->at($text);
-
             $_tok = undef;
           OPLOOP: while (1) {
                 $repcount = 0;
                 my @item;
 
                 # MATCH LEFTARG
-
                 Parse::RecDescent::_trace(
                     q{Trying subrule: [exp]},
                     Parse::RecDescent::_tracefirst($text),
@@ -3443,7 +3123,6 @@ q{>>Matched operator: [<rightop: factor exp_op factor>]<< (return value: [}
                         )
                       )
                     {
-
                         Parse::RecDescent::_trace(
                             q{<<Didn't match subrule: [exp]>>},
                             Parse::RecDescent::_tracefirst($text),
@@ -3457,7 +3136,6 @@ q{>>Matched operator: [<rightop: factor exp_op factor>]<< (return value: [}
                     Parse::RecDescent::_trace(
                         q{>>Matched subrule: [exp]<< (return value: [} . $_tok
                           . q{]},
-
                         Parse::RecDescent::_tracefirst($text),
                         q{multiplication},
                         $tracelevel
@@ -3465,18 +3143,14 @@ q{>>Matched operator: [<rightop: factor exp_op factor>]<< (return value: [}
                       if defined $::RD_TRACE;
                     $item{q{exp}} = $_tok;
                     push @item, $_tok;
-
                 }
-
                 $repcount++;
-
                 my $savetext = $text;
                 my $backtrack;
 
                 # MATCH (OP RIGHTARG)(s)
                 while ( $repcount < 100000000 ) {
                     $backtrack = 0;
-
                     Parse::RecDescent::_trace(
                         q{Trying subrule: [mult_op]},
                         Parse::RecDescent::_tracefirst($text),
@@ -3497,7 +3171,6 @@ q{>>Matched operator: [<rightop: factor exp_op factor>]<< (return value: [}
                             )
                           )
                         {
-
                             Parse::RecDescent::_trace(
                                 q{<<Didn't match subrule: [mult_op]>>},
                                 Parse::RecDescent::_tracefirst($text),
@@ -3511,7 +3184,6 @@ q{>>Matched operator: [<rightop: factor exp_op factor>]<< (return value: [}
                         Parse::RecDescent::_trace(
                             q{>>Matched subrule: [mult_op]<< (return value: [}
                               . $_tok . q{]},
-
                             Parse::RecDescent::_tracefirst($text),
                             q{multiplication},
                             $tracelevel
@@ -3519,11 +3191,8 @@ q{>>Matched operator: [<rightop: factor exp_op factor>]<< (return value: [}
                           if defined $::RD_TRACE;
                         $item{q{mult_op}} = $_tok;
                         push @item, $_tok;
-
                     }
-
                     $backtrack = 1;
-
                     Parse::RecDescent::_trace(
                         q{Trying subrule: [exp]},
                         Parse::RecDescent::_tracefirst($text),
@@ -3544,7 +3213,6 @@ q{>>Matched operator: [<rightop: factor exp_op factor>]<< (return value: [}
                             )
                           )
                         {
-
                             Parse::RecDescent::_trace(
                                 q{<<Didn't match subrule: [exp]>>},
                                 Parse::RecDescent::_tracefirst($text),
@@ -3558,7 +3226,6 @@ q{>>Matched operator: [<rightop: factor exp_op factor>]<< (return value: [}
                         Parse::RecDescent::_trace(
                             q{>>Matched subrule: [exp]<< (return value: [}
                               . $_tok . q{]},
-
                             Parse::RecDescent::_tracefirst($text),
                             q{multiplication},
                             $tracelevel
@@ -3566,20 +3233,16 @@ q{>>Matched operator: [<rightop: factor exp_op factor>]<< (return value: [}
                           if defined $::RD_TRACE;
                         $item{q{exp}} = $_tok;
                         push @item, $_tok;
-
                     }
-
                     $savetext = $text;
                     $repcount++;
                 }
                 $text = $savetext;
                 pop @item if $backtrack;
-
                 unless (@item) { undef $_tok; last }
                 $_tok = [@item];
                 last;
             }
-
             unless ( $repcount >= 1 ) {
                 Parse::RecDescent::_trace(
                     q{<<Didn't match operator: [<leftop: exp mult_op exp>]>>},
@@ -3599,19 +3262,15 @@ q{>>Matched operator: [<leftop: exp mult_op exp>]<< (return value: [}
                 $tracelevel
               )
               if defined $::RD_TRACE;
-
             push @item, $item{__DIRECTIVE1__} = $_tok || [];
-
             Parse::RecDescent::_trace(
                 q{Trying action},
                 Parse::RecDescent::_tracefirst($text),
                 q{multiplication}, $tracelevel
               )
               if defined $::RD_TRACE;
-
             $_tok = ($_noactions) ? 0 : do {
-                warn 'multiplication '
-                  if $Math::Symbolic::Parser::DEBUG;
+                warn 'multiplication ' if $Math::Symbolic::Parser::DEBUG;
                 Math::Symbolic::Parser::_left_right_op_list( 'multiplication',
                     @item );
             };
@@ -3627,7 +3286,6 @@ q{>>Matched operator: [<leftop: exp mult_op exp>]<< (return value: [}
               if defined $::RD_TRACE;
             push @item, $_tok;
             $item{__ACTION1__} = $_tok;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: [<leftop: exp mult_op exp>]<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -3638,9 +3296,7 @@ q{>>Matched operator: [<leftop: exp mult_op exp>]<< (return value: [}
             $_matched = 1;
             last;
         }
-
         unless ( $_matched || defined($return) || defined($score) ) {
-
             $_[1] = $text;    # NOT SURE THIS IS NEEDED
             Parse::RecDescent::_trace(
                 q{<<Didn't match rule>>},
@@ -3685,16 +3341,13 @@ q{>>Matched operator: [<leftop: exp mult_op exp>]<< (return value: [}
         local $tracelevel = ( $tracelevel || 0 ) + 1;
         $ERRORS = 0;
         my $thisrule = $thisparser->{"rules"}{"addition"};
-
         Parse::RecDescent::_trace(
             q{Trying rule: [addition]},
             Parse::RecDescent::_tracefirst( $_[1] ),
             q{addition}, $tracelevel
           )
           if defined $::RD_TRACE;
-
         my $err_at = @{ $thisparser->{errors} };
-
         my $score;
         my $score_return;
         my $_tok;
@@ -3712,12 +3365,10 @@ q{>>Matched operator: [<leftop: exp mult_op exp>]<< (return value: [}
         my $expectation =
           new Parse::RecDescent::Expectation( $thisrule->expected() );
         $expectation->at( $_[1] );
-
         my $thisline;
         tie $thisline, q{Parse::RecDescent::LineCounter}, \$text, $thisparser;
 
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
 q{Trying production: [<leftop: multiplication add_op multiplication>]},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -3731,7 +3382,6 @@ q{Trying production: [<leftop: multiplication add_op multiplication>]},
             @item = (q{addition});
             %item = ( __RULE__ => q{addition} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
 q{Trying operator: [<leftop: multiplication add_op multiplication>]},
                 Parse::RecDescent::_tracefirst($text),
@@ -3740,14 +3390,12 @@ q{Trying operator: [<leftop: multiplication add_op multiplication>]},
               )
               if defined $::RD_TRACE;
             $expectation->is(q{})->at($text);
-
             $_tok = undef;
           OPLOOP: while (1) {
                 $repcount = 0;
                 my @item;
 
                 # MATCH LEFTARG
-
                 Parse::RecDescent::_trace(
                     q{Trying subrule: [multiplication]},
                     Parse::RecDescent::_tracefirst($text),
@@ -3768,7 +3416,6 @@ q{Trying operator: [<leftop: multiplication add_op multiplication>]},
                         )
                       )
                     {
-
                         Parse::RecDescent::_trace(
                             q{<<Didn't match subrule: [multiplication]>>},
                             Parse::RecDescent::_tracefirst($text),
@@ -3782,7 +3429,6 @@ q{Trying operator: [<leftop: multiplication add_op multiplication>]},
                     Parse::RecDescent::_trace(
 q{>>Matched subrule: [multiplication]<< (return value: [}
                           . $_tok . q{]},
-
                         Parse::RecDescent::_tracefirst($text),
                         q{addition},
                         $tracelevel
@@ -3790,18 +3436,14 @@ q{>>Matched subrule: [multiplication]<< (return value: [}
                       if defined $::RD_TRACE;
                     $item{q{multiplication}} = $_tok;
                     push @item, $_tok;
-
                 }
-
                 $repcount++;
-
                 my $savetext = $text;
                 my $backtrack;
 
                 # MATCH (OP RIGHTARG)(s)
                 while ( $repcount < 100000000 ) {
                     $backtrack = 0;
-
                     Parse::RecDescent::_trace(
                         q{Trying subrule: [add_op]},
                         Parse::RecDescent::_tracefirst($text),
@@ -3822,7 +3464,6 @@ q{>>Matched subrule: [multiplication]<< (return value: [}
                             )
                           )
                         {
-
                             Parse::RecDescent::_trace(
                                 q{<<Didn't match subrule: [add_op]>>},
                                 Parse::RecDescent::_tracefirst($text),
@@ -3836,7 +3477,6 @@ q{>>Matched subrule: [multiplication]<< (return value: [}
                         Parse::RecDescent::_trace(
                             q{>>Matched subrule: [add_op]<< (return value: [}
                               . $_tok . q{]},
-
                             Parse::RecDescent::_tracefirst($text),
                             q{addition},
                             $tracelevel
@@ -3844,11 +3484,8 @@ q{>>Matched subrule: [multiplication]<< (return value: [}
                           if defined $::RD_TRACE;
                         $item{q{add_op}} = $_tok;
                         push @item, $_tok;
-
                     }
-
                     $backtrack = 1;
-
                     Parse::RecDescent::_trace(
                         q{Trying subrule: [multiplication]},
                         Parse::RecDescent::_tracefirst($text),
@@ -3869,7 +3506,6 @@ q{>>Matched subrule: [multiplication]<< (return value: [}
                             )
                           )
                         {
-
                             Parse::RecDescent::_trace(
                                 q{<<Didn't match subrule: [multiplication]>>},
                                 Parse::RecDescent::_tracefirst($text),
@@ -3883,7 +3519,6 @@ q{>>Matched subrule: [multiplication]<< (return value: [}
                         Parse::RecDescent::_trace(
 q{>>Matched subrule: [multiplication]<< (return value: [}
                               . $_tok . q{]},
-
                             Parse::RecDescent::_tracefirst($text),
                             q{addition},
                             $tracelevel
@@ -3891,20 +3526,16 @@ q{>>Matched subrule: [multiplication]<< (return value: [}
                           if defined $::RD_TRACE;
                         $item{q{multiplication}} = $_tok;
                         push @item, $_tok;
-
                     }
-
                     $savetext = $text;
                     $repcount++;
                 }
                 $text = $savetext;
                 pop @item if $backtrack;
-
                 unless (@item) { undef $_tok; last }
                 $_tok = [@item];
                 last;
             }
-
             unless ( $repcount >= 1 ) {
                 Parse::RecDescent::_trace(
 q{<<Didn't match operator: [<leftop: multiplication add_op multiplication>]>>},
@@ -3924,19 +3555,15 @@ q{>>Matched operator: [<leftop: multiplication add_op multiplication>]<< (return
                 $tracelevel
               )
               if defined $::RD_TRACE;
-
             push @item, $item{__DIRECTIVE1__} = $_tok || [];
-
             Parse::RecDescent::_trace(
                 q{Trying action},
                 Parse::RecDescent::_tracefirst($text),
                 q{addition}, $tracelevel
               )
               if defined $::RD_TRACE;
-
             $_tok = ($_noactions) ? 0 : do {
-                warn 'addition '
-                  if $Math::Symbolic::Parser::DEBUG;
+                warn 'addition ' if $Math::Symbolic::Parser::DEBUG;
                 Math::Symbolic::Parser::_left_right_op_list( 'addition',
                     @item );
             };
@@ -3952,7 +3579,6 @@ q{>>Matched operator: [<leftop: multiplication add_op multiplication>]<< (return
               if defined $::RD_TRACE;
             push @item, $_tok;
             $item{__ACTION1__} = $_tok;
-
             Parse::RecDescent::_trace(
 q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -3963,9 +3589,7 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             $_matched = 1;
             last;
         }
-
         unless ( $_matched || defined($return) || defined($score) ) {
-
             $_[1] = $text;    # NOT SURE THIS IS NEEDED
             Parse::RecDescent::_trace(
                 q{<<Didn't match rule>>},
@@ -4011,16 +3635,13 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
         local $tracelevel = ( $tracelevel || 0 ) + 1;
         $ERRORS = 0;
         my $thisrule = $thisparser->{"rules"}{"forced_unary_op"};
-
         Parse::RecDescent::_trace(
             q{Trying rule: [forced_unary_op]},
             Parse::RecDescent::_tracefirst( $_[1] ),
             q{forced_unary_op}, $tracelevel
           )
           if defined $::RD_TRACE;
-
         my $err_at = @{ $thisparser->{errors} };
-
         my $score;
         my $score_return;
         my $_tok;
@@ -4038,12 +3659,10 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
         my $expectation =
           new Parse::RecDescent::Expectation( $thisrule->expected() );
         $expectation->at( $_[1] );
-
         my $thisline;
         tie $thisline, q{Parse::RecDescent::LineCounter}, \$text, $thisparser;
 
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: [/([+-])/]},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -4056,7 +3675,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             @item = (q{forced_unary_op});
             %item = ( __RULE__ => q{forced_unary_op} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying terminal: [/([+-])/]},
                 Parse::RecDescent::_tracefirst($text),
@@ -4069,12 +3687,10 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e
                 and $text =~ s/\A(?:([+-]))// )
             {
-
                 $expectation->failed();
                 Parse::RecDescent::_trace( q{<<Didn't match terminal>>},
                     Parse::RecDescent::_tracefirst($text) )
                   if defined $::RD_TRACE;
-
                 last;
             }
             Parse::RecDescent::_trace(
@@ -4082,17 +3698,13 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
                 Parse::RecDescent::_tracefirst($text) )
               if defined $::RD_TRACE;
             push @item, $item{__PATTERN1__} = $&;
-
             Parse::RecDescent::_trace(
                 q{Trying action},
                 Parse::RecDescent::_tracefirst($text),
                 q{forced_unary_op}, $tracelevel
               )
               if defined $::RD_TRACE;
-
-            $_tok = ($_noactions) ? 0 : do {
-                $item[1];
-            };
+            $_tok = ($_noactions) ? 0 : do { $item[1] };
             unless ( defined $_tok ) {
                 Parse::RecDescent::_trace(
                     q{<<Didn't match action>> (return value: [undef])})
@@ -4105,7 +3717,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
               if defined $::RD_TRACE;
             push @item, $_tok;
             $item{__ACTION1__} = $_tok;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: [/([+-])/]<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -4115,9 +3726,7 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             $_matched = 1;
             last;
         }
-
         unless ( $_matched || defined($return) || defined($score) ) {
-
             $_[1] = $text;    # NOT SURE THIS IS NEEDED
             Parse::RecDescent::_trace(
                 q{<<Didn't match rule>>},
@@ -4162,16 +3771,13 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
         local $tracelevel = ( $tracelevel || 0 ) + 1;
         $ERRORS = 0;
         my $thisrule = $thisparser->{"rules"}{"expr"};
-
         Parse::RecDescent::_trace(
             q{Trying rule: [expr]},
             Parse::RecDescent::_tracefirst( $_[1] ),
             q{expr}, $tracelevel
           )
           if defined $::RD_TRACE;
-
         my $err_at = @{ $thisparser->{errors} };
-
         my $score;
         my $score_return;
         my $_tok;
@@ -4189,12 +3795,10 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
         my $expectation =
           new Parse::RecDescent::Expectation( $thisrule->expected() );
         $expectation->at( $_[1] );
-
         my $thisline;
         tie $thisline, q{Parse::RecDescent::LineCounter}, \$text, $thisparser;
 
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: [addition]},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -4207,13 +3811,13 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             @item = (q{expr});
             %item = ( __RULE__ => q{expr} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying subrule: [addition]},
                 Parse::RecDescent::_tracefirst($text),
                 q{expr}, $tracelevel
               )
               if defined $::RD_TRACE;
+
             if (1) {
                 no strict qw{refs};
                 $expectation->is(q{})->at($text);
@@ -4228,7 +3832,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
                     )
                   )
                 {
-
                     Parse::RecDescent::_trace(
                         q{<<Didn't match subrule: [addition]>>},
                         Parse::RecDescent::_tracefirst($text),
@@ -4241,7 +3844,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
                 Parse::RecDescent::_trace(
                     q{>>Matched subrule: [addition]<< (return value: [} . $_tok
                       . q{]},
-
                     Parse::RecDescent::_tracefirst($text),
                     q{expr},
                     $tracelevel
@@ -4249,16 +3851,13 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
                   if defined $::RD_TRACE;
                 $item{q{addition}} = $_tok;
                 push @item, $_tok;
-
             }
-
             Parse::RecDescent::_trace(
                 q{Trying action},
                 Parse::RecDescent::_tracefirst($text),
                 q{expr}, $tracelevel
               )
               if defined $::RD_TRACE;
-
             $_tok = ($_noactions) ? 0 : do {
                 warn 'expr ' if $Math::Symbolic::Parser::DEBUG;
                 $item[1];
@@ -4275,7 +3874,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
               if defined $::RD_TRACE;
             push @item, $_tok;
             $item{__ACTION1__} = $_tok;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: [addition]<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -4285,9 +3883,7 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             $_matched = 1;
             last;
         }
-
         unless ( $_matched || defined($return) || defined($score) ) {
-
             $_[1] = $text;    # NOT SURE THIS IS NEEDED
             Parse::RecDescent::_trace(
                 q{<<Didn't match rule>>},
@@ -4332,16 +3928,13 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
         local $tracelevel = ( $tracelevel || 0 ) + 1;
         $ERRORS = 0;
         my $thisrule = $thisparser->{"rules"}{"function_name"};
-
         Parse::RecDescent::_trace(
             q{Trying rule: [function_name]},
             Parse::RecDescent::_tracefirst( $_[1] ),
             q{function_name}, $tracelevel
           )
           if defined $::RD_TRACE;
-
         my $err_at = @{ $thisparser->{errors} };
-
         my $score;
         my $score_return;
         my $_tok;
@@ -4359,12 +3952,10 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
         my $expectation =
           new Parse::RecDescent::Expectation( $thisrule->expected() );
         $expectation->at( $_[1] );
-
         my $thisline;
         tie $thisline, q{Parse::RecDescent::LineCounter}, \$text, $thisparser;
 
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: ['log']},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -4377,7 +3968,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             @item = (q{function_name});
             %item = ( __RULE__ => q{function_name} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying terminal: ['log']},
                 Parse::RecDescent::_tracefirst($text),
@@ -4390,7 +3980,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e
                 and $text =~ s/\Alog// )
             {
-
                 $expectation->failed();
                 Parse::RecDescent::_trace(
                     qq{<<Didn't match terminal>>},
@@ -4404,7 +3993,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
                 Parse::RecDescent::_tracefirst($text) )
               if defined $::RD_TRACE;
             push @item, $item{__STRING1__} = $&;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: ['log']<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -4414,9 +4002,7 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             $_matched = 1;
             last;
         }
-
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: ['partial_derivative']},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -4429,7 +4015,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             @item = (q{function_name});
             %item = ( __RULE__ => q{function_name} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying terminal: ['partial_derivative']},
                 Parse::RecDescent::_tracefirst($text),
@@ -4442,7 +4027,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e
                 and $text =~ s/\Apartial_derivative// )
             {
-
                 $expectation->failed();
                 Parse::RecDescent::_trace(
                     qq{<<Didn't match terminal>>},
@@ -4456,7 +4040,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
                 Parse::RecDescent::_tracefirst($text) )
               if defined $::RD_TRACE;
             push @item, $item{__STRING1__} = $&;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: ['partial_derivative']<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -4466,9 +4049,7 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             $_matched = 1;
             last;
         }
-
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: ['total_derivative']},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -4481,7 +4062,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             @item = (q{function_name});
             %item = ( __RULE__ => q{function_name} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying terminal: ['total_derivative']},
                 Parse::RecDescent::_tracefirst($text),
@@ -4494,7 +4074,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e
                 and $text =~ s/\Atotal_derivative// )
             {
-
                 $expectation->failed();
                 Parse::RecDescent::_trace(
                     qq{<<Didn't match terminal>>},
@@ -4508,7 +4087,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
                 Parse::RecDescent::_tracefirst($text) )
               if defined $::RD_TRACE;
             push @item, $item{__STRING1__} = $&;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: ['total_derivative']<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -4518,9 +4096,7 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             $_matched = 1;
             last;
         }
-
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: ['sinh']},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -4533,7 +4109,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             @item = (q{function_name});
             %item = ( __RULE__ => q{function_name} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying terminal: ['sinh']},
                 Parse::RecDescent::_tracefirst($text),
@@ -4546,7 +4121,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e
                 and $text =~ s/\Asinh// )
             {
-
                 $expectation->failed();
                 Parse::RecDescent::_trace(
                     qq{<<Didn't match terminal>>},
@@ -4560,7 +4134,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
                 Parse::RecDescent::_tracefirst($text) )
               if defined $::RD_TRACE;
             push @item, $item{__STRING1__} = $&;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: ['sinh']<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -4570,9 +4143,7 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             $_matched = 1;
             last;
         }
-
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: ['cosh']},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -4585,7 +4156,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             @item = (q{function_name});
             %item = ( __RULE__ => q{function_name} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying terminal: ['cosh']},
                 Parse::RecDescent::_tracefirst($text),
@@ -4598,7 +4168,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e
                 and $text =~ s/\Acosh// )
             {
-
                 $expectation->failed();
                 Parse::RecDescent::_trace(
                     qq{<<Didn't match terminal>>},
@@ -4612,7 +4181,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
                 Parse::RecDescent::_tracefirst($text) )
               if defined $::RD_TRACE;
             push @item, $item{__STRING1__} = $&;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: ['cosh']<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -4622,9 +4190,7 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             $_matched = 1;
             last;
         }
-
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: ['asinh']},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -4637,7 +4203,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             @item = (q{function_name});
             %item = ( __RULE__ => q{function_name} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying terminal: ['asinh']},
                 Parse::RecDescent::_tracefirst($text),
@@ -4650,7 +4215,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e
                 and $text =~ s/\Aasinh// )
             {
-
                 $expectation->failed();
                 Parse::RecDescent::_trace(
                     qq{<<Didn't match terminal>>},
@@ -4664,7 +4228,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
                 Parse::RecDescent::_tracefirst($text) )
               if defined $::RD_TRACE;
             push @item, $item{__STRING1__} = $&;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: ['asinh']<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -4674,9 +4237,7 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             $_matched = 1;
             last;
         }
-
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: ['acosh']},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -4689,7 +4250,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             @item = (q{function_name});
             %item = ( __RULE__ => q{function_name} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying terminal: ['acosh']},
                 Parse::RecDescent::_tracefirst($text),
@@ -4702,7 +4262,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e
                 and $text =~ s/\Aacosh// )
             {
-
                 $expectation->failed();
                 Parse::RecDescent::_trace(
                     qq{<<Didn't match terminal>>},
@@ -4716,7 +4275,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
                 Parse::RecDescent::_tracefirst($text) )
               if defined $::RD_TRACE;
             push @item, $item{__STRING1__} = $&;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: ['acosh']<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -4726,9 +4284,7 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             $_matched = 1;
             last;
         }
-
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: ['asin']},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -4741,7 +4297,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             @item = (q{function_name});
             %item = ( __RULE__ => q{function_name} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying terminal: ['asin']},
                 Parse::RecDescent::_tracefirst($text),
@@ -4754,7 +4309,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e
                 and $text =~ s/\Aasin// )
             {
-
                 $expectation->failed();
                 Parse::RecDescent::_trace(
                     qq{<<Didn't match terminal>>},
@@ -4768,7 +4322,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
                 Parse::RecDescent::_tracefirst($text) )
               if defined $::RD_TRACE;
             push @item, $item{__STRING1__} = $&;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: ['asin']<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -4778,9 +4331,7 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             $_matched = 1;
             last;
         }
-
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: ['acos']},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -4793,7 +4344,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             @item = (q{function_name});
             %item = ( __RULE__ => q{function_name} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying terminal: ['acos']},
                 Parse::RecDescent::_tracefirst($text),
@@ -4806,7 +4356,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e
                 and $text =~ s/\Aacos// )
             {
-
                 $expectation->failed();
                 Parse::RecDescent::_trace(
                     qq{<<Didn't match terminal>>},
@@ -4820,7 +4369,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
                 Parse::RecDescent::_tracefirst($text) )
               if defined $::RD_TRACE;
             push @item, $item{__STRING1__} = $&;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: ['acos']<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -4830,9 +4378,7 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             $_matched = 1;
             last;
         }
-
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: ['atan']},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -4845,7 +4391,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             @item = (q{function_name});
             %item = ( __RULE__ => q{function_name} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying terminal: ['atan']},
                 Parse::RecDescent::_tracefirst($text),
@@ -4858,7 +4403,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e
                 and $text =~ s/\Aatan// )
             {
-
                 $expectation->failed();
                 Parse::RecDescent::_trace(
                     qq{<<Didn't match terminal>>},
@@ -4872,7 +4416,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
                 Parse::RecDescent::_tracefirst($text) )
               if defined $::RD_TRACE;
             push @item, $item{__STRING1__} = $&;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: ['atan']<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -4882,9 +4425,7 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             $_matched = 1;
             last;
         }
-
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: ['acot']},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -4897,7 +4438,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             @item = (q{function_name});
             %item = ( __RULE__ => q{function_name} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying terminal: ['acot']},
                 Parse::RecDescent::_tracefirst($text),
@@ -4910,7 +4450,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e
                 and $text =~ s/\Aacot// )
             {
-
                 $expectation->failed();
                 Parse::RecDescent::_trace(
                     qq{<<Didn't match terminal>>},
@@ -4924,7 +4463,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
                 Parse::RecDescent::_tracefirst($text) )
               if defined $::RD_TRACE;
             push @item, $item{__STRING1__} = $&;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: ['acot']<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -4934,9 +4472,7 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             $_matched = 1;
             last;
         }
-
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: ['sin']},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -4949,7 +4485,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             @item = (q{function_name});
             %item = ( __RULE__ => q{function_name} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying terminal: ['sin']},
                 Parse::RecDescent::_tracefirst($text),
@@ -4962,7 +4497,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e
                 and $text =~ s/\Asin// )
             {
-
                 $expectation->failed();
                 Parse::RecDescent::_trace(
                     qq{<<Didn't match terminal>>},
@@ -4976,7 +4510,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
                 Parse::RecDescent::_tracefirst($text) )
               if defined $::RD_TRACE;
             push @item, $item{__STRING1__} = $&;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: ['sin']<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -4986,9 +4519,7 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             $_matched = 1;
             last;
         }
-
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: ['cos']},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -5001,7 +4532,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             @item = (q{function_name});
             %item = ( __RULE__ => q{function_name} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying terminal: ['cos']},
                 Parse::RecDescent::_tracefirst($text),
@@ -5014,7 +4544,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e
                 and $text =~ s/\Acos// )
             {
-
                 $expectation->failed();
                 Parse::RecDescent::_trace(
                     qq{<<Didn't match terminal>>},
@@ -5028,7 +4557,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
                 Parse::RecDescent::_tracefirst($text) )
               if defined $::RD_TRACE;
             push @item, $item{__STRING1__} = $&;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: ['cos']<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -5038,9 +4566,7 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             $_matched = 1;
             last;
         }
-
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: ['tan']},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -5053,7 +4579,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             @item = (q{function_name});
             %item = ( __RULE__ => q{function_name} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying terminal: ['tan']},
                 Parse::RecDescent::_tracefirst($text),
@@ -5066,7 +4591,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e
                 and $text =~ s/\Atan// )
             {
-
                 $expectation->failed();
                 Parse::RecDescent::_trace(
                     qq{<<Didn't match terminal>>},
@@ -5080,7 +4604,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
                 Parse::RecDescent::_tracefirst($text) )
               if defined $::RD_TRACE;
             push @item, $item{__STRING1__} = $&;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: ['tan']<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -5090,9 +4613,7 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             $_matched = 1;
             last;
         }
-
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: ['cot']},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -5105,7 +4626,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             @item = (q{function_name});
             %item = ( __RULE__ => q{function_name} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying terminal: ['cot']},
                 Parse::RecDescent::_tracefirst($text),
@@ -5118,7 +4638,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e
                 and $text =~ s/\Acot// )
             {
-
                 $expectation->failed();
                 Parse::RecDescent::_trace(
                     qq{<<Didn't match terminal>>},
@@ -5132,7 +4651,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
                 Parse::RecDescent::_tracefirst($text) )
               if defined $::RD_TRACE;
             push @item, $item{__STRING1__} = $&;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: ['cot']<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -5142,9 +4660,7 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             $_matched = 1;
             last;
         }
-
         unless ( $_matched || defined($return) || defined($score) ) {
-
             $_[1] = $text;    # NOT SURE THIS IS NEEDED
             Parse::RecDescent::_trace(
                 q{<<Didn't match rule>>},
@@ -5189,16 +4705,13 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
         local $tracelevel = ( $tracelevel || 0 ) + 1;
         $ERRORS = 0;
         my $thisrule = $thisparser->{"rules"}{"list_op"};
-
         Parse::RecDescent::_trace(
             q{Trying rule: [list_op]},
             Parse::RecDescent::_tracefirst( $_[1] ),
             q{list_op}, $tracelevel
           )
           if defined $::RD_TRACE;
-
         my $err_at = @{ $thisparser->{errors} };
-
         my $score;
         my $score_return;
         my $_tok;
@@ -5216,12 +4729,10 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
         my $expectation =
           new Parse::RecDescent::Expectation( $thisrule->expected() );
         $expectation->at( $_[1] );
-
         my $thisline;
         tie $thisline, q{Parse::RecDescent::LineCounter}, \$text, $thisparser;
 
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: [',']},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -5234,7 +4745,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             @item = (q{list_op});
             %item = ( __RULE__ => q{list_op} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying terminal: [',']},
                 Parse::RecDescent::_tracefirst($text),
@@ -5247,7 +4757,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e
                 and $text =~ s/\A\,// )
             {
-
                 $expectation->failed();
                 Parse::RecDescent::_trace(
                     qq{<<Didn't match terminal>>},
@@ -5261,7 +4770,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
                 Parse::RecDescent::_tracefirst($text) )
               if defined $::RD_TRACE;
             push @item, $item{__STRING1__} = $&;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: [',']<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -5271,9 +4779,7 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             $_matched = 1;
             last;
         }
-
         unless ( $_matched || defined($return) || defined($score) ) {
-
             $_[1] = $text;    # NOT SURE THIS IS NEEDED
             Parse::RecDescent::_trace(
                 q{<<Didn't match rule>>},
@@ -5319,16 +4825,13 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
         local $tracelevel = ( $tracelevel || 0 ) + 1;
         $ERRORS = 0;
         my $thisrule = $thisparser->{"rules"}{"identifier_list"};
-
         Parse::RecDescent::_trace(
             q{Trying rule: [identifier_list]},
             Parse::RecDescent::_tracefirst( $_[1] ),
             q{identifier_list}, $tracelevel
           )
           if defined $::RD_TRACE;
-
         my $err_at = @{ $thisparser->{errors} };
-
         my $score;
         my $score_return;
         my $_tok;
@@ -5346,12 +4849,10 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
         my $expectation =
           new Parse::RecDescent::Expectation( $thisrule->expected() );
         $expectation->at( $_[1] );
-
         my $thisline;
         tie $thisline, q{Parse::RecDescent::LineCounter}, \$text, $thisparser;
 
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: [<leftop: identifier list_op identifier>]},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -5365,7 +4866,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
             @item = (q{identifier_list});
             %item = ( __RULE__ => q{identifier_list} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying operator: [<leftop: identifier list_op identifier>]},
                 Parse::RecDescent::_tracefirst($text),
@@ -5374,14 +4874,12 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
               )
               if defined $::RD_TRACE;
             $expectation->is(q{})->at($text);
-
             $_tok = undef;
           OPLOOP: while (1) {
                 $repcount = 0;
                 my @item;
 
                 # MATCH LEFTARG
-
                 Parse::RecDescent::_trace(
                     q{Trying subrule: [identifier]},
                     Parse::RecDescent::_tracefirst($text),
@@ -5402,7 +4900,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
                         )
                       )
                     {
-
                         Parse::RecDescent::_trace(
                             q{<<Didn't match subrule: [identifier]>>},
                             Parse::RecDescent::_tracefirst($text),
@@ -5416,7 +4913,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
                     Parse::RecDescent::_trace(
                         q{>>Matched subrule: [identifier]<< (return value: [}
                           . $_tok . q{]},
-
                         Parse::RecDescent::_tracefirst($text),
                         q{identifier_list},
                         $tracelevel
@@ -5424,18 +4920,14 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
                       if defined $::RD_TRACE;
                     $item{q{identifier}} = $_tok;
                     push @item, $_tok;
-
                 }
-
                 $repcount++;
-
                 my $savetext = $text;
                 my $backtrack;
 
                 # MATCH (OP RIGHTARG)(s)
                 while ( $repcount < 100000000 ) {
                     $backtrack = 0;
-
                     Parse::RecDescent::_trace(
                         q{Trying subrule: [list_op]},
                         Parse::RecDescent::_tracefirst($text),
@@ -5456,7 +4948,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
                             )
                           )
                         {
-
                             Parse::RecDescent::_trace(
                                 q{<<Didn't match subrule: [list_op]>>},
                                 Parse::RecDescent::_tracefirst($text),
@@ -5470,7 +4961,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
                         Parse::RecDescent::_trace(
                             q{>>Matched subrule: [list_op]<< (return value: [}
                               . $_tok . q{]},
-
                             Parse::RecDescent::_tracefirst($text),
                             q{identifier_list},
                             $tracelevel
@@ -5478,11 +4968,8 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
                           if defined $::RD_TRACE;
                         $item{q{list_op}} = $_tok;
                         push @item, $_tok;
-
                     }
-
                     $backtrack = 1;
-
                     Parse::RecDescent::_trace(
                         q{Trying subrule: [identifier]},
                         Parse::RecDescent::_tracefirst($text),
@@ -5503,7 +4990,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
                             )
                           )
                         {
-
                             Parse::RecDescent::_trace(
                                 q{<<Didn't match subrule: [identifier]>>},
                                 Parse::RecDescent::_tracefirst($text),
@@ -5517,7 +5003,6 @@ q{>>Matched production: [<leftop: multiplication add_op multiplication>]<<},
                         Parse::RecDescent::_trace(
 q{>>Matched subrule: [identifier]<< (return value: [}
                               . $_tok . q{]},
-
                             Parse::RecDescent::_tracefirst($text),
                             q{identifier_list},
                             $tracelevel
@@ -5525,20 +5010,16 @@ q{>>Matched subrule: [identifier]<< (return value: [}
                           if defined $::RD_TRACE;
                         $item{q{identifier}} = $_tok;
                         push @item, $_tok;
-
                     }
-
                     $savetext = $text;
                     $repcount++;
                 }
                 $text = $savetext;
                 pop @item if $backtrack;
-
                 unless (@item) { undef $_tok; last }
                 $_tok = [@item];
                 last;
             }
-
             unless ( $repcount >= 1 ) {
                 Parse::RecDescent::_trace(
 q{<<Didn't match operator: [<leftop: identifier list_op identifier>]>>},
@@ -5558,19 +5039,15 @@ q{>>Matched operator: [<leftop: identifier list_op identifier>]<< (return value:
                 $tracelevel
               )
               if defined $::RD_TRACE;
-
             push @item, $item{__DIRECTIVE1__} = $_tok || [];
-
             Parse::RecDescent::_trace(
                 q{Trying action},
                 Parse::RecDescent::_tracefirst($text),
                 q{identifier_list}, $tracelevel
               )
               if defined $::RD_TRACE;
-
             $_tok = ($_noactions) ? 0 : do {
-                warn 'identifier_list '
-                  if $Math::Symbolic::Parser::DEBUG;
+                warn 'identifier_list ' if $Math::Symbolic::Parser::DEBUG;
                 my $i = 1;
                 [ grep { $i == 1 ? ( --$i, 1 ) : ( ++$i, 0 ) } @{ $item[1] } ];
             };
@@ -5586,7 +5063,6 @@ q{>>Matched operator: [<leftop: identifier list_op identifier>]<< (return value:
               if defined $::RD_TRACE;
             push @item, $_tok;
             $item{__ACTION1__} = $_tok;
-
             Parse::RecDescent::_trace(
 q{>>Matched production: [<leftop: identifier list_op identifier>]<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -5597,9 +5073,7 @@ q{>>Matched production: [<leftop: identifier list_op identifier>]<<},
             $_matched = 1;
             last;
         }
-
         unless ( $_matched || defined($return) || defined($score) ) {
-
             $_[1] = $text;    # NOT SURE THIS IS NEEDED
             Parse::RecDescent::_trace(
                 q{<<Didn't match rule>>},
@@ -5644,16 +5118,13 @@ q{>>Matched production: [<leftop: identifier list_op identifier>]<<},
         local $tracelevel = ( $tracelevel || 0 ) + 1;
         $ERRORS = 0;
         my $thisrule = $thisparser->{"rules"}{"identifier"};
-
         Parse::RecDescent::_trace(
             q{Trying rule: [identifier]},
             Parse::RecDescent::_tracefirst( $_[1] ),
             q{identifier}, $tracelevel
           )
           if defined $::RD_TRACE;
-
         my $err_at = @{ $thisparser->{errors} };
-
         my $score;
         my $score_return;
         my $_tok;
@@ -5671,12 +5142,10 @@ q{>>Matched production: [<leftop: identifier list_op identifier>]<<},
         my $expectation =
           new Parse::RecDescent::Expectation( $thisrule->expected() );
         $expectation->at( $_[1] );
-
         my $thisline;
         tie $thisline, q{Parse::RecDescent::LineCounter}, \$text, $thisparser;
 
         while ( !$_matched && !$commit ) {
-
             Parse::RecDescent::_trace(
                 q{Trying production: [/([a-zA-Z][a-zA-Z0-9_]*)/]},
                 Parse::RecDescent::_tracefirst( $_[1] ),
@@ -5689,7 +5158,6 @@ q{>>Matched production: [<leftop: identifier list_op identifier>]<<},
             @item = (q{identifier});
             %item = ( __RULE__ => q{identifier} );
             my $repcount = 0;
-
             Parse::RecDescent::_trace(
                 q{Trying terminal: [/([a-zA-Z][a-zA-Z0-9_]*)/]},
                 Parse::RecDescent::_tracefirst($text),
@@ -5702,12 +5170,10 @@ q{>>Matched production: [<leftop: identifier list_op identifier>]<<},
             unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e
                 and $text =~ s/\A(?:([a-zA-Z][a-zA-Z0-9_]*))// )
             {
-
                 $expectation->failed();
                 Parse::RecDescent::_trace( q{<<Didn't match terminal>>},
                     Parse::RecDescent::_tracefirst($text) )
                   if defined $::RD_TRACE;
-
                 last;
             }
             Parse::RecDescent::_trace(
@@ -5715,17 +5181,13 @@ q{>>Matched production: [<leftop: identifier list_op identifier>]<<},
                 Parse::RecDescent::_tracefirst($text) )
               if defined $::RD_TRACE;
             push @item, $item{__PATTERN1__} = $&;
-
             Parse::RecDescent::_trace(
                 q{Trying action},
                 Parse::RecDescent::_tracefirst($text),
                 q{identifier}, $tracelevel
               )
               if defined $::RD_TRACE;
-
-            $_tok = ($_noactions) ? 0 : do {
-                $item[1];
-            };
+            $_tok = ($_noactions) ? 0 : do { $item[1] };
             unless ( defined $_tok ) {
                 Parse::RecDescent::_trace(
                     q{<<Didn't match action>> (return value: [undef])})
@@ -5738,7 +5200,6 @@ q{>>Matched production: [<leftop: identifier list_op identifier>]<<},
               if defined $::RD_TRACE;
             push @item, $_tok;
             $item{__ACTION1__} = $_tok;
-
             Parse::RecDescent::_trace(
                 q{>>Matched production: [/([a-zA-Z][a-zA-Z0-9_]*)/]<<},
                 Parse::RecDescent::_tracefirst($text),
@@ -5748,9 +5209,7 @@ q{>>Matched production: [<leftop: identifier list_op identifier>]<<},
             $_matched = 1;
             last;
         }
-
         unless ( $_matched || defined($return) || defined($score) ) {
-
             $_[1] = $text;    # NOT SURE THIS IS NEEDED
             Parse::RecDescent::_trace(
                 q{<<Didn't match rule>>},
@@ -5853,7 +5312,7 @@ sub new {
                                 'Parse::RecDescent::Production'
                             )
                         ],
-                        'calls'   => [ 'expr' ],
+                        'calls'   => ['expr'],
                         'opcount' => 0,
                         'changed' => 0,
                         'vars'    => '',
@@ -5949,10 +5408,7 @@ sub new {
                                 'Parse::RecDescent::Production'
                             )
                         ],
-                        'calls' => [
-                            'expr',
-                            'list_op'
-                        ],
+                        'calls'   => [ 'expr', 'list_op' ],
                         'opcount' => 0,
                         'changed' => 0,
                         'vars'    => '',
@@ -6268,10 +5724,7 @@ sub new {
                                 'Parse::RecDescent::Production'
                             )
                         ],
-                        'calls' => [
-                            'identifier',
-                            'identifier_list'
-                        ],
+                        'calls'   => [ 'identifier', 'identifier_list' ],
                         'opcount' => 0,
                         'changed' => 0,
                         'vars'    => '',
@@ -6644,10 +6097,7 @@ sub new {
                                 'Parse::RecDescent::Production'
                             )
                         ],
-                        'calls' => [
-                            'unary',
-                            'expr'
-                        ],
+                        'calls'   => [ 'unary', 'expr' ],
                         'opcount' => 0,
                         'changed' => 0,
                         'vars'    => '',
@@ -6835,10 +6285,7 @@ sub new {
                                 'Parse::RecDescent::Production'
                             )
                         ],
-                        'calls' => [
-                            'function_name',
-                            'expr_list'
-                        ],
+                        'calls'   => [ 'function_name', 'expr_list' ],
                         'opcount' => 0,
                         'changed' => 0,
                         'vars'    => '',
@@ -6927,10 +6374,7 @@ sub new {
                                 'Parse::RecDescent::Production'
                             )
                         ],
-                        'calls' => [
-                            'factor',
-                            'exp_op'
-                        ],
+                        'calls'   => [ 'factor', 'exp_op' ],
                         'opcount' => 0,
                         'changed' => 0,
                         'vars'    => '',
@@ -7020,10 +6464,7 @@ sub new {
                                 'Parse::RecDescent::Production'
                             )
                         ],
-                        'calls' => [
-                            'exp',
-                            'mult_op'
-                        ],
+                        'calls'   => [ 'exp', 'mult_op' ],
                         'opcount' => 0,
                         'changed' => 0,
                         'vars'    => '',
@@ -7115,10 +6556,7 @@ sub new {
                                 'Parse::RecDescent::Production'
                             )
                         ],
-                        'calls' => [
-                            'multiplication',
-                            'add_op'
-                        ],
+                        'calls'   => [ 'multiplication', 'add_op' ],
                         'opcount' => 0,
                         'changed' => 0,
                         'vars'    => '',
@@ -7223,7 +6661,7 @@ sub new {
                                 'Parse::RecDescent::Production'
                             )
                         ],
-                        'calls'   => [ 'addition' ],
+                        'calls'   => ['addition'],
                         'opcount' => 0,
                         'changed' => 0,
                         'vars'    => '',
@@ -7752,10 +7190,7 @@ sub new {
                                 'Parse::RecDescent::Production'
                             )
                         ],
-                        'calls' => [
-                            'identifier',
-                            'list_op'
-                        ],
+                        'calls'   => [ 'identifier', 'list_op' ],
                         'opcount' => 0,
                         'changed' => 0,
                         'vars'    => '',
@@ -7836,3 +7271,4 @@ sub new {
         'Parse::RecDescent'
     );
 }
+1;

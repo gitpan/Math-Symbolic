@@ -44,7 +44,7 @@ $derived = $derived->simplify();
 print "$derived = " . $derived->value() . "\n\n";
 
 print "Two more derivatives:\n\n";
-for ( 1 .. 4 ) {
+for ( 1 .. 2 ) {
     $derived = $op->new(
         {
             type     => U_P_DERIVATIVE,

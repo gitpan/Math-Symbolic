@@ -45,7 +45,7 @@ use overload
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.131';
+our $VERSION = '0.132';
 our $AUTOLOAD;
 
 =head1 METHODS
@@ -71,11 +71,13 @@ value() without arguments requires that every variable in the tree contains
 a defined value attribute. Please note that this refers to every variable
 I<object>, not just every named variable.
 
-value() with one argument sets the object's value.
+value() with one argument sets the object's value (in case of a variable or
+constant).
 
 value() with named arguments (key/value pairs) associates variables in the tree
 with the value-arguments if the corresponging key matches the variable name.
-(Can one say this any more complicated?)
+(Can one say this any more complicated?) Since version 0.132, an alternative
+syntax is to pass a single hash reference.
 
 Example: $tree->value(x => 1, y => 2, z => 3, t => 0) assigns the value 1 to
 any occurrances of variables of the name "x", aso.
@@ -556,7 +558,8 @@ Math::Symbolic tree it was called on.
 set_value() requires named arguments (key/value pairs) that associate
 variable names of variables in the tree with the value-arguments if the
 corresponging key matches the variable name.
-(Can one say this any more complicated?)
+(Can one say this any more complicated?) Since version 0.132, an alternative
+syntax is to pass a single hash reference to the method.
 
 Example: $tree->set_value(x => 1, y => 2, z => 3, t => 0) assigns the value 1
 to any occurrances of variables of the name "x", aso.
@@ -570,7 +573,18 @@ argument, but only if there is only one argument.
 =cut
 
 sub set_value {
-    my ( $self, %args ) = @_;
+    my ( $self, %args );
+    if ( @_ == 1 ) {
+    }
+    elsif ( @_ == 2 ) {
+        $self = shift;
+        croak "Invalid arguments to method set_value()"
+          unless ref $_[0] eq 'HASH';
+        %args = %{ $_[0] };
+    }
+    else {
+        ( $self, %args ) = @_;
+    }
 
     my $ttype = $self->term_type();
     if ( $ttype == T_CONSTANT ) {
@@ -613,7 +627,10 @@ Math::Symbolic man page.
 sub _overload_make_object {
     my $operand = shift;
     unless ( ref($operand) =~ /^Math::Symbolic/ ) {
-        if ( $operand =~ /\D/ ) {
+        if ( not defined $operand ) {
+            return $operand;
+        }
+        elsif ( $operand =~ /\D/ ) {
             $operand = Math::Symbolic::parse_from_string($operand);
         }
         else {
@@ -626,6 +643,7 @@ sub _overload_make_object {
 sub _overload_addition {
     my ( $obj, $operand, $reverse ) = @_;
     $operand = _overload_make_object($operand);
+    return $obj if not defined $operand and $reverse;
     ( $obj, $operand ) = ( $operand, $obj ) if $reverse;
     my $n_obj = Math::Symbolic::Operator->new( '+', $obj, $operand );
     return $n_obj;
@@ -634,6 +652,9 @@ sub _overload_addition {
 sub _overload_subtraction {
     my ( $obj, $operand, $reverse ) = @_;
     $operand = _overload_make_object($operand);
+    return Math::Symbolic::Operator->new( 'neg', $obj )
+      if not defined $operand
+      and $reverse;
     ( $obj, $operand ) = ( $operand, $obj ) if $reverse;
     my $n_obj = Math::Symbolic::Operator->new( '-', $obj, $operand );
     return $n_obj;

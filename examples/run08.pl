@@ -17,7 +17,6 @@ print "Vars: x=" . $a->value() . " (Value is optional)\n\n";
 
 my $op = Math::Symbolic::Operator->new();
 
-#my $sin = $op->new('sin', $op->new('*', $two, $a));
 my $sin = $op->new( 'sinh', $op->new( '*', $two, $a ) );
 
 print "Expression: sinh(2*x)\n\n";

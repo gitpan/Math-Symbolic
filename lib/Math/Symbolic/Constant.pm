@@ -32,7 +32,7 @@ use Math::Symbolic::ExportConstants qw/:all/;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.131';
+our $VERSION = '0.132';
 
 =head1 METHODS
 
@@ -136,7 +136,8 @@ value() with one argument sets the object's value.
 
 value() with named arguments (key/value pairs) associates variables in the tree
 with the value-arguments if the corresponging key matches the variable name.
-(Can one say this any more complicated?)
+(Can one say this any more complicated?) Since version 0.132, an equivalent
+and valid syntax is to pass a single hash reference instead of a list.
 
 Example: $tree->value(x => 1, y => 2, z => 3, t => 0) assigns the value 1 to
 any occurrances of variables of the name "x", aso.
@@ -148,7 +149,7 @@ it temporarily), the call to value() returns undef.
 
 sub value {
     my $self = shift;
-    if ( @_ == 1 ) {
+    if ( @_ == 1 and not ref( $_[0] ) eq 'HASH' ) {
         $self->{value}   = shift;
         $self->{special} = undef;    # !!!FIXME!!! one day, this
                                      # needs better handling.
