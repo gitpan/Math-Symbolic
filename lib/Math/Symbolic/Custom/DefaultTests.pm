@@ -32,7 +32,7 @@ use 5.006;
 use strict;
 use warnings;
 
-our $VERSION = '0.117';
+our $VERSION = '0.118';
 
 use Math::Symbolic::Custom::Base;
 BEGIN { *import = \&Math::Symbolic::Custom::Base::aggregate_import }
@@ -166,7 +166,8 @@ sub is_constant {
 
 is_identical() returns a boolean.
 
-It compares the tree it is called on to its first argument.
+It compares the tree it is called on to its first argument. If the first
+argument is not a Math::Symbolic tree, it is sent through the parser.
 
 is_identical() returns true (1) if the trees are completely identical. That
 includes operands of commutating operators having the same order, etc. This
@@ -180,6 +181,8 @@ It returns false (0) otherwise.
 sub is_identical {
     my $tree1 = shift;
     my $tree2 = shift;
+    $tree2 = Math::Symbolic::parse_from_string($tree2)
+      if not ref($tree2) =~ /^Math::Symbolic/;
 
     my $tt1 = $tree1->term_type();
     my $tt2 = $tree2->term_type();
@@ -335,7 +338,7 @@ math-symbolic-support at lists dot sourceforge dot net. Please
 consider letting us know how you use Math::Symbolic. Thank you.
 
 If you're interested in helping with the development or extending the
-module's functionality, please contact the developer's mailing list:
+module's functionality, please contact the developers' mailing list:
 math-symbolic-develop at lists dot sourceforge dot net.
 
 List of contributors:

@@ -97,7 +97,7 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw();
 
-our $VERSION = '0.117';
+our $VERSION = '0.118';
 
 =head2 ($code, $trees) = compile_to_code($tree, $vars)
 
@@ -318,7 +318,7 @@ math-symbolic-support at lists dot sourceforge dot net. Please
 consider letting us know how you use Math::Symbolic. Thank you.
 
 If you're interested in helping with the development or extending the
-module's functionality, please contact the developer's mailing list:
+module's functionality, please contact the developers' mailing list:
 math-symbolic-develop at lists dot sourceforge dot net.
 
 List of contributors:

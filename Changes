@@ -1,5 +1,22 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.118  Tue Sep 9 13:18:24 2003
+	- No more requiring Parse::RecDescent via Makefile.PL.
+	  After all, you can use Math::Symbolic without the parser
+	  (though you sacrifice the best piece of the interface
+	  that way.)
+	- Updated META.yml to recommend Parse::RecDescent and require it
+	  for building.
+	- Added Hesse() to M::S::VectorCalculus.
+	- Amended tests for M::S::VectorCalculus.
+	- Fixed typo in AUTHORS sections
+	- is_identical now auto-parses first argument if not a M::S tree.
+	- Slightly improved the simplification process using is_identical.
+	- Fixed various small bugs in M::S::Constant and M::S::Operator.
+	- Fixed parser bugs related to unary minus.
+	- Improved unary minus simplification.
+	- Added more unary minus parsing/simplification tests.
+
 0.117  Mon Sep 8 17:12:36 2003
 	- Added M::S::VectorCalculus with rot, grad, div, Jacobi
 	- Referenced it in the docs to the main module.

@@ -1,7 +1,7 @@
 
 =head1 NAME
 
-Math::Symbolic::VectorCalculus - Symbolically compute rot, grad, Jacobi etc.
+Math::Symbolic::VectorCalculus - Symbolically comp. grad, Jacobi matrices etc.
 
 =head1 SYNOPSIS
 
@@ -30,6 +30,9 @@ Math::Symbolic::VectorCalculus - Symbolically compute rot, grad, Jacobi etc.
   @matrix = Jacobi @functions;
   # $matrix is now array of array references. These hold
   # Math::Symbolic trees.
+  
+  # Similar to Jacobi:
+  @matrix = Hesse $function;
 
 =head1 DESCRIPTION
 
@@ -75,13 +78,14 @@ our %EXPORT_TAGS = (
           div
           rot
           Jacobi
+          Hesse
           )
     ]
 );
 
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
-our $VERSION = '0.117';
+our $VERSION = '0.118';
 
 =begin comment
 
@@ -97,7 +101,7 @@ sub _combined_signature {
     return [ sort keys %seen ];
 }
 
-=head 2 grad
+=head2 grad
 
 This subroutine computes the gradient of a Math::Symbolic tree representing
 a function.
@@ -332,6 +336,24 @@ sub Jacobi {
     return map { [ grad $_, @signature ] } @funcs;
 }
 
+=head2 Hesse
+
+Hesse() returns the Hesse matrix of a given scalar function. First and
+only argument must be a string (to be parsed as a Math::Symbolic tree) or
+a Math::Symbolic tree. As with Jacobi(), Hesse() always infers the variables
+used for computing the matrix.
+
+The Hesse matrix is the Jacobi matrix of the gradient of a scalar function.
+
+=cut
+
+sub Hesse ($) {
+    my $function = shift;
+    $function = parse_from_string($function)
+      unless ref($function) =~ /^Math::Symbolic/;
+    return Jacobi grad $function;
+}
+
 1;
 __END__
 
@@ -343,7 +365,7 @@ math-symbolic-support at lists dot sourceforge dot net. Please
 consider letting us know how you use Math::Symbolic. Thank you.
 
 If you're interested in helping with the development or extending the
-module's functionality, please contact the developer's mailing list:
+module's functionality, please contact the developers' mailing list:
 math-symbolic-develop at lists dot sourceforge dot net.
 
 List of contributors:

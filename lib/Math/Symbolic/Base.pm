@@ -44,7 +44,7 @@ use overload
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.117';
+our $VERSION = '0.118';
 our $AUTOLOAD;
 
 =head1 METHODS
@@ -713,7 +713,7 @@ math-symbolic-support at lists dot sourceforge dot net. Please
 consider letting us know how you use Math::Symbolic. Thank you.
 
 If you're interested in helping with the development or extending the
-module's functionality, please contact the developer's mailing list:
+module's functionality, please contact the developers' mailing list:
 math-symbolic-develop at lists dot sourceforge dot net.
 
 List of contributors:

@@ -57,7 +57,7 @@ use Math::Symbolic::Derivative qw//;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.117';
+our $VERSION = '0.118';
 
 =head1 CLASS DATA
 
@@ -556,6 +556,16 @@ sub simplify {
                 my $two = Math::Symbolic::Constant->new(2);
                 return $self->new( '*', $two, $o1 )->simplify();
             }
+            elsif ( $type == B_DIVISION ) {
+                croak "Symbolic division by zero."
+                  if $o2->term_type() == T_CONSTANT
+                  and ($o2->value() == 0
+                    or $o2->special() eq 'zero' );
+                return Math::Symbolic::Constant->one();
+            }
+            elsif ( $type == B_DIFFERENCE ) {
+                return Math::Symbolic::Constant->zero();
+            }
         }
 
         if (    $tt2 == T_CONSTANT
@@ -654,8 +664,13 @@ sub simplify {
                 return Math::Symbolic::Constant->new( -$o->value(), );
             }
             elsif ( $tt == T_OPERATOR ) {
-                return $o->{operands}[0]
-                  if $o->type() == U_MINUS;
+                my $inner_type = $o->type();
+                if ( $inner_type == U_MINUS ) {
+                    return $o->{operands}[0];
+                }
+                elsif ( $inner_type == B_DIFFERENCE ) {
+                    return $o->new( '-', $o->op2(), $o->op1() );
+                }
             }
         }
     }
@@ -782,7 +797,7 @@ math-symbolic-support at lists dot sourceforge dot net. Please
 consider letting us know how you use Math::Symbolic. Thank you.
 
 If you're interested in helping with the development or extending the
-module's functionality, please contact the developer's mailing list:
+module's functionality, please contact the developers' mailing list:
 math-symbolic-develop at lists dot sourceforge dot net.
 
 List of contributors:

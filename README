@@ -1,4 +1,4 @@
-Math::Symbolic version 0.117
+Math::Symbolic version 0.118
 ============================
 
 Math::Symbolic is intended to offer symbolic calculation capabilities
@@ -38,8 +38,8 @@ Version 0.116 of this module has been used in conjunction with Math::Complex
 to offer symbolic calculation with complex numbers. Please have a look at
 the enclosed example scripts.
 
-Vectorial calculus such as gradients, divergence, rotation, and Jacobi
-matrices has been supported by the Math::Symbolic::VectorCalculus module
+Vectorial calculus including gradients, divergence, rotation, Jacobi-, and
+Hesse matrices has been supported by the Math::Symbolic::VectorCalculus module
 since version 0.117.
 
 INSTALLATION

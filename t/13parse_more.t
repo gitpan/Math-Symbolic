@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 13;
+use Test::More tests => 15;
 
 #use lib 'lib';
 
@@ -129,4 +129,26 @@ ok(
 $str = join '|', $tree->signature();
 ok( ( !$@ and $str eq 'E_pot|m|r|t|v' ),
     'Checking term for correct signature' );
+
+undef $@;
+eval <<'HERE';
+$tree = Math::Symbolic->parse_from_string('--(a-b)');
+HERE
+$str = $tree->to_string('prefix');
+$str =~ s/\s+//g;
+ok(
+    ( !$@ and $str eq 'negate(negate(subtract(a,b)))' ),
+    'Parsing term involving multiple unary minuses'
+);
+
+undef $@;
+eval <<'HERE';
+$tree = Math::Symbolic->parse_from_string('---(a-b)');
+HERE
+$str = $tree->to_string('prefix');
+$str =~ s/\s+//g;
+ok(
+    ( !$@ and $str eq 'negate(negate(negate(subtract(a,b))))' ),
+    'Parsing term involving multiple unary minuses'
+);
 

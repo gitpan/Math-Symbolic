@@ -110,12 +110,14 @@ use 5.006;
 use strict;
 use warnings;
 
+use Carp;
+
 use Math::Symbolic::ExportConstants qw/:all/;
 
 #use Parse::RecDescent;
 my $Required_Parse_RecDescent = 0;
 
-our $VERSION = '0.117';
+our $VERSION = '0.118';
 our $DEBUG   = 0;
 
 our $Grammar = <<'GRAMMAR_END';
@@ -176,7 +178,7 @@ our $Grammar = <<'GRAMMAR_END';
 				$item[2]
 			}
 
-	unary: unary_op number
+	unary: forced_unary_op factor
 			{
 				warn 'unary '
 				  if $Math::Symbolic::Parser::DEBUG;
@@ -192,7 +194,8 @@ our $Grammar = <<'GRAMMAR_END';
 					$item[2]
 				}
 			}
-	     | unary_op function
+
+	       | unary_op number
 			{
 				warn 'unary '
 				  if $Math::Symbolic::Parser::DEBUG;
@@ -208,7 +211,23 @@ our $Grammar = <<'GRAMMAR_END';
 					$item[2]
 				}
 			}
-	     | unary_op variable
+	       | unary_op function
+			{
+				warn 'unary '
+				  if $Math::Symbolic::Parser::DEBUG;
+				if ($item[1] and $item[1] eq '-') {
+					Math::Symbolic::Operator->new(
+					  {
+					    type => Math::Symbolic::U_MINUS,
+					    operands => [$item[2]],
+					  }
+					);
+				}
+				else {
+					$item[2]
+				}
+			}
+	       | unary_op variable
 			{
 				warn 'unary '
 				  if $Math::Symbolic::Parser::DEBUG;
@@ -226,6 +245,11 @@ our $Grammar = <<'GRAMMAR_END';
 			}
 		
 	unary_op: /([+-]?)/
+			{
+				$item[1]
+			}
+
+	forced_unary_op: /([+-])/
 			{
 				$item[1]
 			}
@@ -412,7 +436,11 @@ trees.
 
 sub new {
     if ( not $Required_Parse_RecDescent ) {
-        require Parse::RecDescent;
+        local $@;
+        eval 'require Parse::RecDescent;';
+        croak "Could not require Parse::RecDescent. Please install\n"
+          . "Parse::RecDescent in order to use Math::Symbolic::Parser."
+          if $@;
     }
     my $parser = new Parse::RecDescent($Grammar);
     return $parser;
@@ -429,7 +457,7 @@ math-symbolic-support at lists dot sourceforge dot net. Please
 consider letting us know how you use Math::Symbolic. Thank you.
 
 If you're interested in helping with the development or extending the
-module's functionality, please contact the developer's mailing list:
+module's functionality, please contact the developers' mailing list:
 math-symbolic-develop at lists dot sourceforge dot net.
 
 List of contributors:

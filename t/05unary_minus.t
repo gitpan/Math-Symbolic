@@ -1,8 +1,8 @@
 use strict;
 use warnings;
 
-use Test::More tests => 4;
- 
+use Test::More tests => 6;
+
 #use lib 'lib';
 
 use_ok('Math::Symbolic');
@@ -34,4 +34,27 @@ eval <<'HERE';
 print $umi->to_string('infix') . " = " . $umi->value() . "\n\n";
 HERE
 ok( !$@, 'Unary minus to infix' );
+
+undef $@;
+eval <<'HERE';
+$umi = Math::Symbolic::Operator->new('neg', Math::Symbolic::Operator->new('-', Math::Symbolic::Variable->new('a'), Math::Symbolic::Variable->new('b')));
+$umi = $umi->new('neg', $umi);
+HERE
+$umi = $umi->simplify();
+my $str = $umi->to_string('prefix');
+$str =~ s/\s+//g;
+ok( ( !$@ and $str eq 'subtract(a,b)' ), 'Unary minus simplification' );
+
+undef $@;
+eval <<'HERE';
+$umi = Math::Symbolic::Operator->new('neg', Math::Symbolic::Operator->new('-', Math::Symbolic::Variable->new('a'), Math::Symbolic::Variable->new('b')));
+$umi = $umi->new('neg', $umi);
+$umi = $umi->new('neg', $umi);
+$umi = $umi->new('neg', $umi);
+$umi = $umi->new('neg', $umi);
+HERE
+$umi = $umi->simplify();
+$str = $umi->to_string('prefix');
+$str =~ s/\s+//g;
+ok( ( !$@ and $str eq 'subtract(b,a)' ), 'More unary minus simplification' );
 
