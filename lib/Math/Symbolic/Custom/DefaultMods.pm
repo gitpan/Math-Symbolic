@@ -33,7 +33,7 @@ use strict;
 use warnings;
 no warnings 'recursion';
 
-our $VERSION = '0.120';
+our $VERSION = '0.121';
 
 use Math::Symbolic::Custom::Base;
 BEGIN { *import = \&Math::Symbolic::Custom::Base::aggregate_import }
@@ -168,6 +168,39 @@ sub apply_constant_fold {
 
     return $tree;
 }
+
+=begin comment
+
+warn "mod_join_simple to be implemented in DefaultMods!";
+sub mod_join_simple {
+    my $o1   = shift;
+    my $o2   = shift;
+    my $type = shift;
+
+    if ( $type == B_PRODUCT ) {
+        return undef
+          unless Math::Symbolic::Custom::is_identical_base( $o1, $o2 );
+
+        my $tt1 = $o1->term_type();
+        my $tt2 = $o2->term_type();
+        my ( $base, $exp1 ) =
+            ( $tt1 == T_OPERATOR and $o1->type() == B_EXP )
+          ? ( $o1->op1(), $o1->op2() )
+          : ( $o1, Math::Symbolic::Constant->one() );
+
+        my $exp2 =
+          ( $tt2 == T_OPERATOR and $o2->type() == B_EXP )
+          ? $o2->op2()
+          : Math::Symbolic::Constant->one();
+
+        return Math::Symbolic::Operator->new( '^', $base,
+            Math::Symbolic::Operator->new( '+', $exp1, $exp2 )->simplify() );
+    }
+}
+
+=end comment
+
+=cut
 
 1;
 __END__

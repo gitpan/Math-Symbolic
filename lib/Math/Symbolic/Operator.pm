@@ -58,7 +58,7 @@ use Math::Symbolic::Derivative qw//;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.120';
+our $VERSION = '0.121';
 
 =head1 CLASS DATA
 
@@ -661,7 +661,14 @@ sub simplify {
                   if $const->value == 0;
             }
         }
-
+        elsif ( $type == B_PRODUCT ) {
+            if ( $tt2 == T_CONSTANT and $tt1 != T_CONSTANT ) {
+                return $self->new( '*', $o2, $o1 );
+            }
+            elsif ( $tt1 == T_OPERATOR and $tt2 == T_VARIABLE ) {
+                return $self->new( '*', $o2, $o1 );
+            }
+        }
     }
     elsif ( $self->arity() == 1 ) {
         my $o    = $operands->[0];

@@ -1,5 +1,11 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.121  Sun Sep 14 14:41:31 2003
+	- Added M::S::MiscAlgebra and the det() routine.
+	- Slightly improved simlification process
+	- Added is_identical_base to the DefaultTests
+	- Started implementation of mod_join_simple in DefaultMods.
+
 0.120  Thu Sep 11 16:42:51 2003
 	- Now mentioning "Hesse" as exportable function of M::S::VectorCalclus.
 	- Implemented TotalDifferential and DirectionalDerivative.

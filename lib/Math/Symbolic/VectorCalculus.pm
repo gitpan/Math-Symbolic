@@ -29,10 +29,13 @@ Math::Symbolic::VectorCalculus - Symbolically comp. grad, Jacobi matrices etc.
   # Signatures always inferred from the functions here:
   @matrix = Jacobi @functions;
   # $matrix is now array of array references. These hold
-  # Math::Symbolic trees.
+  # Math::Symbolic trees. Or:
+  @matrix = Jacobi @functions, @signature;
   
   # Similar to Jacobi:
   @matrix = Hesse $function;
+  # or:
+  @matrix = Hesse $function, @signature;
   
   $differential = TotalDifferential $function;
   $differential = TotalDifferential $function, @signature;
@@ -107,7 +110,7 @@ our %EXPORT_TAGS = (
 
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
-our $VERSION = '0.120';
+our $VERSION = '0.121';
 
 =begin comment
 
@@ -340,40 +343,67 @@ sub rot (\@;\@) {
 Jacobi() returns the Jacobi matrix of a given vectorial function.
 It expects any number of arguments (strings and/or Math::Symbolic trees)
 which will be interpreted as the vectorial function's components.
-Variables used for computing the matrix are inferred from the
-combined signature of the components. There is currently no way to
-override this behaviour.
+Variables used for computing the matrix are, by default, inferred from the
+combined signature of the components. By specifying a second literal
+array of variable names as (second) argument, you may override this
+behaviour.
 
 The Jacobi matrix is the vector of gradient vectors of the vectorial
 function's components.
 
 =cut
 
-sub Jacobi {
+sub Jacobi (\@;\@) {
     my @funcs =
-      map { ( ref($_) =~ /^Math::Symbolic/ ) ? $_ : parse_from_string($_) } @_;
+      map { ( ref($_) =~ /^Math::Symbolic/ ) ? $_ : parse_from_string($_) }
+      @{ +shift() };
 
-    my @signature = @{ +_combined_signature(@funcs) };
+    my $signature = shift;
+    my @signature = (
+        defined $signature
+        ? (
+            map {
+                ( ref($_) =~ /^Math::Symbolic/ )
+                  ? $_
+                  : parse_from_string($_)
+              } @$signature
+          )
+        : ( @{ +_combined_signature(@funcs) } )
+    );
 
     return map { [ grad $_, @signature ] } @funcs;
 }
 
 =head2 Hesse
 
-Hesse() returns the Hesse matrix of a given scalar function. First and
-only argument must be a string (to be parsed as a Math::Symbolic tree) or
-a Math::Symbolic tree. As with Jacobi(), Hesse() always infers the variables
-used for computing the matrix.
+Hesse() returns the Hesse matrix of a given scalar function. First
+argument must be a string (to be parsed as a Math::Symbolic tree)
+or a Math::Symbolic tree. As with Jacobi(), Hesse() optionally
+accepts an array of signature variables as second argument.
 
 The Hesse matrix is the Jacobi matrix of the gradient of a scalar function.
 
 =cut
 
-sub Hesse ($) {
+sub Hesse ($;\@) {
     my $function = shift;
     $function = parse_from_string($function)
       unless ref($function) =~ /^Math::Symbolic/;
-    return Jacobi grad $function;
+    my $signature = shift;
+    my @signature = (
+        defined $signature
+        ? (
+            map {
+                ( ref($_) =~ /^Math::Symbolic/ )
+                  ? $_
+                  : parse_from_string($_)
+              } @$signature
+          )
+        : $function->signature()
+    );
+
+    my @gradient = grad $function, @signature;
+    return Jacobi @gradient, @signature;
 }
 
 =head2 TotalDifferential
@@ -471,7 +501,8 @@ sub DirectionalDerivative ($\@;\@) {
     }
 
     my $two     = Math::Symbolic::Constant->new(2);
-    my @squares = map { Math::Symbolic::Operator->new( '^', $_, $two ) } @vec;
+    my @squares =
+      map { Math::Symbolic::Operator->new( '^', $_, $two ) } @vec;
 
     my $abs_vec = shift @squares;
     $abs_vec += shift(@squares) while @squares;

@@ -1,11 +1,12 @@
 use strict;
 use warnings;
 
-use Test::More tests => 30;
+use Test::More tests => 36;
 
 #use lib 'lib';
 
 use_ok('Math::Symbolic');
+use Math::Symbolic qw/:all/;
 use Math::Symbolic::ExportConstants qw/:all/;
 
 my $x = Math::Symbolic::parse_from_string('1');
@@ -149,4 +150,22 @@ ok( !$x->can('bdasjkhdsajhdsakasjlh'),
 
 ok( !$x->can('is_ashdgsajhgdasjhg'),
     'can() returns false for non-existant delegated method.' );
+
+ok( parse_from_string('x*y')->is_identical_base('x*y'),
+    'is_identical_base trivial' );
+
+ok( parse_from_string('(x*y)^2')->is_identical_base('x*y'),
+    'is_identical_base simple' );
+
+ok( parse_from_string('(x*y)^(a*b)')->is_identical_base('x*y'),
+    'more is_identical_base tests' );
+
+ok( parse_from_string('(x*y)^(a*b)')->is_identical_base('(x*y)^3'),
+    'more is_identical_base tests' );
+
+ok( parse_from_string('(x*y^3)')->is_identical_base('(x*y^3)^3'),
+    'more is_identical_base tests' );
+
+ok( not( parse_from_string('(y)^(a*b)')->is_identical_base('(x*y)^3') ),
+    'more is_identical_base tests' );
 

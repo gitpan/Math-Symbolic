@@ -51,7 +51,7 @@ use 5.006;
 use strict;
 use warnings;
 
-our $VERSION = '0.120';
+our $VERSION = '0.121';
 our $AUTOLOAD;
 
 sub aggregate_import {

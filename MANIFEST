@@ -16,6 +16,7 @@ lib/Math/Symbolic/Custom/DefaultTests.pm
 lib/Math/Symbolic/Derivative.pm
 lib/Math/Symbolic/ExportConstants.pm
 lib/Math/Symbolic/MiscCalculus.pm
+lib/Math/Symbolic/MiscAlgebra.pm
 lib/Math/Symbolic/Operator.pm
 lib/Math/Symbolic/Parser.pm
 lib/Math/Symbolic/Variable.pm
@@ -29,6 +30,7 @@ run14.pl
 run15.pl
 run16.pl
 run17.pl
+run18.pl
 run2.pl
 run3.pl
 run4.pl
@@ -56,3 +58,4 @@ t/16tests.t
 t/17modifications.t
 t/18vectorcalc.t
 t/19misccalc.t
+t/20miscalgebra.t

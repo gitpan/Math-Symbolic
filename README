@@ -1,4 +1,4 @@
-Math::Symbolic version 0.120
+Math::Symbolic version 0.121
 ============================
 
 Math::Symbolic is intended to offer symbolic calculation capabilities
@@ -47,6 +47,9 @@ Hesse matrices, directional derivatives, total differentials, and two
 dimensional Taylor Polynomials is supported by the
 Math::Symbolic::VectorCalculus module which is part of the distribution but
 not loaded by default.
+
+Similarily, algebra related functions like determinants are offered by
+Math::Symbolic::MiscAlgebra.
 
 INSTALLATION
 

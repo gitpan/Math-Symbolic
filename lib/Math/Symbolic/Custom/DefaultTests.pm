@@ -33,7 +33,7 @@ use strict;
 use warnings;
 no warnings 'recursion';
 
-our $VERSION = '0.120';
+our $VERSION = '0.121';
 
 use Math::Symbolic::Custom::Base;
 BEGIN { *import = \&Math::Symbolic::Custom::Base::aggregate_import }
@@ -54,6 +54,7 @@ our $Aggregate_Export = [
       is_simple_constant
       is_integer
       is_identical
+      is_identical_base
       /
 ];
 
@@ -235,6 +236,41 @@ sub is_identical {
         }
         die "Sanity check in is_identical(). Should not be reached.";
     }
+}
+
+=head2 is_identical_base
+
+is_identical_base() returns a boolean.
+
+It compares the tree it is called on to its first argument. If the first
+argument is not a Math::Symbolic tree, it is sent through the parser.
+
+is_identical_base() returns true (1) if the trees are identical or
+if they are exponentiations with the same base. The same gotchas that
+apply to is_identical apply here, too.
+
+For example, 'x*y' and '(x*y)^e' result in a true return value because
+'x*y' is equal to '(x*y)^1' and this has the same base as '(x*y)^e'.
+
+It returns false (0) otherwise.
+
+=cut
+
+sub is_identical_base {
+    my $o1 = shift;
+    my $o2 = shift;
+    $o2 = Math::Symbolic::parse_from_string($o2)
+      if ref($o2) !~ /^Math::Symbolic/;
+
+    my $tt1 = $o1->term_type();
+    my $tt2 = $o2->term_type();
+
+    my $so1 =
+      ( $tt1 == T_OPERATOR and $o1->type() == B_EXP ) ? $o1->op1() : $o1;
+    my $so2 =
+      ( $tt2 == T_OPERATOR and $o2->type() == B_EXP ) ? $o2->op1() : $o2;
+
+    return Math::Symbolic::Custom::is_identical( $so1, $so2 );
 }
 
 =head2 is_sum()

@@ -56,6 +56,10 @@ Routines related to vector calculus such as grad, div, rot, and Jacobi- and
 Hesse matrices are availlable through the Math::Symbolic::VectorCalculus
 module.
 
+Some basic support for linear algebra can be found in
+Math::Symbolic::MiscAlgebra. This includes a routine to compute
+the determinant of a matrix of Math::Symbolic trees.
+
 =head2 EXPORT
 
 None by default, but you may choose to have the following constants
@@ -141,7 +145,7 @@ our %EXPORT_TAGS = (
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT    = qw();
 
-our $VERSION = '0.120';
+our $VERSION = '0.121';
 
 =head1 CLASS DATA
 
@@ -278,24 +282,25 @@ New versions of this module can be found on
 http://steffen-mueller.net or CPAN. The module development takes place on
 Sourceforge at http://sourceforge.net/projects/math-symbolic/
 
-L<Math::Symbolic::ExportConstants>
+L<Math::Symbolic::ExportConstants>,
 L<Math::Symbolic::AuxFunctions>
 
-L<Math::Symbolic::Base>
-L<Math::Symbolic::Operator>
-L<Math::Symbolic::Constant>
+L<Math::Symbolic::Base>,
+L<Math::Symbolic::Operator>,
+L<Math::Symbolic::Constant>,
 L<Math::Symbolic::Variable>
 
-L<Math::Symbolic::Custom>
-L<Math::Symbolic::Custom::Base>
-L<Math::Symbolic::Custom::DefaultTests>
+L<Math::Symbolic::Custom>,
+L<Math::Symbolic::Custom::Base>,
+L<Math::Symbolic::Custom::DefaultTests>,
 L<Math::Symbolic::Custom::DefaultMods>
 
-L<Math::Symbolic::Derivative>
-L<Math::Symbolic::MiscCalculus>
-L<Math::Symbolic::VectorCalculus>
+L<Math::Symbolic::Derivative>,
+L<Math::Symbolic::MiscCalculus>,
+L<Math::Symbolic::VectorCalculus>,
+L<Math::Symbolic::MiscAlgebra>
 
-L<Math::Symbolic::Parser>
+L<Math::Symbolic::Parser>,
 L<Math::Symbolic::Compiler>
 
 =cut
