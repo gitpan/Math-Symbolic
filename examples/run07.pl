@@ -23,4 +23,3 @@ print $umi->to_string('prefix') . "\n\n";
 print "infix notation:\n";
 print $umi->to_string('infix') . "\n\n";
 
-

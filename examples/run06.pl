@@ -37,4 +37,3 @@ print "$simplified\n\n";
 $simplified = $dif->simplify();
 print "$simplified\n\n";
 
-

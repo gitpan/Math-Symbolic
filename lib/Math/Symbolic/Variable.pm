@@ -42,7 +42,7 @@ use Math::Symbolic::ExportConstants qw/:all/;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.130';
+our $VERSION = '0.131';
 
 =head1 METHODS
 
@@ -175,6 +175,9 @@ in mechanics, the acceleration of a particle depends on its mass and
 the sum of all forces acting on it. So the variable 'acceleration' would
 have the signature ('acceleration', 'force1', 'force2',..., 'mass', 'time').
 
+If you're just looking for a list of the names of all variables in the tree,
+you should use the explicit_signature() method instead.
+
 =cut
 
 sub signature {
@@ -184,6 +187,19 @@ sub signature {
 
     # Make things unique, then sort and return.
     return sort keys %{ { map { ( $_, undef ) } @$sig } };
+}
+
+=head2 Method explicit_signature
+
+explicit_signature() returns a lexicographically sorted list of
+variable names in the tree.
+
+See also: signature().
+
+=cut
+
+sub explicit_signature {
+    return $_[0]->{name};
 }
 
 =head2 Method set_signature

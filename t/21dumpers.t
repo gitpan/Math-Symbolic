@@ -9,29 +9,29 @@ use_ok('Math::Symbolic');
 use Math::Symbolic qw/:all/;
 use Math::Symbolic::ExportConstants qw/:all/;
 
-my $term = parse_from_string('a');
+my $term  = parse_from_string('a');
 my $latex = $term->to_latex();
-ok(defined $latex, 'variable');
+ok( defined $latex, 'variable' );
 
-$term = parse_from_string('2');
+$term  = parse_from_string('2');
 $latex = $term->to_latex();
-ok(defined $latex, 'constant');
+ok( defined $latex, 'constant' );
 
-$term = parse_from_string('2*a(b,c,d)');
+$term  = parse_from_string('2*a(b,c,d)');
 $latex = $term->to_latex();
-ok(defined $latex, 'constant, op, var, signature');
+ok( defined $latex, 'constant, op, var, signature' );
 
 $term = parse_from_string('2*log(2,a)');
-$latex = $term->to_latex(implicit_multiplication => 1);
-ok(defined $latex, 'implicit multiplication');
+$latex = $term->to_latex( implicit_multiplication => 1 );
+ok( defined $latex, 'implicit multiplication' );
 
 $term = parse_from_string('2/log(2,a)');
-$latex = $term->to_latex(no_fractions => 1);
-ok(defined $latex, 'no fractions');
+$latex = $term->to_latex( no_fractions => 1 );
+ok( defined $latex, 'no fractions' );
 
 $term = parse_from_string('2*log(2,a)');
-$latex = $term->to_latex(exclude_signature => 1);
-ok(defined $latex, 'exclude_signature');
+$latex = $term->to_latex( exclude_signature => 1 );
+ok( defined $latex, 'exclude_signature' );
 
 $term = parse_from_string(<<'HERE');
 total_derivative(
@@ -48,4 +48,4 @@ total_derivative(
 )
 HERE
 $latex = $term->to_latex();
-ok(defined $latex, 'fancier term');
+ok( defined $latex, 'fancier term' );

@@ -45,7 +45,7 @@ use overload
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.130';
+our $VERSION = '0.131';
 our $AUTOLOAD;
 
 =head1 METHODS
@@ -110,12 +110,26 @@ in mechanics, the acceleration of a particle depends on its mass and
 the sum of all forces acting on it. So the variable 'acceleration' would
 have the signature ('acceleration', 'force1', 'force2',..., 'mass', 'time').
 
+If you're just looking for a list of the names of all variables in the tree,
+you should use the explicit_signature() method instead.
+
 =cut
 
 sub signature {
-    my $self = shift;
-    my $sig = $self->{signature} || [];
-    return sort @$sig;
+    croak "signature() implemented in the inheriting classes.";
+}
+
+=head2 Method explicit_signature
+
+explicit_signature() returns a lexicographically sorted list of
+variable names in the tree.
+
+See also: signature().
+
+=cut
+
+sub explicit_signature {
+    croak "explicit_signature() implemented in the inheriting classes.";
 }
 
 =head2 Method set_signature

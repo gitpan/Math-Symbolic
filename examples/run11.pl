@@ -55,4 +55,3 @@ $derived = $derived->apply_derivatives();
 $derived = $derived->simplify();
 print $derived, "\n";
 
-

@@ -1,5 +1,20 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.131  Wed Mar 31 14:55:13 2004
+	- Changed $VERSION = 0.xxx; to ...= '0.xxx'; since that broke
+	  the Test::Distribution version tests.
+	- Improved documentation for M::S::MiscAlgebra.
+	- Added linear_solve to M::S::MiscAlgebra.
+	- Added docs and tests.
+	- Fixed errors in the documentation for M::S::Compiler.
+	- Extra tests for the compiler.
+	- Added the explicit_signature() method.
+	- Added tests and documentation.
+	- Fixed nasty bug in the compiler.
+	- Fixed even nastier misdocumentation of the compiler.
+	- Thanks to Henrik Edlund's input, one can now pass a hash ref to
+	  the compile* functions instead of an array ref.
+
 0.130  Sun Feb 15 23:54:54 2004
 	- Fixed documentation bug in M::S::VectorCalculus.
 	- Increased the accuracy of pi and euler number.

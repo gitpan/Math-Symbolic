@@ -57,7 +57,7 @@ use Carp;
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.130';
+our $VERSION = '0.131';
 our $AUTOLOAD;
 
 use Math::Symbolic::Custom::DefaultTests;

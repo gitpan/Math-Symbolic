@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 14;
+use Test::More tests => 16;
 
 #use lib 'lib';
 
@@ -110,4 +110,12 @@ ok(
       || $term->fill_in_vars()->is_identical('2*a'),
     'fill_in_vars()'
 );
+
+my $variable1 = Math::Symbolic::Variable->new( a => 5 );
+$variable1->set_signature(qw/z y x/);
+
+my $term2 = $variable1 + Math::Symbolic::Variable->new( b => 6 );
+
+is_deeply( [ $term2->signature() ], [qw/a b x y z/], 'signature' );
+is_deeply( [ $term2->explicit_signature() ], [qw/a b/], 'explicit_signature' );
 

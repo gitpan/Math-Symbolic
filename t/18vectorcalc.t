@@ -117,10 +117,10 @@ ok(
 @matrix = Hesse 'x*y';
 ok(
     (
-	@matrix == 2
-          and not
-          ( grep { not $_->is_identical( shift @expected ) }
-	    map { (@$_) } @matrix )
+        @matrix == 2 and not(
+            grep { not $_->is_identical( shift @expected ) }
+            map  { (@$_) } @matrix
+        )
     ),
     'basic Hesse usage'
 );
@@ -180,12 +180,9 @@ ok(
 ((y - y_0) * (partial_derivative(x_0 * y_0, y_0)))) / 1)
 HERE
 
-my @functions = (
-	'x*y',
-	'z'
-);
-my @vars = ('x', 'z');
+my @functions = ( 'x*y', 'z' );
+my @vars      = ( 'x',   'z' );
 my $wronsky = WronskyDet @functions, @vars;
-ok($wronsky->is_identical(<<'HERE'), 'simple Wronsky Determinant');
+ok( $wronsky->is_identical(<<'HERE'), 'simple Wronsky Determinant' );
 (x*y)*partial_derivative(z, z) - partial_derivative(x*y, x) * z
 HERE

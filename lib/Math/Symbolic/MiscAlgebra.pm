@@ -10,12 +10,15 @@ Math::Symbolic::MiscAlgebra - Miscellaneous algebra routines like det()
   
   @matrix = (['x*y', 'z*x', 'y*z'],['x', 'z', 'z'],['x', 'x', 'y']);
   $det = det @matrix;
-
+  
+  @vector = ('x', 'y', 'z');
+  $solution = solve_linear(\@matrix, \@vector);
+  
 =head1 DESCRIPTION
 
 This module provides several subroutines related to
-algebra such as computing the determinant of nxn matrices and computation
-of Bell Polynomials.
+algebra such as computing the determinant of quadratic matrices, solving
+linear equation systems and computation of Bell Polynomials.
 
 Please note that the code herein may or may not be refactored into
 the OO-interface of the Math::Symbolic module in the future.
@@ -28,6 +31,8 @@ You may choose to have any of the following routines exported to the
 calling namespace. ':all' tag exports all of the following:
 
   det
+  linear_solve
+  bell_polynomial
 
 =head1 SUBROUTINES
 
@@ -51,19 +56,36 @@ our %EXPORT_TAGS = (
         qw(
           det
           bell_polynomial
+          linear_solve
           )
     ]
 );
 
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
-our $VERSION = '0.130';
+our $VERSION = '0.131';
 
 =head2 det
 
 det() computes the determinant of a matrix of Math::Symbolic trees (or strings
 that can be parsed as such). First argument must be a literal array:
 "det @matrix", where @matrix is an n x n matrix.
+
+Please note that calculating determinants of matrices using the
+straightforward Laplace algorithm is a slow (O(n!))
+operation. This implementation cannot make use of the various optimizations
+resulting from the determinant properties since we are dealing with
+symbolic matrix elements. If you have a matrix of reals, it is strongly
+suggested that you use Math::MatrixReal or Math::Pari to get the determinant
+which can be calculated using LR decomposition much faster.
+
+On a related note: Calculating the determinant of a 20x20 matrix would take
+over 77146 years if your Perl could do 1 million calculations per second.
+Given that we're talking about several method calls per calculation, that's
+a much more than todays computers could do. On the other hand, if you'd be
+using this straightforward algorithm with numbers only and in C, you might
+be done in 26 years alright, so please go for the smarter route (better
+algorithm) instead if you have numbers only.
 
 =cut
 
@@ -122,6 +144,71 @@ sub _matrix_slice {
 
     return [ map { [ @{$_}[ 0 .. $y - 1, $y + 1 ... $#$_ ] ] }
           @{$matrix}[ 0 .. $x - 1, $x + 1 .. $#$matrix ] ];
+}
+
+=head2 linear_solve
+
+Calculates the solutions x (vector) of a linear equation system of the form
+C<Ax = b> with C<A> being a matrix, C<b> a vector and the solution C<x> a
+vector. Due to implementation limitations, C<A> must be a quadratic matrix and
+C<b> must have a dimension that is equivalent to that of C<A>. Furthermore,
+the determinant of C<A> must be non-zero. The algorithm used is devised from
+Cramer's Rule and thus inefficient. The preferred algorithm for this task is
+Gaussian Elimination. If you have a matrix and a vector of real numbers, please
+consider using either Math::MatrixReal or Math::Pari instead.
+
+First argument must be a reference to a matrix (array of arrays) of symbolic
+terms, second argument must be a reference to a vector (array) of symbolic
+terms. Strings will be automatically converted to Math::Symbolic trees.
+Returns a reference to the solution vector.
+
+=cut
+
+sub linear_solve {
+    my ( $m, $v ) = @_;
+    my $dim = @$v;
+
+    croak "linear_solve(Matrix, Vector) requires n x n matrix and n-vector!"
+      if @$m != $dim;
+    foreach (@$m) {
+        croak "linear_solve(Matrix, Vector) requires n x n matrix and n-vector!"
+          if @$_ != $dim;
+        foreach (@$_) {
+            $_ = Math::Symbolic::parse_from_string($_)
+              if ref($_) !~ /^Math::Symbolic/;
+        }
+    }
+    foreach (@$v) {
+        $_ = Math::Symbolic::parse_from_string($_)
+          if ref($_) !~ /^Math::Symbolic/;
+    }
+
+    my $det = det @$m;
+
+    my @vec;
+
+    foreach my $i ( 0 .. $#$m ) {
+        my $nm = _replace_col( $m, $v, $i );
+        my $det_i = det @$nm;
+        push @vec, $det_i / $det;
+    }
+
+    return \@vec;
+}
+
+sub _replace_col {
+    my $m   = shift;
+    my $v   = shift;
+    my $col = shift;
+    my $nm  = [];
+    foreach my $i ( 0 .. $#$m ) {
+        $nm->[$i] = [
+            @{ $m->[$i] }[ 0 .. $col - 1 ],
+            $v->[$i],
+            @{ $m->[$i] }[ $col + 1 .. $#$m ]
+        ];
+    }
+    return $nm;
 }
 
 =head2 bell_polynomial

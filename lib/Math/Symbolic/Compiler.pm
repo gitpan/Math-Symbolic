@@ -11,13 +11,13 @@ Math::Symbolic::Compiler - Compile Math::Symbolic trees to Perl code
   my $tree = Math::Symbolic->parse_from_string('a^2 + b * c * 2');
   
   # The Math::Symbolic::Variable 'a' will be evaluated to $_[1], etc.
-  my $vars = [a => 1, b => 0, c => 2];
+  my $vars = [qw(b a c)];
   
   my ($closure, $code, $trees) =
     Math::Symbolic::Compiler->compile($tree, $vars);
   
   print $closure->(2, 3, 5); # (b, a, c)
-  # prints 34 (=2^2 + 3*5*2)
+  # prints 29 (= 3^2 + 2 * 5 * 2)
   
   # or:
   ($closure, $trees) =
@@ -38,10 +38,11 @@ of invoking a closure instead of evaluating a tree.
 
 =head2 UNCOMPILED LEFTOVER TREES
 
-Not all, however, is well in the land of compile Math::Symbolic trees.
+Not all, however, is well in the land of compiled Math::Symbolic trees.
 There may occasionally be trees that cannot be compiled (such as a derivative)
-need to be included as-is into the code. These trees will be returned in a
-referenced array by the compile*() methods. The closures will have access to
+which need to be included into the code as trees. These trees will be
+returned in a referenced array by the compile*() methods. The closures
+will have access to
 the required trees as a special variable '@_TREES inside the closure's scope,
 so you need not worry about them in that case. But if you plan to use the
 generated code itself, you need to supply an array named @_TREES that
@@ -56,7 +57,7 @@ checking the length of the referenced array that contains the trees. If it's
 =head2 AVOIDING LEFTOVER TREES
 
 In most cases, this is pretty simple. Just apply all derivatives in the tree
-to make sure that there are none left in the tree. As of version 0.108, there
+to make sure that there are none left in the tree. As of version 0.130, there
 is no operator except derivatives that cannot be compiled. There may, however,
 be some operators you cannot get rid of this easily some time in the future.
 If you have problems getting a tree to compile, try using the means of
@@ -86,9 +87,9 @@ our @ISA = qw(Exporter);
 our %EXPORT_TAGS = (
     'all' => [
         qw(
-          &compile
-          &compile_to_sub
-          &compile_to_code
+          compile
+          compile_to_sub
+          compile_to_code
           )
     ]
 );
@@ -97,7 +98,7 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw();
 
-our $VERSION = '0.130';
+our $VERSION = '0.131';
 
 =head2 ($code, $trees) = compile_to_code($tree, $vars)
 
@@ -126,12 +127,18 @@ sub compile_to_code {
     $tree = shift if $tree eq __PACKAGE__;
 
     my $order = shift || [];
-    my $count = 0;
-    my %order = map { ( $_, $count++ ) } @$order;
+    my %order;
+    if (ref($order) eq 'HASH') {
+        %order = %$order;
+    }
+    elsif (ref($order) eq 'ARRAY') {
+        my $count = 0;
+        %order = map { ( $_, $count++ ) } @$order;
+    }
 
     no warnings 'recursion';
 
-    my $vars = _find_vars($tree);
+    my $vars = [ $tree->explicit_signature() ];
 
     my %vars;
     my @not_placed;
@@ -145,7 +152,7 @@ sub compile_to_code {
         }
     }
 
-    $count = 0;
+    my $count = 0;
     foreach ( sort @not_placed ) {
         $vars{$_} = @$vars - @not_placed + $count++;
     }
@@ -253,26 +260,6 @@ HERE
     return $code;
 }
 
-sub _find_vars {
-    my $tree  = shift;
-    my $ttype = $tree->term_type();
-    my $vars  = [];
-    if ( $ttype == T_VARIABLE ) {
-        push @$vars, $tree->name();
-    }
-    elsif ( $ttype == T_OPERATOR ) {
-        my $type  = $tree->type();
-        my $otype = $Math::Symbolic::Operator::Op_Types[$type];
-        my %v     = map { ( $_, undef ) } @$vars;
-        foreach ( 0 .. @{ $tree->{operands} } - 1 ) {
-            my $v = _find_vars( $tree->{operands}[$_] );
-            $v{$_} = undef foreach @$v;
-        }
-        $vars = [ keys %v ];
-    }
-    return $vars;
-}
-
 1;
 __END__
 
@@ -286,18 +273,19 @@ best explained by an example:
   # positional:
   $sub->(4, 5, 1);
   
-  # named:
+  # named: (NOT IMPLEMENTED!)
   $sub->(a => 5, b => 4, x => 1);
 
 With positional variable passing, the subroutine statically maps its arguments
 to its internal variables. The way the subroutine does that has been fixed
 at compile-time. It is determined by the second argument to the various
 compile_* functions found in this package. This second argument is expected
-to be an array of key/value pairs with the keys being variable names and the
-values being their position starting from 0. Example:
+to be a reference to an array of variable names. The order of
+the variable names determines which parameter of the compiled sub will
+be assigned to the variable. Example:
 
   my ($sub) =
-    Math::Symbolic::Compiler->compile_to_sub($tree, [b => 2, c => 0, a => 1]);
+    Math::Symbolic::Compiler->compile_to_sub($tree, [qw/c a b/]);
     
   # First argument will be mapped to c, second to a, and third to b
   # All others will be ignored.
@@ -309,6 +297,15 @@ One important note remains: if any (or all) variables in the tree are
 unaccounted for, they will be lexicographically sorted and appended to
 the variable mapping in that order. That means if you don't map variables
 yourself, they will be sorted lexicographically.
+
+Thanks to Henrik Edlund's input, it's possible to pass a hash reference as
+second argument to the compile* functions instead of an array reference.
+The order of the mapped variables is then determined by their associated
+value, which should be an integer starting with 0. Example:
+
+  Math::Symbolic::Compiler->compile_to_sub($tree, {b => 2, a => 1, c => 0});
+
+Would result in the order c, a, b.
 
 =head1 AUTHOR
 

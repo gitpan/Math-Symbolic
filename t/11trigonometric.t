@@ -2,7 +2,7 @@ use strict;
 use warnings;
 
 use Test::More tests => 25;
- 
+
 #use lib 'lib';
 
 use_ok('Math::Symbolic');

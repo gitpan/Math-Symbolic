@@ -1,7 +1,7 @@
 use strict;
 use warnings;
- 
-use Test::More tests => 6;
+
+use Test::More tests => 21;
 
 #use lib 'lib';
 
@@ -9,39 +9,99 @@ use_ok('Math::Symbolic');
 use Math::Symbolic::ExportConstants qw/:all/;
 
 my $var = Math::Symbolic::Variable->new();
-my $a   = $var->new( 'x' => 10 );
+my $x   = $var->new( 'x' => 10 );
+my $y   = $var->new( 'y' => 5 );
+my $z   = $var->new( 'z' => 1 );
 
-my ( $first, $second, $third );
+my ( $sub, $code, $trees );
 
-$first = $a * 2 + 1;    # x*2 + 1
+my $func = $z + $x * 2 + $y;
 
-$@ = undef;
 eval <<'HERE';
-($second, $third) = Math::Symbolic::Compiler->compile_to_sub($first, [x=>0]);
+($sub, $trees) = Math::Symbolic::Compiler->compile_to_sub($func);
 HERE
-ok( !$@, 'compile_to_sub()' );
+ok( !$@, 'compile_to_sub(), one argument.' );
+is_deeply( $trees, [], '- checking results.' );
+ok( $sub->( 11, 2, 100 ) == 124, '- checking results.' );
 
-my $no = $second->(2);
-ok( $no == 5, 'Correct result of sub', );
+( $sub, $trees ) = ( undef, undef );
 
-( $second, $third ) = ( undef, undef );
-
-$@ = undef;
 eval <<'HERE';
-($second, $third) = Math::Symbolic::Compiler->compile_to_code($first);
+($sub, $trees) = Math::Symbolic::Compiler->compile_to_sub(
+			$func,
+			[qw/y/]
+		);
 HERE
-ok( !$@, 'compile_to_code()' );
+ok( !$@, 'compile_to_sub(), two arguments.' );
+is_deeply( $trees, [], '- checking results.' );
+ok( $sub->( 11, 2, 100 ) == ( 11 + 2 * 2 + 100 ), '- checking results.' );
 
-( $second, $third ) = ( undef, undef );
-my $fourth;
+( $sub, $trees ) = ( undef, undef );
+
+eval <<'HERE';
+($sub, $trees) = Math::Symbolic::Compiler->compile_to_sub(
+			$func,
+			[qw/z y x/]
+		);
+HERE
+ok( !$@, 'compile_to_sub(), two arguments.' );
+is_deeply( $trees, [], '- checking results.' );
+ok( $sub->( 11, 2, 100 ) == ( 11 + 2 + 2 * 100 ), '- checking results.' );
+
+( $sub, $trees ) = ( undef, undef );
+
+eval <<'HERE';
+($code, $trees) = Math::Symbolic::Compiler->compile_to_code($func);
+HERE
+ok( !$@, 'compile_to_code() - one argument.' );
+is_deeply( $trees, [], '- checking results.' );
+{
+    local @_ = ( 2, 100, 3 );
+    my $res = eval $code;
+    ok( $res == ( 3 + 100 + 2 * 2 ), '- checking results.' );
+}
+
+( $code, $trees ) = ( undef, undef );
+
+eval <<'HERE';
+($code, $trees) = Math::Symbolic::Compiler->compile_to_code(
+			$func,
+			[qw/z y x/]
+			);
+HERE
+ok( !$@, 'compile_to_code() - two arguments.' );
+is_deeply( $trees, [], '- checking results.' );
+{
+    local @_ = ( 2, 100, 3 );
+    my $res = eval $code;
+    ok( $res == ( 2 * 3 + 100 + 2 ), '- checking results.' );
+}
+
+( $code, $trees ) = ( undef, undef );
+
+eval <<'HERE';
+($code, $trees) = Math::Symbolic::Compiler->compile_to_code(
+			$func,
+			[qw/y/]
+			);
+HERE
+ok( !$@, 'compile_to_code() - two arguments.' );
+is_deeply( $trees, [], '- checking results.' );
+{
+    local @_ = ( 2, 100, 3 );
+    my $res = eval $code;
+    ok( $res == ( 3 + 2 * 100 + 2 ), '- checking results.' );
+}
+
+( $code, $trees ) = ( undef, undef );
 
 $@ = undef;
 eval <<'HERE';
-($second, $third, $fourth) =
-Math::Symbolic::Compiler->compile($first, [x=>0]);
+($sub, $code, $trees) =
+Math::Symbolic::Compiler->compile($func, [qw/x/]);
 HERE
 ok( !$@, 'compile()' );
 
-$no = $second->(2);
-ok( $no == 5, 'Correct result of sub', );
+my $no = $sub->( 1, 2, 3 );
+ok( $no == ( 2 + 2 + 3 ), 'Correct result of sub', );
 
