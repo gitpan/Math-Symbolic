@@ -98,7 +98,7 @@ our %EXPORT_TAGS = (
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT = qw();
 
-our $VERSION = '0.100';
+our $VERSION = '0.101';
 
 =head1 CLASS DATA
 
@@ -186,6 +186,7 @@ Steffen Mueller, E<lt>symbolic-module at steffen-mueller dot netE<gt>
 =head1 SEE ALSO
 
 L<Math::Symbolic::ExportConstants>
+L<Math::Symbolic::AuxFunctions>
 
 L<Math::Symbolic::Base>
 L<Math::Symbolic::Operator>

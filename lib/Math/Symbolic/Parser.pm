@@ -1,3 +1,4 @@
+
 =head1 NAME
 
 Math::Symbolic::Parser - Parse strings into Math::Symbolic trees
@@ -44,7 +45,7 @@ use Parse::RecDescent;
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.100';
+our $VERSION = '0.101';
 our $DEBUG = 0;
 
 our $Grammar = <<'GRAMMAR_END';
@@ -199,6 +200,8 @@ GRAMMAR_END
 
 This subroutine (_leftop_list) is used by the parser to generate
 Math::Symbolic trees.
+
+=end comment
 
 =cut
 

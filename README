@@ -1,4 +1,4 @@
-Math::Symbolic version 0.100
+Math::Symbolic version 0.101
 ============================
 
 Math::Symbolic is intended to offer symbolic calculation capabilities
@@ -17,10 +17,11 @@ however, parse variables at this time. This will be fixed in a future release.
 
 The interface is badly documented. Please refer to the tests and example
 programs.
-Partial derivatives of logarithms, exponentiations, and arithmetic terms
-(*,/,+,- and unary minus as well as variables and constants) work rather
-well - albeit slowly. Simplification of algebraic terms is severely limited
-at this time.
+Partial derivatives of logarithms, exponentiations, arithmetic terms
+(*,/,+,- and unary minus as well as variables and constants),
+trigonometric functions, inverse trigonometric functions, hyperbolic functions,
+and area hyperbolic functions work rather well - albeit slowly. Simplification
+of algebraic terms is severely limited at this time.
 
 INSTALLATION
 

@@ -40,7 +40,7 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw();
 
-our $VERSION = '0.100';
+our $VERSION = '0.101';
 
 =head1  CLASS DATA
 
@@ -70,6 +70,8 @@ our %Partial_Rules = (
 
 The following subroutines are helper subroutines that apply a
 specific rule to a tree.
+
+=end comment
 
 =cut
 

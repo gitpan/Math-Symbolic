@@ -1,5 +1,8 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.101  Fri Jun  20 15:45:10 2003
+	- Documentation fixes
+
 0.100  Fri Jun  20 01:32:32 2003
 	(Yep, I hack at random hours.)
 	- Implemented hyperbolic sine, h cosine.
