@@ -33,8 +33,9 @@ use warnings;
 use Carp;
 
 use Math::Symbolic::ExportConstants qw/:all/;
+use Memoize;
 
-our $VERSION = '0.124';
+our $VERSION = '0.125';
 
 =head1 TRIGONOMETRIC FUNCTIONS
 
@@ -104,6 +105,57 @@ Computes the arc hyperbolic cosine acosh(z) = log(z + sqrt(z*z-1)).
 =cut
 
 sub acosh { log( $_[0] + sqrt( $_[0] * $_[0] - 1 ) ) }
+
+=head1 OTHER FUNCTIONS
+
+=cut
+
+=head2 binomial_coeff
+
+Calculates the binomial coefficient n over k of its first two
+arguments (n, k).
+
+Code taken from Orwant et al, "Mastering Algorithms with Perl"
+
+=cut
+
+memoize('binomial_coeff');
+
+sub binomial_coeff {
+    my ( $n,   $k ) = @_;
+    my ( $res, $j ) = ( 1, 1 );
+
+    return 0 if $k > $n || $k < 0;
+    $k = ( $n - $k ) if ( $n - $k ) < $k;
+
+    while ( $j <= $k ) {
+        $res *= $n--;
+        $res /= $j++;
+    }
+    return $res;
+}
+
+=head2 bell_number
+
+The Bell numbers are defined as follows:
+
+  B_0   = 1
+  B_n+1 = sum_k=0_to_n( B_k * binomial_coeff(n, k) )
+
+This function uses memoization.
+
+=cut
+
+memoize('bell_number');
+
+sub bell_number {
+    my $n = shift;
+    return undef if $n < 0;
+    return 1     if $n == 0;
+    my $bell = 0;
+    $bell += bell_number($_) * binomial_coeff( $n - 1, $_ ) for 0 .. $n - 1;
+    return $bell;
+}
 
 1;
 __END__

@@ -55,7 +55,8 @@ Taylor Polynomials and the associated errors.
 Routines related to vector calculus such as grad, div, rot, and Jacobi- and
 Hesse matrices are availlable through the Math::Symbolic::VectorCalculus
 module. This module is also able to compute Taylor Polynomials of
-functions of two variables, directional derivatives, and total differentials.
+functions of two variables, directional derivatives, total differentials,
+and Wronskian Determinants.
 
 Some basic support for linear algebra can be found in
 Math::Symbolic::MiscAlgebra. This includes a routine to compute
@@ -146,7 +147,7 @@ our %EXPORT_TAGS = (
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT    = qw();
 
-our $VERSION = '0.124';
+our $VERSION = '0.125';
 
 =head1 CLASS DATA
 

@@ -1,5 +1,13 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.125  Wed Oct  8 16:19:13 2003
+	- Implemented binomial_coeff in AuxFunctions.
+	- Now requiring Memoize to be installed.
+	- Added META.yml and Makefile.PL dependency.
+	- Added bell_number() to AuxFunctions.
+	- Added bell_polynomial to MiscAlgebra.
+	- Slightly improved simplification.
+
 0.124  Wed Oct  1 15:08:49 2003
 	- Now value() and apply() return undef if any var is undefined.
 	- Docs for the above.

@@ -9,6 +9,7 @@ WriteMakefile(
         Data::Dumper      => 0,
         Parse::RecDescent => 0,      # not required for rudimentary operation
         Test::More        => 0,
+        Memoize 	  => 1.01,
         Pod::Coverage     => 0.11,
     },    # e.g., Module::Name => 1.1
     (

@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 11;
+use Test::More tests => 30;
 
 #use lib 'lib';
 
@@ -90,4 +90,38 @@ HERE
 ok( !$@, 'simplify() did not complain' );
 
 print "$simplified = " . $derived->value() . "\n\n";
+
+ok(Math::Symbolic::AuxFunctions::binomial_coeff(0, 0) == 1,
+'binomial_coeff(0, 0)');
+
+ok(Math::Symbolic::AuxFunctions::binomial_coeff(1, 1) == 1,
+'binomial_coeff(1, 1)');
+
+ok(Math::Symbolic::AuxFunctions::binomial_coeff(4, 2) == 6,
+'binomial_coeff(4, 2)');
+
+ok(Math::Symbolic::AuxFunctions::binomial_coeff(5, 2) == 10,
+'binomial_coeff(5, 2)');
+
+ok(Math::Symbolic::AuxFunctions::binomial_coeff(5, 4) == 5,
+'binomial_coeff(5, 4)');
+
+ok(Math::Symbolic::AuxFunctions::binomial_coeff(2, 4) == 0,
+'binomial_coeff(2, 4)');
+
+ok(Math::Symbolic::AuxFunctions::binomial_coeff(2, -1) == 0,
+'binomial_coeff(2, -1)');
+
+ok(!defined(Math::Symbolic::AuxFunctions::bell_number(-1)),
+'bell_number(-1)');
+
+my @bell_numbers = (
+	1, 1, 2, 5, 15, 52, 203, 877, 4140, 21147, 115975
+);
+
+ok(Math::Symbolic::AuxFunctions::bell_number($_) == $bell_numbers[$_],
+"bell_number($_)") for 0..$#bell_numbers;
+
+
+
 

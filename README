@@ -1,4 +1,4 @@
-Math::Symbolic version 0.124
+Math::Symbolic version 0.125
 ============================
 
 Math::Symbolic is intended to offer symbolic calculation capabilities
@@ -43,8 +43,8 @@ the symbolic computation of Taylor Polynomials and the associated errors from
 Math::Symbolic trees.
 
 Vectorial calculus including gradients, divergence, rotation, Jacobi- and
-Hesse matrices, directional derivatives, total differentials, and two
-dimensional Taylor Polynomials is supported by the
+Hesse matrices, Wronskian Determinants, directional derivatives, total
+differentials, and two dimensional Taylor Polynomials is supported by the
 Math::Symbolic::VectorCalculus module which is part of the distribution but
 not loaded by default.
 

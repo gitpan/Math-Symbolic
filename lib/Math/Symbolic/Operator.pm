@@ -58,7 +58,7 @@ use Math::Symbolic::Derivative qw//;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.124';
+our $VERSION = '0.125';
 
 =head1 CLASS DATA
 
@@ -649,6 +649,18 @@ sub simplify {
                     my $c_product = $not_c->new( '*', $const, $c )->apply();
                     return $not_c->new( '*', $c_product, $nc );
                 }
+                elsif ( $not_c->term_type() == T_OPERATOR
+                    and $not_c->type() == B_DIVISION
+                    and $not_c->op1()->term_type() == T_CONSTANT )
+                {
+                    return Math::Symbolic::Operator->new(
+                        '/',
+                        Math::Symbolic::Constant->new(
+                            $const->value() * $not_c->op1()->value()
+                        ),
+                        $not_c->op2()
+                    );
+                }
             }
             elsif ( $type == B_DIVISION ) {
                 return $not_c
@@ -659,6 +671,7 @@ sub simplify {
                   and $const->value == 0;
                 return Math::Symbolic::Constant->zero()
                   if $const->value == 0;
+
             }
         }
         elsif ( $type == B_PRODUCT ) {

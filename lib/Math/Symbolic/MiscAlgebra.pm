@@ -14,7 +14,8 @@ Math::Symbolic::MiscAlgebra - Miscellaneous algebra routines like det()
 =head1 DESCRIPTION
 
 This module provides several subroutines related to
-algebra such as computing the determinant of nxn matrices.
+algebra such as computing the determinant of nxn matrices and computation
+of Bell Polynomials.
 
 Please note that the code herein may or may not be refactored into
 the OO-interface of the Math::Symbolic module in the future.
@@ -39,6 +40,7 @@ use strict;
 use warnings;
 
 use Carp;
+use Memoize;
 
 use Math::Symbolic qw/:all/;
 
@@ -48,13 +50,14 @@ our %EXPORT_TAGS = (
     'all' => [
         qw(
           det
+          bell_polynomial
           )
     ]
 );
 
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
-our $VERSION = '0.124';
+our $VERSION = '0.125';
 
 =head2 det
 
@@ -119,6 +122,51 @@ sub _matrix_slice {
 
     return [ map { [ @{$_}[ 0 .. $y - 1, $y + 1 ... $#$_ ] ] }
           @{$matrix}[ 0 .. $x - 1, $x + 1 .. $#$matrix ] ];
+}
+
+=head2 bell_polynomial
+
+This functions returns the nth Bell Polynomial. It uses memoization for
+speed increase.
+
+First argument is the n. Second (optional) argument is the variable or
+variable name to use in the polynomial. Defaults to 'x'.
+
+The Bell Polynomial is defined as follows:
+
+  phi_0  (x) = 1
+  phi_n+1(x) = x * ( phi_n(x) + partial_derivative( phi_n(x), x ) )
+
+Bell Polynomials are Exponential Polynimals with phi_n(1) = the nth bell
+number. Please refer to the bell_number() function in the
+Math::Symbolic::AuxFunctions module for a method of generating these numbers.
+
+=cut
+
+memoize('bell_polynomial');
+
+sub bell_polynomial {
+    my $n   = shift;
+    my $var = shift;
+    $var = 'x' if not defined $var;
+    $var = Math::Symbolic::Variable->new($var);
+
+    return undef                            if $n < 0;
+    return Math::Symbolic::Constant->new(1) if $n == 0;
+    return $var                             if $n == 1;
+
+    my $bell = bell_polynomial( $n - 1 );
+    $bell = Math::Symbolic::Operator->new(
+        '+',
+        Math::Symbolic::Operator->new( '*', $var, $bell )->simplify(),
+        Math::Symbolic::Operator->new(
+            '*',
+            $var,
+            Math::Symbolic::Operator->new( 'partial_derivative', $bell, $var )
+              ->apply_derivatives()->simplify()
+          )->simplify()
+    );
+    return $bell;
 }
 
 1;

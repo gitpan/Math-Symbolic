@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 5;
+use Test::More tests => 8;
 
 #use lib 'lib';
 
@@ -46,4 +46,9 @@ ok( det(@matrix)->is_identical(<<'HERE'), '4x4 det' );
 ))) + (((e * x) * (y * y)) * (z * z))) - (((y * z) * (z * y)) * (e * x)))
  - (((z * z) * (e * y)) * (y * x))) - (((e * z) * (y * y)) * (z * x))))
 HERE
+
+ok(bell_polynomial(0)->is_identical('1'), 'bell_polynomial(0)');
+ok(bell_polynomial(1)->is_identical('x'), 'bell_polynomial(1)');
+ok(bell_polynomial(2)->is_identical('x^2 + x'), 'bell_polynomial(2)');
+
 

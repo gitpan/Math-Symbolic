@@ -1,12 +1,13 @@
 --- #YAML:1.0
 name: Math-Symbolic
-version: 0.124
+version: 0.125
 abstract: Symbolic calculations
 license: perl
 distribution_type: module
 requires:
   Test::More: 0.44
   Data::Dumper: 0
+  Memoize: 1.01
 recommends:
   Parse::RecDescent: 0
   Pod::Coverage: 0.11
