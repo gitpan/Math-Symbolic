@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name: Math-Symbolic
-version: 0.121
+version: 0.122
 abstract: Symbolic calculations
 license: perl
 distribution_type: module

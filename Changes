@@ -1,5 +1,10 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.122  Tue Sep 23 22:18:19 2003
+	- Added the 'to_' delegation prefix.
+	- Added Math::Symbolic::Custom::DefaultDumpers.
+	- Added support for dumping to LaTeX! *evil grin*
+
 0.121  Sun Sep 14 14:41:31 2003
 	- Added M::S::MiscAlgebra and the det() routine.
 	- Slightly improved simlification process

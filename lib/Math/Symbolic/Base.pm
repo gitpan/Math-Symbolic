@@ -45,7 +45,7 @@ use overload
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.121';
+our $VERSION = '0.122';
 our $AUTOLOAD;
 
 =head1 METHODS
@@ -648,7 +648,7 @@ sub _overload_cos {
 
 The following AUTOLOAD mechanism delegates all method calls that aren't found
 in the normal Math::Symbolic inheritance tree and that start with
-'is_', 'test_', 'contains_', 'apply_', or 'mod_' to the
+'is_', 'test_', 'contains_', 'apply_', 'mod_', or 'to_' to the
 Math::Symbolic::Custom class.
 
 The 'is_' and 'test_' "namespaces" are intended for methods that test a
@@ -660,6 +660,8 @@ The 'contains_' prefix is intended for tests as well.
 The 'apply_' and 'mod_' prefixes are intended for modifications to the tree
 itself. Eg.: 'apply_derivatives'
 
+The 'to_' prefix is intended for output / conversion related routines.
+
 =end comment
 
 =cut
@@ -667,7 +669,7 @@ itself. Eg.: 'apply_derivatives'
 sub AUTOLOAD {
     my $call = $AUTOLOAD;
     $call =~ s/.*\:\:(\w+)$/$1/;
-    if ( $call =~ /^((?:apply|mod|is|test|contains)_\w+)/ ) {
+    if ( $call =~ /^((?:apply|mod|is|test|contains|to)_\w+)/ ) {
         my $method = $1;
         my $ref    = Math::Symbolic::Custom->can($method);
         if ( defined $ref ) {

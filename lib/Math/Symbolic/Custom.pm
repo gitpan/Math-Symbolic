@@ -26,14 +26,16 @@ Math::Symbolic::Custom - Aggregate class for tree tests and transformations
   die unless $tree->is_type1();
   die unless $tree->test_condition1();
   die if $tree->contains_something1();
+  print $tree->to_latex();
 
 =head1 DESCRIPTION
 
-This is an aggregate class for all custom modification, transformation
-and testing extensions for Math::Symbolic trees.
+This is an aggregate class for all custom modification, transformation,
+testing and output extensions for Math::Symbolic trees.
 Some default transformations and tests are implemented in the
 Math::Symbolic::Custom::DefaultMods and
-Math::Symbolic::Custom::DefaultTests packages which are automatically
+Math::Symbolic::Custom::DefaultTests packages, default output
+routines in Math::Symbolic::Custom::DefaultDumpers which are automatically
 loaded by the Math::Symbolic::Custom class.
 
 Math::Symbolic::Custom imports all constants from
@@ -55,11 +57,12 @@ use Carp;
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.121';
+our $VERSION = '0.122';
 our $AUTOLOAD;
 
 use Math::Symbolic::Custom::DefaultTests;
 use Math::Symbolic::Custom::DefaultMods;
+use Math::Symbolic::Custom::DefaultDumpers;
 
 1;
 __END__
@@ -95,13 +98,14 @@ following lines of code in it:
 Think well about the naming of your exported methods. Answer the following
 questions:
 
-Does the name start with 'is_', 'test_', 'mod_', 'apply_', or 'contains_'?
+Does the name start with 'is_', 'test_', 'mod_', 'apply_', 'contains_',
+or 'to_'?
 If not, find a suitable name that does.
 
 Does the name clash with any of the methods exported by
-Math::Symbolic::Custom::DefaultTests or
-Math::Symbolic::Custom::DefaultMods? If so, please consider choosing a
-different name.
+Math::Symbolic::Custom::DefaultTests, Math::Symbolic::Custom::DefaultMods,
+or Math::Symbolic::Custom::DefaultDumpers?
+If so, please consider choosing a different name.
 
 Does the name map to the idea behind the method prefix ('is_', ...)?
 Only methods starting with one of the prefixes listed above can be
@@ -112,6 +116,9 @@ used for accurate tests like "is_constant". 'test_' is meant for
 all tests that either make use of heuristics or can't be fitted into
 either 'is_' or 'contains_'. The prefixes 'mod_' and 'apply_' are
 meant for use with methods that modify the Math::Symbolic tree.
+Finally, the prefix 'to_' is meant to be used with conversion and output
+methods like 'to_latex' or 'to_string'. (Though as of version 0.122,
+to_string is implemented in the core Math::Symbolic modules.)
 
 =item
 
@@ -167,6 +174,7 @@ Sourceforge at http://sourceforge.net/projects/math-symbolic/
 L<Math::Symbolic::Custom::Base>
 L<Math::Symbolic::Custom::DefaultTests>
 L<Math::Symbolic::Custom::DefaultMods>
+L<Math::Symbolic::Custom::DefaultDumpers>
 
 L<Math::Symbolic>
 

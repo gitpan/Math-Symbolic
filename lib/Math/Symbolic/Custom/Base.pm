@@ -31,7 +31,7 @@ To extend the class, just use the following template for your custom class:
   
   # Now implement the subroutines.
   # Exported subroutine names must start with 'apply_', 'mod_',
-  # 'is_', 'test_', or 'contains_'
+  # 'is_', 'test_', 'contains_', or 'to_'
   
   # ...
   
@@ -51,7 +51,7 @@ use 5.006;
 use strict;
 use warnings;
 
-our $VERSION = '0.121';
+our $VERSION = '0.122';
 our $AUTOLOAD;
 
 sub aggregate_import {
