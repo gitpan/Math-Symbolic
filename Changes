@@ -1,5 +1,17 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.116  Wed Sep 3 22:16:51 2003
+	- Added META.yml
+	- Removed "Exporter" dependency in Makefile.PL. Who needs to install
+	  Exporter from CPAN anyway?
+	- Added run14.pl with Math::Complex stuff.
+	- Math::Symbolic::Parser now defers loading Parse::RecDescent to the
+	  first call of the parser constructor.
+	- Math::Symbolic now defers creating a parser to the first call of
+	  "parse_from_string".
+	- Together, the above changes made the testsuite run 30% faster
+	  because many of the basic test scripts don't use the parser.
+
 0.115  Tue Sep 2 16:23:15 2003
 	- Moved to sf.net
 	- Ran perltidy over the distro.

@@ -110,11 +110,12 @@ use 5.006;
 use strict;
 use warnings;
 
-use Parse::RecDescent;
-
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.115';
+#use Parse::RecDescent;
+my $Required_Parse_RecDescent = 0;
+
+our $VERSION = '0.116';
 our $DEBUG   = 0;
 
 our $Grammar = <<'GRAMMAR_END';
@@ -410,6 +411,9 @@ trees.
 =cut
 
 sub new {
+    if ( not $Required_Parse_RecDescent ) {
+        require Parse::RecDescent;
+    }
     my $parser = new Parse::RecDescent($Grammar);
     return $parser;
 }

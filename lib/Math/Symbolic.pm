@@ -132,7 +132,7 @@ our %EXPORT_TAGS = (
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT    = qw();
 
-our $VERSION = '0.115';
+our $VERSION = '0.116';
 
 =head1 CLASS DATA
 
@@ -141,7 +141,10 @@ object that is used to parse strings at runtime.
 
 =cut
 
-our $Parser = Math::Symbolic::Parser->new();
+our $Parser;
+
+# Defer until first call!
+# = Math::Symbolic::Parser->new();
 
 =head1 SUBROUTINES
 
@@ -165,6 +168,9 @@ sub parse_from_string {
       unless defined $string;
     $string = shift if $string eq __PACKAGE__ and @_;
     $string =~ s/\s+//gs;
+    if ( not defined $Parser ) {
+        $Parser = Math::Symbolic::Parser->new();
+    }
     return $Parser->parse($string);
 }
 

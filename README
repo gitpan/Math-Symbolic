@@ -1,4 +1,4 @@
-Math::Symbolic version 0.115
+Math::Symbolic version 0.116
 ============================
 
 Math::Symbolic is intended to offer symbolic calculation capabilities
@@ -33,6 +33,10 @@ a special namespace that is populated from user-defined modules thusly adding
 reasonably simple means of extension.
 Additionally, all builtin tree-modifying and tree-testing methods are being
 moved to the aforementioned namespace.
+
+Version 0.116 of this module has been used in conjunction with Math::Complex
+to offer symbolic calculation with complex numbers. Please have a look at
+the enclosed example scripts.
 
 INSTALLATION
 

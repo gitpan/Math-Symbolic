@@ -9,7 +9,6 @@ WriteMakefile(
         Data::Dumper      => 0,
         Parse::RecDescent => 0,
         Test::More        => 0,
-        Exporter          => 0,
     },                                           # e.g., Module::Name => 1.1
     (
         $] >= 5.005
