@@ -22,12 +22,72 @@ to simply use the Math::Symbolic->parse_from_string() class method
 instead of this module directly. If you do, however, make sure to
 remove any whitespace from your input string.
 
-The strings may contain any operators/functions that are listed in the
-Math::Symbolic::Operator documentation (in the docs for the new()
-constructor). Furthermore, they may contain numeric constants and variables.
-variable names must match [a-zA-Z][a-zA-Z0-9_]* (letter followed by any number
-of letters, digits, and underscores). Variables will be constructed as new
-Math::Symbolic::Variable objects with default value.
+=head2 STRING FORMAT
+
+The parser has been designed to parse strings that are reminiscient of
+ordinary algebraic expressions including the standard arithmetic infix
+operators such as multiplication. Many functions such as a rather
+comprehensive set of trigonometric functions are parsed in prefix form
+like 'sin(expression)' or 'log(base, expression)'. Unknown identifiers starting with a letter and containing only letters, digits, and underscores are
+parsed as variables. If these identifiers are followed by parenthesis
+containing a list of identifiers, the list is parsed as the signature of
+the variable. Example: '5*x(t)' is parsed as the product of the constant five
+and the variable 'x' which depends on 't'. These dependencies are
+important for total derivatives.
+
+The supported builtin-functions are listed in the documentation for
+Math::Symbolic::Operator in the section on the new() constructor.
+
+=head2 EXAMPLES
+
+  # An example from analytical mechanics:
+  my $hamilton_function = Math::Symbolic->parse_from_string(
+                    'p_q(q, dq_dt, t) * dq_dt(q, t) - Lagrange(q, p_q, t)'
+                 );
+
+This parses as "The product
+of the generalized impulse p_q (which is a function of the generalized
+coordinate q, its derivative, and the time) and the derivative of the
+generalized coordinate dq_dt (which depends on q itself and the time).
+This term minus the Lagrange Function (of q, the impulse, and the time)
+is the Hamilton Function."
+
+Well, that's how it parses in my head anyway. The parser will generate a tree
+like this:
+
+  Operator {
+    type     => difference,
+    operands => (
+                  Operator {
+                    type     => product,
+	            operands => (
+                                  Variable {
+                                    name         => p_q,
+                                    dependencies => q, dq_dt, t
+                                  },
+                                  Variable {
+                                     name         => dq_dt,
+                                     dependencies => q, t
+                                  }
+                    )
+                  },
+                  Variable {
+                    name         => Lagrange,
+                    dependencies => q, p_q, t
+                  }
+                )
+  }
+
+Possibly a simpler example would be 'amplitude * sin(phi(t))' which
+descibes an oscillation. sin(...) is assumed to be the sine function,
+amplitude is assumed to be a symbol / variable that doesn't depend on any
+others. phi is recognized as a variable that changes over time (t). So
+phi(t) is actually a function of t that hasn't yet been specified.
+phi(t) could look like 'omega*t + theta' where strictly speaking,
+omega, t, and theta are all symbols without dependencies. So omega and theta
+would be treated as constants if you derived them in respect to t.
+Figuratively speaking, omega would be a frequency and theta would be a
+initial value.
 
 =head2 EXPORT
 
@@ -53,7 +113,7 @@ use Parse::RecDescent;
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.108';
+our $VERSION = '0.109';
 our $DEBUG = 0;
 
 our $Grammar = <<'GRAMMAR_END';
@@ -216,7 +276,17 @@ our $Grammar = <<'GRAMMAR_END';
 
 	list_op: ','
 
-	variable: identifier
+	variable: identifier '(' identifier_list ')'
+			{
+				warn 'variable '
+					if $Math::Symbolic::Parser::DEBUG;
+				Math::Symbolic::Variable->new({
+					name => $item[1],
+					signature => $item[3],
+				});
+			}
+
+		| identifier
 			{
 				warn 'variable '
 					if $Math::Symbolic::Parser::DEBUG;
@@ -229,6 +299,21 @@ our $Grammar = <<'GRAMMAR_END';
 		{
 			$item[1]
 		}
+
+	identifier_list: <leftop:identifier list_op identifier>
+			{
+				warn 'identifier_list '
+					if $Math::Symbolic::Parser::DEBUG;
+				my $i = 1;
+				[
+					grep {
+						$i==1 ?
+						(--$i,1):
+						(++$i,0)
+					}
+					@{$item[1]}
+				]
+			}
 	
 GRAMMAR_END
 

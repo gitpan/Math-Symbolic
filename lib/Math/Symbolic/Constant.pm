@@ -31,7 +31,7 @@ use Math::Symbolic::ExportConstants qw/:all/;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.108';
+our $VERSION = '0.109';
 
 =head1 METHODS
 
@@ -165,6 +165,34 @@ and does not evaluate the tree.
 =cut
 
 sub set_value {}
+
+
+
+=head2 Method signature
+
+signature() returns a tree's signature. (Which is the empty list in case
+of constants.)
+
+In the context of Math::Symbolic, signatures are the list of variables
+any given tree depends on. That means the tree "v*t+x" depends on the
+variables v, t, and x. Thus, applying signature() on the tree that would
+be parsed from above example yields the sorted list ('t', 'v', 'x').
+
+Constants do not depend on any variables and therefore return the empty list.
+Obviously, operators' dependencies vary.
+
+Math::Symbolic::Variable objects, however, may have a slightly more
+involved signature. By convention, Math::Symbolic variables depend on
+themselves. That means their signature contains their own name. But they
+can also depend on various other variables because variables themselves
+can be viewed as placeholders for more compicated terms. For example
+in mechanics, the acceleration of a particle depends on its mass and
+the sum of all forces acting on it. So the variable 'acceleration' would
+have the signature ('acceleration', 'force1', 'force2',..., 'mass', 'time').
+
+=cut
+
+sub signature {return ();}
 
 
 

@@ -2,40 +2,36 @@ This file contains the TODO milestones for Math::Symbolic.
 + => Met
 - => Not met
 
-Version 0.100: (Released)
-	+ Add sine/cosine
-	+ Amend parser to parse sine/cosine.
-	+ Add sinh/cosh or at least allow the user to use them in the input
-	  string to the parser and have them replaced with (e^x ± e^-x)/2
-	+ Amend parser to parse hyperbolic sine/h. cosine.
-	+ Add tan,
-	+ arctan
-	+ Amend parser to parse tan /
-	+ arctan.
-	+ Add arcsine/arccosine
-	+ Amend parser to parse arcsine/arccosine.
-	+ Find a more reasonable naming scheme for class data and rename
-	  appropriately.
-	+ Add tests for the new features.
+Sooner-than-later:
+	- Better testsuite as in: bring in some order and better coverage.
+	- Clean up documentation.
 
-Version 0.105:
-	+ Add reasonable overloaded interface for arithmetic operators and
-	  some mathematical functions as far as feasible.
-	+ Overloaded interface for exp, sqrt, log, +,-,*,/,**.
-	+ Overloaded interface for boolean context and stringification.
-	+ O. i. for unary minus
-	+ O. i. for trig functions
-	+ More tests.
-	+ Overloaded interface for numerical context.
-	+ Overloaded interface for MUTATORS!
-	+ Tests for the above.
-	+ Documentation for the above changes
+	- Yes, damnit. I mean it.
 
-Version 0.108:
-	+ Refactor the to_sub.pl code to a package that allows to compile
-	  Math::Symbolic trees to subroutines and/or code.
 
 Version 0.110: (major milestone!)
+	+ Add signatures to variables.
+	+ Add signature() methods to all elements.
+	+ Amend parser to parse signatures.
+	- Given the signature-parser enhancements, total derivatives start
+	  making sense.
+	  Since function signatures must be defined by their signatures
+	  when they're used, total derivatives can be applied to all
+	  functions. (Or, if their implementation is still undefined, they
+	  can possibly still be kicked out because of their non-dependence
+	  on a particular variable.)
+	+ Add tests for sigs.
+	- Add tests for the new features.
+	- New, better example in the main man page.
+	- Write a coherent, easy-to-understand, central section on variable
+	  signatures and their purpose.
+	- Should the operators/functions really be listed in the MS::Operator
+	  man page or should they be listed in a more central place like
+	  the main man page? Or both? (Duplicate docs are bad!)
+	- Whatever's done about that last point, make sure the docs refer to
+	  the correct portion about the operator list.
+
+Version 0.120: (major milestone!) [pushed back from 0.110]
 	- Instead of all terms being either a Math::Symbolic::Operator, a
 	  Math::Symbolic::Variable, or a Math::Symbolic::Constant object,
 	  introduce actual Math::Symbolic objects as container objects for
@@ -58,7 +54,8 @@ Version 0.110: (major milestone!)
 	  operator object as an operand. (And therefore acting as a function
 	  with a defined implementation which is not the generally desired
 	  behaviour!)
-	- According to the previously outlined major changes, make sure the
+	+ [not necessary any more]
+	  According to the previously outlined major changes, make sure the
 	  (as of 0.090) current Math::Symbolic::parse_from_string becomes a
 	  Math::Symbolic OBJECT ONLY method. (Otherwise, the symbol table for
 	  parsing vars is missing.)
@@ -67,14 +64,6 @@ Version 0.110: (major milestone!)
 	  (Now parsing identifiers as vars.)
 	- Add tests for the new features.
 
-Version 0.120: (major milestone!)
-	- Given the v0.110 enhancements, total derivatives start making sense.
-	  Since function signatures must be defined by their symbol table
-	  when they're used, total derivatives can be applied to all
-	  functions. (Or, if their implementation is still undefined, they
-	  can possibly still be kicked out because of their non-dependance
-	  on a particular variable.)
-	- Add tests for the new features.
 
 Version 0.130: (major milestone!)
 	- Introduce vector-operators and functions.
@@ -128,6 +117,4 @@ Instead:
 	  Math::Symbolic::Transformation::MyTransformations($tree, @args);
 
 
-Somewhen:
-	- Better testsuite as in: bring in some order and better coverage.
 

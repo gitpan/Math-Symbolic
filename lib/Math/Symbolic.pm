@@ -6,7 +6,13 @@ Math::Symbolic - Symbolic calculations
 
   use Math::Symbolic;
   
-  my $tree = Math::Symbolic->new_from_string('2*3^2');
+  my $tree = Math::Symbolic->parse_from_string('1/2 * m * v^2');
+  # Now do symbolic calculations with $tree.
+  # ... like deriving it...
+  
+  my ($sub) = Math::Symbolic::Compiler->compile_to_sub($tree);
+
+  my $kinetic_energy = $sub->($mass, $velocity);
 
 =head1 DESCRIPTION
 
@@ -124,7 +130,7 @@ our %EXPORT_TAGS = (
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT = qw();
 
-our $VERSION = '0.108';
+our $VERSION = '0.109';
 
 =head1 CLASS DATA
 

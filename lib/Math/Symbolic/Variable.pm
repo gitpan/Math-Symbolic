@@ -41,7 +41,7 @@ use Math::Symbolic::ExportConstants qw/:all/;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.108';
+our $VERSION = '0.109';
 
 =head1 METHODS
 
@@ -49,6 +49,10 @@ our $VERSION = '0.108';
 
 First argument is expected to be a hash reference of key-value
 pairs which will be used as object attributes.
+
+In particular, a variable is required to have a 'name'. Optional
+arguments include a 'value', and a 'signature'. The value expected
+for the signature key is a reference to an array of identifiers.
 
 Special case: First argument is not a hash reference. In this
 case, first argument is treated as variable name, second as value.
@@ -66,7 +70,8 @@ sub new {
 	if (@_ and not ref($_[0]) eq 'HASH') {
 		my $name = shift;
 		my $value = shift;
-		return bless {name=>$name, value=>$value} => $class;
+		return bless {name=>$name, value=>$value, signature=>[@_]}
+			=> $class;
 	}
 	
 	my %args;
@@ -75,6 +80,7 @@ sub new {
 	my $self = {
 		value => undef,
 		name => undef,
+		signature => [],
 		(ref($proto)?%$proto:()),
 		%args,
 	};
@@ -167,6 +173,52 @@ sub name {
 	return $self->{name};
 }
 
+
+
+=head2 Method signature
+
+signature() returns a tree's signature.
+
+In the context of Math::Symbolic, signatures are the list of variables
+any given tree depends on. That means the tree "v*t+x" depends on the
+variables v, t, and x. Thus, applying signature() on the tree that would
+be parsed from above example yields the sorted list ('t', 'v', 'x').
+
+Constants do not depend on any variables and therefore return the empty list.
+Obviously, operators' dependencies vary.
+
+Math::Symbolic::Variable objects, however, may have a slightly more
+involved signature. By convention, Math::Symbolic variables depend on
+themselves. That means their signature contains their own name. But they
+can also depend on various other variables because variables themselves
+can be viewed as placeholders for more compicated terms. For example
+in mechanics, the acceleration of a particle depends on its mass and
+the sum of all forces acting on it. So the variable 'acceleration' would
+have the signature ('acceleration', 'force1', 'force2',..., 'mass', 'time').
+
+=cut
+
+sub signature {
+	my $self = shift;
+	my $sig = $self->{signature} || [];
+	push @$sig, $self->{name};
+	return sort keys %{{map {($_, undef)} @$sig}};
+}
+
+
+
+=head2 Method set_signature
+
+set_signature expects any number of variable identifiers as arguments.
+It sets a variable's signature to this list of identifiers.
+
+=cut
+
+sub set_signature {
+	my $self = shift;
+	@{$self->{signature}} = @_;
+	return();
+}
 
 
 =head2 Method to_string

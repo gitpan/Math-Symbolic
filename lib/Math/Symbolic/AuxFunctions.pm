@@ -7,7 +7,7 @@ Math::Symbolic::AuxFunctions - Auxiliary functions for Math::Symbolic hierarchy
 
   use Math::Symbolic::AuxFunctions;
   
-  Math::Symbolic::acos($x);
+  Math::Symbolic::AuxFunctions::acos($x);
   # etc
 
 =head1 DESCRIPTION
@@ -34,7 +34,7 @@ use Carp;
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.108';
+our $VERSION = '0.109';
 
 
 =head1 TRIGONOMETRIC FUNCTIONS

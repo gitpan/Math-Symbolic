@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 9;
+use Test::More tests => 13;
 #use lib 'lib';
 
 use_ok('Math::Symbolic');
@@ -104,5 +104,48 @@ ok(
 	(!$@ and $str eq
 	'multiply(a,b)'),
 	'Autoparsing at operator creation'
+);
+
+
+
+undef $@;
+eval <<'HERE';
+$tree = Math::Symbolic->parse_from_string('a(b, c, d)');
+HERE
+
+$str = $tree->to_string('prefix');
+$str =~ s/\s+//g;
+ok(
+	(!$@ and $str eq
+	'a'),
+	'Parsing variable with signature'
+);
+$str = join '|', $tree->signature();
+ok(
+	(!$@ and $str eq
+	'a|b|c|d'),
+	'Checking variable for correct signature'
+);
+
+
+undef $@;
+eval <<'HERE';
+$tree = Math::Symbolic->parse_from_string('E_pot(r, t) + 1/2 * m(t) * v(t)^2');
+HERE
+
+$str = $tree->to_string('prefix');
+$str =~ s/\s+//g;
+ok(
+	(!$@ and $str eq
+	'add(E_pot,divide(multiply(multiply(1,m),exponentiate(v,2)),2))'),
+	'Parsing term involving variables with signatures'
+);
+
+$str = join '|', $tree->signature();
+warn $str;
+ok(
+	(!$@ and $str eq
+	'E_pot|m|r|t|v'),
+	'Checking term for correct signature'
 );
 

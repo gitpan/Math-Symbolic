@@ -37,4 +37,3 @@ t/11trigonometric.t
 t/12overload.t
 t/13parse_more.t
 t/14compile.t
-to_sub_new.pl
