@@ -160,7 +160,7 @@ $seventh **= 2;
 HERE
 ok(!$@, 'overloaded **= w/ M::S::Constant');
 
-ok($seventh->value() == 3, 'Result evaluates to the correct number');
+ok($seventh->value() == 9, 'Result evaluates to the correct number');
 
 print "prefix notation and evaluation:\n";
 print $first->to_string('prefix') . " = " . $first->value() . "\n\n";

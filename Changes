@@ -1,5 +1,9 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.103  Thu Jun  26 15:08:12 2003
+	- Fixed test errors.
+	- Added (very little) documentation.
+
 0.102  Wed Jun  25 21:04:41 2003
 	- Added overloaded interface for arithmetic operators, exp, log,
 	  sqrt, boolean context, numerical context, sin, cos, mutators.

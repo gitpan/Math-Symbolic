@@ -70,6 +70,17 @@ Version 0.120: (major milestone!)
 	  on a particular variable.)
 	- Add tests for the new features.
 
+Version 0.130: (major milestone!)
+	- Introduce vector-operators and functions.
+	- Math::Symbolic objects to become functions mapping m
+	  dimensions onto n dimensions.
+	- Math::Symbolic::Operator objects to become operators mapping m
+	  dimensions onto n dimensions.
+	- Vector product
+	- Scalar product
+	- Nabla (Hamilton-Operator)
+	- Laplace-Operator
+
 Somewhen:
 	- Clean up simplification and split it up into several methods that
 	  users can choose to combine into their own set of simplification

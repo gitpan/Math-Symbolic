@@ -45,7 +45,7 @@ use Parse::RecDescent;
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.102';
+our $VERSION = '0.103';
 our $DEBUG = 0;
 
 our $Grammar = <<'GRAMMAR_END';
