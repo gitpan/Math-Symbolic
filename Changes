@@ -1,0 +1,23 @@
+Revision history for Perl extension Math::Symbolic.
+
+0.06  The Jun  11 16:58:59 2003
+	- Now including rudimentary parser for algebraic expressions.
+	- Some documentation added.
+
+0.05  The Jun  6 16:57:19 2003
+	- Moved the rules for partial derivatives to separatE
+	  subs and introduced a lookup-table.
+
+0.04  Thu Jun  5 01:12:23 2003
+	- Many changes again.
+
+0.03  Wed Jun  4 18:43:00 2003
+	- More major enhancements (exp function, log, derivative as operator)
+
+0.02  Wed Jun  4 14:29:15 2003
+	- First working version.
+
+0.01  Tue Jun  3 21:45:57 2003
+	- original version; created by h2xs 1.21 with options
+		-AX Math::Symbolic
+

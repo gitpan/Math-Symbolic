@@ -1,0 +1,48 @@
+Math::Symbolic version 0.06
+===========================
+
+Math::Symbolic is intended to offer symbolic calculation capabilities
+to the Perl programmer without using external (and commercial) libraries
+and/or applications.
+
+Unless, however, some interested and knowledgable developers turn up to
+participate in the development, the library will be severely limited by
+my experience in the area. Symbolic calculations are an active field of
+research in CS.
+
+Some information on the state of things:
+Currently, the interface is weak and only a rudimentary parser
+for algebraic expressions exists and is shipped with the module. The parser
+does not output Math::Symbolic trees but rather simple nested
+array- and hash refs.
+The interface is badly documented. Please refer to the tests and example
+programs.
+Partial derivatives of logarithms, exponentiations, and arithmetic terms
+(*,/,+,- and unary minus as well as variables and constants) work rather
+well albeit slowly. Simplification of algebraic terms is severely limited
+at this time.
+
+INSTALLATION
+
+To install this module type the following:
+
+   perl Makefile.PL
+   make
+   make test
+   make install
+
+DEPENDENCIES
+
+This module requires these other modules and libraries:
+
+  Test::More
+  Exporter
+
+COPYRIGHT AND LICENCE
+
+Copyright (C) 2003 Steffen Mueller
+Author can be reached at symbolic-module at steffen-mueller dot net
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself. 
+
