@@ -9,6 +9,7 @@ Math::Symbolic::Operator - Operators in symbolic calculations
   
   my $sum = Math::Symbolic::Operator->new('+', $term1, $term2);
   
+  # or:
   my $division = Math::Symbolic::Operator->new(
      {
        type => B_DIVISON,
@@ -26,12 +27,18 @@ Math::Symbolic::Operator - Operators in symbolic calculations
 =head1 DESCRIPTION
 
 This module implements all Math::Symbolic::Operator objects.
-These objects are overloaded in stringification-context to evaluate
-to their term's value.
+These objects are overloaded in stringification-context to call the
+to_string() method on the object. In numeric and boolean context, they
+evaluate to their numerical representation.
+
+For a list of supported operators, please refer to the list found below, in the
+documentation for the new() constructor.
+
+Math::Symbolic::Operator inherits from Math::Symbolic::Base.
 
 =head2 EXPORT
 
-None by default.
+None.
 
 =cut
 
@@ -48,7 +55,23 @@ use Math::Symbolic::Derivative qw//;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.104';
+our $VERSION = '0.106';
+
+=head1 CLASS DATA
+
+Math::Symbolic::Operator contains several class data structures. Usually, you
+should not worry about dealing with any of them because they are mostly an
+implementation detail, but for the sake of completeness, here's the gist, but
+feel free to skip this section of the docs:
+
+One of these is the %Op_Symbols hash that associates operator (and function)
+symbols with the corresponding constant as exported by Math::Symbolic or
+Math::Symbolic::ExportConstants. (For example, '+' => B_SUM which in turn is
+0, if I recall correctly. But I didn't tell you that. Because you're supposed
+to use the supplied (inlined and hence fast) constants so I can change their
+internal order if I deem it necessary.)
+
+=cut
 
 our %Op_Symbols = (
 	'+'     => B_SUM,
@@ -73,6 +96,15 @@ our %Op_Symbols = (
 	'asinh' => U_AREASINE_H,
 	'acosh' => U_AREACOSINE_H,
 );
+
+=pod
+
+The array @Op_Types associates operator indices (recall those nifty constants?)
+with anonymous hash datastructures that contain some info on the operator such
+as its arity, the rule used to derive it, its infix string, its prefix string,
+and information on how to actually apply it to numbers.
+
+=cut
 
 our @Op_Types = (
 	# B_SUM
@@ -253,11 +285,17 @@ our @Op_Types = (
 
 Expects a hash reference as first argument. That hash's contents
 will be treated as key-value pairs of object attributes.
+Important attributes are 'type' => OPERATORTYPE (use constants as
+exported by Math::Symbolic::ExportConstants!) and 'operands=>[op1,op2,...]'.
+Where the operands themselves may either be valid Math::Symbolic::* objects
+or strings that will be parsed as such.
 
 Special case: if no hash reference was found, first
 argument is assumed to be the operator's symbol and the operator
 is assumed to be binary. The following 2 arguments will be treated as
-operands. This special case will ignore attempts to clone objects.
+operands. This special case will ignore attempts to clone objects but if
+the operands are no valid Math::Symbolic::* objects, they will be sent
+through a Math::Symbolic::Parser to construct Math::Symbolic trees.
 
 Returns a Math::Symbolic::Operator.
 
@@ -303,6 +341,14 @@ sub new {
 					$type
 				]{arity} - 1
 			]];
+
+		@$operands = map
+			{
+				ref($_) =~ /^Math::Symbolic/ ?
+				$_ :
+				Math::Symbolic->parse_from_string($_)
+			} @$operands;
+
 		return bless {
 			type => $type,
 			operands => $operands,
@@ -312,7 +358,7 @@ sub new {
 	my %args;
 	%args = %{$_[0]} if @_ and ref($_[0]) eq 'HASH';
 
-		
+	
 	my $operands = [];
 	if (ref $proto) {
 		foreach (@{$proto->{operands}}) {
@@ -326,6 +372,13 @@ sub new {
 		operands => $operands,
 		%args,
 	};
+
+	@{$self->{operands}} = map
+		{
+			ref($_) =~ /^Math::Symbolic/ ?
+			$_ :
+			Math::Symbolic->parse_from_string($_)
+		} @{$self->{operands}};
 
 	bless $self => $class;
 }

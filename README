@@ -1,4 +1,4 @@
-Math::Symbolic version 0.104
+Math::Symbolic version 0.106
 ============================
 
 Math::Symbolic is intended to offer symbolic calculation capabilities
@@ -11,19 +11,22 @@ my experience in the area. Symbolic calculations are an active field of
 research in CS.
 
 Some information on the state of things:
-Currently, the interface is weak. Since version 0.08, a parser
-for algebraic expressions is integrated into Math::Symbolic. It does not,
-however, parse variables at this time. This will be fixed in a future release.
+The interface has been improving steadily. Nonetheless, it'll take some more
+polishing. Since version 0.08, a parser for algebraic expressions is
+integrated into Math::Symbolic. Since version 0.106, the parser also
+parses unknown variables.
 Since version 0.102, there is an overloaded interface for arithmetic
-operators and some overloadable functions and contexts. 
+operators and some overloadable functions and contexts.
 
-The interface is badly documented. Please refer to the tests and example
+The interface is badly documented. Please also refer to the tests and example
 programs.
+
 Partial derivatives of logarithms, exponentiations, arithmetic terms
 (*,/,+,- and unary minus as well as variables and constants),
 trigonometric functions, inverse trigonometric functions, hyperbolic functions,
 and area hyperbolic functions work rather well - albeit slowly. Simplification
-of algebraic terms is severely limited at this time.
+of algebraic terms is severely limited at this time and its interface will be
+significantly refactored in the future.
 
 INSTALLATION
 
@@ -41,6 +44,11 @@ This module requires these other modules and libraries:
   Test::More
   Exporter
   Parse::RecDescent
+
+SEE ALSO
+
+Current versions of this module may be found on CPAN or
+http://steffen-mueller.net
 
 COPYRIGHT AND LICENCE
 

@@ -19,6 +19,27 @@ participate in the development, the library will be severely limited by
 my experience in the area. Symbolic calculations are an active field of
 research in CS.
 
+There are several ways to construct Math::Symbolic trees. There are no
+actual Math::Symbolic objects, but rather trees of objects of subclasses of
+Math::Symbolic. The most general but unfortunately also the least intuitive
+way of constructing trees is to use the constructors of
+the Math::Symbolic::Operator, Math::Symbolic::Variable, and
+Math::Symbolic::Constant classes to create (nested) objects of the
+corresponding types.
+
+Furthermore, you may use the overloaded interface to apply the standard
+Perl operators (and functions, see L<OVERLOADED OPERATORS>) to existing
+Math::Symbolic trees and standard Perl expressions.
+
+Possibly the most convenient way of constructing Math::Symbolic trees is
+using the builtin parser to generate trees from expressions such as '2 * x^5'.
+You may use the Math::Symbolic->parse_from_string() class method for this.
+
+Of course, you may combine the overloaded interface with the parser to
+generate trees with Perl code such as "$term * 5 * 'sin(omega*t+phi)'" which
+will create a tree of the existing tree $term times 5 times the sine of
+the vars omega times t plus phi.
+
 =head2 EXPORT
 
 None by default, but you may choose to have the following constants
@@ -31,6 +52,8 @@ all constants and the parse_from_string subroutine.
     PI    (3.14159...)
     
   Constants representing operator types: (First letter indicates arity)
+  (These evaluate to the same numbers that are returned by the type()
+   method of Math::Symbolic::Operator objects.)
     B_SUM
     B_DIFFERENCE
     B_PRODUCT
@@ -38,8 +61,8 @@ all constants and the parse_from_string subroutine.
     B_LOG
     B_EXP
     U_MINUS
-    U_P_DERIVATIVE
-    U_T_DERIVATIVE
+    U_P_DERIVATIVE (partial derivative)
+    U_T_DERIVATIVE (total derivative)
     U_SINE
     U_COSINE
     U_TANGENT
@@ -54,6 +77,8 @@ all constants and the parse_from_string subroutine.
     U_AREACOSINE_H
     
   Constants representing Math::Symbolic term types:
+  (These evaluate to the same numbers that are returned by the term_type()
+   methods.)
     T_OPERATOR
     T_CONSTANT
     T_VARIABLE
@@ -98,7 +123,7 @@ our %EXPORT_TAGS = (
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT = qw();
 
-our $VERSION = '0.104';
+our $VERSION = '0.106';
 
 =head1 CLASS DATA
 
@@ -115,10 +140,14 @@ our $Parser = Math::Symbolic::Parser->new();
 =head2 parse_from_string
 
 This subroutine takes a string as argument and parses it using
-a Parse::RecDescent parser. It generates a Math::Symbolic tree
-from the string and returns that string.
+a Parse::RecDescent parser taken from the package variable
+$Math::Symbolic::Parser. It generates a Math::Symbolic tree
+from the string and returns that tree.
 
-The parser object used can be found in the $Parser package variable.
+The string may contain any identifiers matching /[a-zA-Z][a-zA-Z0-9_]*/ which
+will be parsed as variables of the corresponding name.
+
+Please refer to L<Math::Symbolic::Parser> for more information.
 
 =cut
 
@@ -140,6 +169,8 @@ __END__
 This example demonstrates variable and operator creation using
 object prototypes as well as partial derivatives and the various
 ways of applying derivatives and simplifying terms.
+This is an old example demonstrating the worse parts of the interface.
+To be replaced soon.
 
   use Math::Symbolic qw/:all/;
   

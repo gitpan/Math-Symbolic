@@ -7,19 +7,27 @@ Math::Symbolic::Parser - Parse strings into Math::Symbolic trees
 
   use Math::Symbolic::Parser;
   my $parser = Math::Symbolic::Parser->new();
+  $string =~ s/\s+//g;
   my $tree   = $parser->parse($string);
   
-  # or:
+  # or better:
   use Math::Symbolic;
-  my $tree = Math::Symbolic->parse_from_string();
+  my $tree = Math::Symbolic->parse_from_string($string);
 
 =head1 DESCRIPTION
 
 This module contains the parsing routines used by Math::Symbolic to
 parse strings into Math::Symbolic trees. Usually, you will want
-to simply use the Math::Symbolic::parse_from_string subroutine
+to simply use the Math::Symbolic->parse_from_string() class method
 instead of this module directly. If you do, however, make sure to
 remove any whitespace from your input string.
+
+The strings may contain any operators/functions that are listed in the
+Math::Symbolic::Operator documentation (in the docs for the new()
+constructor). Furthermore, they may contain numeric constants and variables.
+variable names must match [a-zA-Z][a-zA-Z0-9_]* (letter followed by any number
+of letters, digits, and underscores). Variables will be constructed as new
+Math::Symbolic::Variable objects with default value.
 
 =head2 EXPORT
 
@@ -45,7 +53,7 @@ use Parse::RecDescent;
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.104';
+our $VERSION = '0.106';
 our $DEBUG = 0;
 
 our $Grammar = <<'GRAMMAR_END';
@@ -134,6 +142,20 @@ our $Grammar = <<'GRAMMAR_END';
 				$item[2]
 			}
 		}
+	     | unary_op variable
+		{
+			warn 'unary '
+				if $Math::Symbolic::Parser::DEBUG;
+			if ($item[1] and $item[1] eq '-') {
+				Math::Symbolic::Operator->new({
+					type => Math::Symbolic::U_MINUS,
+					operands => [$item[2]],
+				});
+			}
+			else {
+				$item[2]
+			}
+		}
 		
 	unary_op: /([+-]?)/
 		{
@@ -193,6 +215,21 @@ our $Grammar = <<'GRAMMAR_END';
 			}
 
 	list_op: ','
+
+	variable: identifier
+			{
+				warn 'variable '
+					if $Math::Symbolic::Parser::DEBUG;
+				Math::Symbolic::Variable->new({
+					name => $item[1],
+				});
+			}
+
+	identifier: /([a-zA-Z][a-zA-Z0-9_]*)/
+		{
+			$item[1]
+		}
+	
 GRAMMAR_END
 
 
