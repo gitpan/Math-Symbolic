@@ -42,7 +42,7 @@ use Math::Symbolic::ExportConstants qw/:all/;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.116';
+our $VERSION = '0.117';
 
 =head1 METHODS
 
@@ -68,7 +68,13 @@ sub new {
     my $proto = shift;
     my $class = ref($proto) || $proto;
 
-    if ( @_ and not ref( $_[0] ) eq 'HASH' ) {
+    if (    @_ == 1
+        and defined $_[0]
+        and ref( $_[0] ) eq 'Math::Symbolic::Variable' )
+    {
+        return $_[0]->new();
+    }
+    elsif ( @_ and not ref( $_[0] ) eq 'HASH' ) {
         my $name  = shift;
         my $value = shift;
         return

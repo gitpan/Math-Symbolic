@@ -1,5 +1,12 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.117  Mon Sep 8 17:12:36 2003
+	- Added M::S::VectorCalculus with rot, grad, div, Jacobi
+	- Referenced it in the docs to the main module.
+	- Added run15.pl example of usage.
+	- Added tests.
+	- Fixed bug in M::S::Variable
+
 0.116  Wed Sep 3 22:16:51 2003
 	- Added META.yml
 	- Removed "Exporter" dependency in Makefile.PL. Who needs to install

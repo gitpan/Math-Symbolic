@@ -47,6 +47,9 @@ generate trees with Perl code such as "$term * 5 * 'sin(omega*t+phi)'" which
 will create a tree of the existing tree $term times 5 times the sine of
 the vars omega times t plus phi.
 
+Routines related to vector calculus such as grad, div, rot, and Jacobi
+matrices are availlable through the Math::Symbolic::VectorCalculus module.
+
 =head2 EXPORT
 
 None by default, but you may choose to have the following constants
@@ -132,7 +135,7 @@ our %EXPORT_TAGS = (
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT    = qw();
 
-our $VERSION = '0.116';
+our $VERSION = '0.117';
 
 =head1 CLASS DATA
 
@@ -283,6 +286,7 @@ L<Math::Symbolic::Custom::DefaultTests>
 L<Math::Symbolic::Custom::DefaultMods>
 
 L<Math::Symbolic::Derivative>
+L<Math::Symbolic::VectorCalculus>
 
 L<Math::Symbolic::Parser>
 L<Math::Symbolic::Compiler>

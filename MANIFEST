@@ -18,12 +18,14 @@ lib/Math/Symbolic/ExportConstants.pm
 lib/Math/Symbolic/Operator.pm
 lib/Math/Symbolic/Parser.pm
 lib/Math/Symbolic/Variable.pm
+lib/Math/Symbolic/VectorCalculus.pm
 run.pl
 run10.pl
 run11.pl
 run12.pl
 run13.pl
 run14.pl
+run15.pl
 run2.pl
 run3.pl
 run4.pl
@@ -49,3 +51,4 @@ t/14compile.t
 t/15total_derivatives.t
 t/16tests.t
 t/17modifications.t
+t/18vectorcalc.t

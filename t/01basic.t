@@ -1,11 +1,12 @@
 use strict;
 use warnings;
 
-use Test::More tests => 10;
+use Test::More tests => 11;
 
 #use lib 'lib';
 
 use_ok('Math::Symbolic');
+use_ok('Math::Symbolic::VectorCalculus');
 use Math::Symbolic::ExportConstants qw/:all/;
 
 my $var = Math::Symbolic::Variable->new();
