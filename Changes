@@ -1,5 +1,10 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.123  Fri Sep 26 00:49:55 2003
+	- Fixed the previously slightly broken to_latex() method.
+	- Added support for automatic greek output for to_latex().
+	- Added custom variable mapping for to_latex().
+
 0.122  Tue Sep 23 22:18:19 2003
 	- Added the 'to_' delegation prefix.
 	- Added Math::Symbolic::Custom::DefaultDumpers.

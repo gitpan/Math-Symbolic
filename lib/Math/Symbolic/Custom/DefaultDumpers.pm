@@ -36,7 +36,7 @@ use strict;
 use warnings;
 no warnings 'recursion';
 
-our $VERSION = '0.122';
+our $VERSION = '0.123';
 
 use Math::Symbolic::Custom::Base;
 BEGIN { *import = \&Math::Symbolic::Custom::Base::aggregate_import }
@@ -82,20 +82,71 @@ Defaults to false, that is, use fractions.
 By default, the method includes all variables' signatures in parenthesis
 if there is one. Set this to true to omit variable signatures.
 
+=item replace_default_greek
+
+By default, all variable names are outputted as LaTeX in a way that
+makes them show up exactly as they did in your code. If you set
+this option to true, Math::Symbolic will try to replace as many
+greek character names with the appropriates symbols as possible.
+
+Valid LaTeX symbols that are matched are:
+
+  Lower case letters:
+    alpha, beta, gamma, delta, epsilon, zeta, eta, theta,
+    iota, kappa, lambda, mu, nu, xi, pi, rho, sigma,
+    tau, upsilon, phi, chi, psi, omega
+  
+  Variant forms of small letters:
+    varepsilon, vartheta, varpi, varrho, varsigma, varphi
+  
+  Upper case letters:
+    Gamma, Delta, Theta, Lambda, Xi, Pi, Sigma, Upsilon, Phi,
+    Psi, Omega
+
+=item variable_mappings
+
+Because not all variable names come out as you might want them to,
+you may use the 'variable_mappings' option to replace variable names
+in the output LaTeX stream with custom LaTeX. For example, the
+variable x_i should probably indicate an 'x' with a subscripted i.
+The argument to variable_mappings needs to be a hash reference which
+contains variable name / LaTeX mapping pairs.
+
+If a variable is replaced in the above fashion, other options that
+modify the outcome of the conversion of variable names to LaTeX are
+ignored.
+
 =back
 
 =cut
 
 sub to_latex {
-    my $self                    = shift;
-    my %config                  = @_;
-    my $implicit_multiplication = $config{implicit_multiplication};
-    $implicit_multiplication = 0
-      unless defined $implicit_multiplication;
-    my $no_frac_division = $config{no_fractions};
-    $no_frac_division = 0 unless defined $no_frac_division;
-    my $no_sig = $config{exclude_signature};
-    $no_sig = 0 unless defined $no_sig;
+    my $self   = shift;
+    my %config = @_;
+    $config{implicit_multiplication} = 0
+      unless defined $config{implicit_multiplication};
+    $config{no_fractions}      = 0 unless defined $config{no_fractions};
+    $config{exclude_signature} = 0 unless defined $config{exclude_signature};
+    $config{replace_default_greek} = 0
+      unless defined $config{replace_default_greek};
+
+    $config{variable_mappings} = {}
+      if not exists $config{variable_mappings}
+      or not ref( $config{variable_mappings} ) eq 'HASH';
+
+    my $default_greek = qr/(?<![a-zA-Z])
+         alpha|beta|gamma|delta|epsilon|zeta|eta|theta
+         |iota|kappa|lambda|mu|nu|xi|pi|rho|sigma|tau|upsilon
+	 |phi|chi|psi|omega
+	 |varepsilon|vartheta|varpi|varrho|varsigma|varphi
+	 |Gamma|Delta|Theta|Lambda|Xi|Pi|Sigma|Upsilon|Phi|Psi|Omega
+	 (?![a-zA-Z])
+	/x;
+    my $greekify = sub {
+        my $s = $_[0];
+        $s =~ s/($default_greek)/\\$1/g if $config{replace_default_greek};
+        return $s;
+    };
     my $precedence = [
         1,     # B_SUM
         1,     # B_DIFFERENCE
@@ -130,14 +181,14 @@ sub to_latex {
 
         # B_PRODUCT
         sub {
-            $implicit_multiplication
+            $config{implicit_multiplication}
               ? "{$_[0]\} {$_[1]}"
               : "{$_[0]} \\times {$_[1]}";
         },
 
         # B_DIVISION
         sub {
-            $no_frac_division
+            $config{no_fractions}
               ? "{$_[0]} \\div {$_[1]}"
               : "\\frac{$_[0]}{$_[1]}";
         },
@@ -215,44 +266,60 @@ sub to_latex {
             return ();
         },
         after => sub {
-            my $ttype = $_[0]->term_type();
+            my $self  = \$_[0];
+            my $ttype = $$self->term_type();
             if ( $ttype == T_CONSTANT ) {
-                $_[0] = { text => $_[0]->value() };
+                $$self = { text => $$self->value() };
             }
             elsif ( $ttype == T_VARIABLE ) {
-                my $name = $_[0]->name();
-                $name =~ s/_/\\_/g;
-                unless ($no_sig) {
-                    my @sig = $_[0]->signature();
-                    if ( @sig > 1 ) {
-                        $_[0] = {
-                            text => "$name("
-                              . join( ', ',
-                                grep { $_ ne $name }
-                                  map { s/_/\_/g } @sig )
-                              . ')'
-                        };
+                my $name        = $$self->name();
+                my $edited_name = $name;
+                if ( exists $config{variable_mappings}{$name} ) {
+                    $edited_name = $config{variable_mappings}{$name};
+                }
+                else {
+                    $edited_name = $greekify->($name);
+                    $edited_name =~ s/_/\\_/g;
+                }
+                unless ( $config{exclude_signature} ) {
+                    my @sig =
+                      map {
+                        if ( exists $config{variable_mappings}{$_} )
+                        {
+                            $config{variable_mappings}{$_};
+                        }
+                        else {
+                            s/_/\_/g;
+                            $greekify->($_);
+                        }
+                      }
+                      grep { $_ ne $name } $$self->signature();
+                    if (@sig) {
+                        $$self =
+                          {     text => "$edited_name("
+                              . join( ', ', @sig )
+                              . ')' };
                     }
                     else {
-                        $_[0] = { text => $name };
+                        $$self = { text => $edited_name };
                     }
                 }
                 else {
-                    $_[0] = { text => $name };
+                    $$self = { text => $edited_name };
                 }
             }
             elsif ( $ttype == T_OPERATOR ) {
-                my $type  = $_[0]->type();
+                my $type  = $$self->type();
                 my $prec  = $precedence->[$type];
-                my $precs = $_[0]->{__precedences};
-                my @ops   = map { $_->{text} } @{ $_[0]{operands} };
+                my $precs = $$self->{__precedences};
+                my @ops   = map { $_->{text} } @{ $$self->{operands} };
                 for ( my $i = 0 ; $i < @ops ; $i++ ) {
                     $ops[$i] = '(' . $ops[$i] . ')'
                       if $precs->[$i] < $prec
                       or $precs->[$i] == $prec && $prec == 50;
                 }
                 my $text = $op_to_tex->[$type]->(@ops);
-                $_[0] = { text => $text };
+                $$self = { text => $text };
             }
             else {
                 die;

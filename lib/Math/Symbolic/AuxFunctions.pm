@@ -34,7 +34,7 @@ use Carp;
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.122';
+our $VERSION = '0.123';
 
 =head1 TRIGONOMETRIC FUNCTIONS
 
