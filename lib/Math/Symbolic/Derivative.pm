@@ -7,10 +7,26 @@ Math::Symbolic::Derivative - Derive Math::symbolic trees
 
   use Math::Symbolic::Derivative qw/:all/;
   $derived = partial_derivative($term, $variable);
+  # or:
+  $derived = total_derivative($term, $variable);
 
 =head1 DESCRIPTION
 
-Derivatives for Math::Symbolic.
+This module implements derivatives for Math::Symbolic trees.
+Derivatives are Math::Symbolic::Operators, but their implementation
+is drawn from this module because it is significantly more complex
+than the implementation of most operators.
+
+Derivatives come in two flavours. There are partial- and total derivatives.
+
+Explaining the precise difference between partial- and total derivatives is
+beyond the scope of this document, but in the context of Math::Symbolic,
+the difference is simply that partial derivatives just derive in terms of
+I<explicit> dependency on the differential variable while total derivatives
+recongnize implicit dependencies from variable signatures.
+
+Partial derivatives are faster, have been tested more thoroughly, and
+are probably what you want for simpler applications anyway.
 
 =head2 EXPORT
 
@@ -24,6 +40,8 @@ package Math::Symbolic::Derivative;
 use 5.006;
 use strict;
 use warnings;
+
+use Carp;
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
@@ -40,7 +58,7 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw();
 
-our $VERSION = '0.109';
+our $VERSION = '0.110';
 
 =head1  CLASS DATA
 
@@ -49,21 +67,25 @@ derivative rules as key-value pairs of names and subroutines.
 
 =cut
 
-# lookup-table for partial derivative rules for various operators.
-our %Partial_Rules = (
+# lookup-table for derivative rules for various operators.
+our %Rules = (
 	'each operand'                      => \&_each_operand,
 	'product rule'                      => \&_product_rule,
 	'quotient rule'                     => \&_quotient_rule,
 	'logarithmic chain rule after ln'   =>
 		\&_logarithmic_chain_rule_after_ln,
 	'logarithmic chain rule'            => \&_logarithmic_chain_rule,
-	'partial derivative commutation'    =>
-		\&_partial_derivative_commutation,
+	'derivative commutation'    =>
+		\&_derivative_commutation,
 	'trigonometric derivatives'         => \&_trigonometric_derivatives,
 	'inverse trigonometric derivatives' =>
 		\&_inverse_trigonometric_derivatives,
 );
 
+# References to derivative subroutines
+# Will be assigned a reference after subroutine compilation.
+our $Partial_Sub;
+our $Total_Sub;
 
 
 =begin comment
@@ -76,9 +98,9 @@ specific rule to a tree.
 =cut
 
 sub _each_operand {
-	my ($tree, $var, $cloned) = @_;
+	my ($tree, $var, $cloned, $d_sub) = @_;
 	foreach (@{$tree->{operands}}) {
-		$_ = partial_derivative($_, $var, 1);
+		$_ = $d_sub->($_, $var, 1);
 	}
 	return $tree;
 }
@@ -86,11 +108,11 @@ sub _each_operand {
 
 
 sub _product_rule {
-	my ($tree, $var, $cloned) = @_;
+	my ($tree, $var, $cloned, $d_sub) = @_;
 
 	my $ops = $tree->{operands};
-	my $do1 = partial_derivative($ops->[0], $var, 0);
-	my $do2 = partial_derivative($ops->[1], $var, 0);
+	my $do1 = $d_sub->($ops->[0], $var, 0);
+	my $do2 = $d_sub->($ops->[1], $var, 0);
 	my $m1  = Math::Symbolic::Operator->new(
 		'*', $ops->[0], $do2,
 	);
@@ -106,10 +128,10 @@ sub _product_rule {
 
 
 sub _quotient_rule {
-	my ($tree, $var, $cloned) = @_;
+	my ($tree, $var, $cloned, $d_sub) = @_;
 	my $ops = $tree->{operands};
-	my $do1 = partial_derivative($ops->[0], $var, 0);
-	my $do2 = partial_derivative($ops->[1], $var, 0);
+	my $do1 = $d_sub->($ops->[0], $var, 0);
+	my $do2 = $d_sub->($ops->[1], $var, 0);
 	my $m1  = Math::Symbolic::Operator->new(
 		'*', $do1, $ops->[1],
 	);
@@ -131,7 +153,7 @@ sub _quotient_rule {
 
 
 sub _logarithmic_chain_rule_after_ln {
-	my ($tree, $var, $cloned) = @_;
+	my ($tree, $var, $cloned, $d_sub) = @_;
 	# y(x)=u^v
 	# y'(x)=y*(d/dx ln(y))
 	# y'(x)=y*(d/dx (v*ln(u)))
@@ -143,7 +165,7 @@ sub _logarithmic_chain_rule_after_ln {
 	my $mul1 = $ln->new(
 		'*', $ops->[1], $ln,
 	);
-	my $dmul = partial_derivative($mul1, $var, 0);
+	my $dmul = $d_sub->($mul1, $var, 0);
 	$tree = $ln->new(
 		'*', $tree, $dmul,
 	);
@@ -153,10 +175,10 @@ sub _logarithmic_chain_rule_after_ln {
 
 
 sub _logarithmic_chain_rule {
-	my ($tree, $var, $cloned) = @_;
+	my ($tree, $var, $cloned, $d_sub) = @_;
 	#log_a(y(x))=>y'(x)/(ln(a)*y(x))
 	my $ops = $tree->{operands};
-	my $do2 = partial_derivative($ops->[1], $var, 0);
+	my $do2 = $d_sub->($ops->[1], $var, 0);
 	my $e   = Math::Symbolic::Constant->euler();
 	my $ln  = Math::Symbolic::Operator->new(
 		'log', $e, $ops->[0],
@@ -172,9 +194,9 @@ sub _logarithmic_chain_rule {
 
 
 
-sub _partial_derivative_commutation {
-	my ($tree, $var, $cloned) = @_;
-	$tree->{operands}[0] = partial_derivative(
+sub _derivative_commutation {
+	my ($tree, $var, $cloned, $d_sub) = @_;
+	$tree->{operands}[0] = $d_sub->(
 		$tree->{operands}[0], $var, 0
 	);
 	return $tree;
@@ -183,9 +205,9 @@ sub _partial_derivative_commutation {
 
 
 sub _trigonometric_derivatives {
-	my ($tree, $var, $cloned) = @_;
+	my ($tree, $var, $cloned, $d_sub) = @_;
 	my $op = Math::Symbolic::Operator->new();
-	my $d_inner = partial_derivative($tree->{operands}[0], $var, 0);
+	my $d_inner = $d_sub->($tree->{operands}[0], $var, 0);
 	my $trig;
 	if ($tree->type() == U_SINE) {
 		$trig = $op->new('cos', $tree->{operands}[0]);
@@ -220,9 +242,9 @@ sub _trigonometric_derivatives {
 
 
 sub _inverse_trigonometric_derivatives {
-	my ($tree, $var, $cloned) = @_;
+	my ($tree, $var, $cloned, $d_sub) = @_;
 	my $op = Math::Symbolic::Operator->new();
-	my $d_inner = partial_derivative($tree->{operands}[0], $var, 0);
+	my $d_inner = $d_sub->($tree->{operands}[0], $var, 0);
 	my $trig;
 	if ($tree->type() == U_ARCSINE || $tree->type() == U_ARCCOSINE) {
 		my $one = Math::Symbolic::Constant->one();
@@ -300,6 +322,18 @@ sub partial_derivative {
 	my $tree   = shift;
 	my $var    = shift;
 	defined $var or die "Cannot derive using undefined variable.";
+	if (ref($var) eq '') {
+		$var = Math::Symbolic::parse_from_string($var);
+		croak "2nd argument to partial_derivative must be variable."
+		  if (ref($var) ne 'Math::Symbolic::Variable');
+	}
+	elsif (ref($var) eq 'Math::Symbolic::Variable') {
+	}
+	else {
+		croak "2nd argument to partial_derivative must be variable."
+		  if (ref($var) ne 'Math::Symbolic::Variable');
+	}
+
 	my $cloned = shift;
 	
 	if (not $cloned) {
@@ -311,11 +345,11 @@ sub partial_derivative {
 		my $rulename = $Math::Symbolic::Operator::Op_Types[
 					$tree->type()
 				]->{derive};
-		my $subref = $Partial_Rules{$rulename};
+		my $subref = $Rules{$rulename};
 
 		die "Cannot derive using rule '$rulename'."
 		   unless defined $subref;
-		$tree = $subref->($tree, $var, $cloned);
+		$tree = $subref->($tree, $var, $cloned, $Partial_Sub);
 		
 	}
 	elsif ($tree->term_type() == T_CONSTANT) {
@@ -340,16 +374,94 @@ sub partial_derivative {
 
 =head2 total_derivative
 
-Total derivatives are not yet implemented because there is no need
-for total derivatives if there are no variables that represent
-algebraic terms themselves. (Which aren't implemented either.)
+Takes a Math::Symbolic tree and a Math::Symbolic::Variable as argument.
+third argument is an optional boolean indicating whether or not the
+tree has to be cloned before being derived. If it is true, the
+subroutine happily stomps on any code that might rely on any components
+of the Math::Symbolic tree that was passed to the sub as first argument.
 
 =cut
 
 sub total_derivative {
-	die "Total derivatives not implemented yet. Please use partial\n" .
-		"derivatives instead.\n";
+	my $tree   = shift;
+	my $var    = shift;
+	defined $var or die "Cannot derive using undefined variable.";
+	if (ref($var) eq '') {
+		$var = Math::Symbolic::parse_from_string($var);
+		croak "Second argument to total_derivative must be variable."
+		  if (ref($var) ne 'Math::Symbolic::Variable');
+	}
+	elsif (ref($var) eq 'Math::Symbolic::Variable') {
+	}
+	else {
+		croak "Second argument to total_derivative must be variable."
+		  if (ref($var) ne 'Math::Symbolic::Variable');
+	}
+
+	my $cloned = shift;
+	
+	if (not $cloned) {
+		$tree = $tree->new();
+		$cloned = 1;
+	}
+	
+	if ($tree->term_type() == T_OPERATOR) {
+		my $var_name = $var->name();
+		my @tree_sig = $tree->signature();
+		if ((grep {$_ eq $var_name} @tree_sig) > 0) {
+			my $rulename = $Math::Symbolic::Operator::Op_Types[
+						$tree->type()
+					]->{derive};
+			my $subref = $Rules{$rulename};
+		
+			die "Cannot derive using rule '$rulename'."
+			   unless defined $subref;
+			$tree = $subref->($tree, $var, $cloned, $Total_Sub);
+		}
+		else {
+			$tree = Math::Symbolic::Constant->zero();
+		}
+	}
+	elsif ($tree->term_type() == T_CONSTANT) {
+		$tree = Math::Symbolic::Constant->zero();
+	}
+	elsif ($tree->term_type() == T_VARIABLE) {
+		my $name = $tree->name();
+		my $var_name = $var->name();
+
+		if ($name eq $var_name) {
+			$tree = Math::Symbolic::Constant->one;
+		}
+		else {
+			my @tree_sig = $tree->signature();
+			my $is_dependent;
+			foreach my $ident (@tree_sig) {
+				if ($ident eq $var_name) {
+					$is_dependent = 1;
+					last;
+				}
+			}
+			if (not $is_dependent) {
+				$tree = Math::Symbolic::Constant->zero;
+			}
+			else {
+				$tree = Math::Symbolic::Operator->new(
+					'total_derivative', $tree, $var
+				);
+			}
+		}
+	}
+	else {
+		die "Cannot apply total derivative to anything but a tree.";
+	}
+
+	return $tree;
 }
+
+
+# Class data again.
+$Partial_Sub = \&partial_derivative;
+$Total_Sub   = \&total_derivative;
 
 
 1;

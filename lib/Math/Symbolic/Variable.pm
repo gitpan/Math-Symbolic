@@ -41,7 +41,7 @@ use Math::Symbolic::ExportConstants qw/:all/;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.109';
+our $VERSION = '0.110';
 
 =head1 METHODS
 
@@ -127,6 +127,7 @@ sub value {
 			return $self->{value};
 		}
 	}
+	die "Sanity check in Math::Symbolic::Variable::value()";
 }
 
 
@@ -200,7 +201,7 @@ have the signature ('acceleration', 'force1', 'force2',..., 'mass', 'time').
 
 sub signature {
 	my $self = shift;
-	my $sig = $self->{signature} || [];
+	my $sig = [@{$self->{signature}}];
 	push @$sig, $self->{name};
 	return sort keys %{{map {($_, undef)} @$sig}};
 }
@@ -217,6 +218,23 @@ It sets a variable's signature to this list of identifiers.
 sub set_signature {
 	my $self = shift;
 	@{$self->{signature}} = @_;
+	return();
+}
+
+
+
+=head2 Method implement
+
+A nop for variables because the implementation is handled by
+the operators.
+
+Takes key/value pairs as arguments. The keys are to be variable names
+and the values must be valid Math::Symbolic trees. All occurrances
+of the variables will be replaced with their implementation.
+
+=cut
+
+sub implement {
 	return();
 }
 

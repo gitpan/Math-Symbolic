@@ -20,7 +20,8 @@ Math::Symbolic::Compiler - Compile Math::Symbolic trees to Perl code
   # prints 34 (=2^2 + 3*5*2)
   
   # or:
-  ($closure, $trees) = Math::Symbolic::Compiler->compile_to_sub($tree, $vars);
+  ($closure, $trees) =
+          Math::Symbolic::Compiler->compile_to_sub($tree, $vars);
   ($code, $trees) = Math::Symbolic::Compiler->compile_to_code($tree, $vars);
 
 =head1 DESCRIPTION
@@ -91,7 +92,7 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw();
 
-our $VERSION = '0.109';
+our $VERSION = '0.110';
 
 
 =head2 ($code, $trees) = compile_to_code($tree, $vars)
@@ -99,7 +100,7 @@ our $VERSION = '0.109';
 The compile_to_code() class method takes one mandatory argument which is
 the Math::Symbolic tree to be compiled. Second argument is optional
 and an array reference to an array of variable mappings.
-See L<POSITIONAL VARIABLE PASSING> for details on how this works.
+See L<VARIABLE PASSING STYLES> for details on how this works.
 
 compile_to_code() returns a string and an array reference. The string
 contains the compiled Perl code that uses the values stored in @_ as described
@@ -164,7 +165,7 @@ sub compile_to_code {
 The compile_to_sub() class method takes one mandatory argument which is
 the Math::Symbolic tree to be compiled. Second argument is optional
 and an array reference to an array of variable mappings.
-See L<POSITIONAL VARIABLE PASSING> for details on how this works.
+See L<VARIABLE PASSING STYLES> for details on how this works.
 
 compile_to_sub() returns a list of two elements, the first being the compiled
 anonymous subroutine. For details on the second element, please refer to
@@ -291,7 +292,40 @@ sub _find_vars {
 1;
 __END__
 
-=head2 POSITIONAL VARIABLE PASSING
+=head2 VARIABLE PASSING STYLES
+
+Currently, the Math::Symbolic compiler only supports compiling to subs with
+positional variable passing. At some point, the user should be able to choose
+between positional- and named variable passing styles. The difference is
+best explained by an example:
+
+  # positional:
+  $sub->(4, 5, 1);
+  
+  # named:
+  $sub->(a => 5, b => 4, x => 1);
+
+With positional variable passing, the subroutine statically maps its arguments
+to its internal variables. The way the subroutine does that has been fixed
+at compile-time. It is determined by the second argument to the various
+compile_* functions found in this package. This second argument is expected
+to be an array of key/value pairs with the keys being variable names and the
+values being their position starting from 0. Example:
+
+  my ($sub) = Math::Symbolic::Compiler->compile_to_sub(
+                    $tree, [b => 2, c => 0, a => 1]
+              );
+    
+  # First argument will be mapped to c, second to a, and third to b
+  # All others will be ignored.
+  $sub->(4, 5, 6, 7);
+  
+  # Variable mapping: a = 5, b = 6, c = 4
+
+One important note remains: if any (or all) variables in the tree are
+unaccounted for, they will be lexicographically sorted and appended to
+the variable mapping in that order. That means if you don't map variables
+yourself, they will be sorted lexicographically.
 
 =head1 AUTHOR
 

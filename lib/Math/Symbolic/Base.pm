@@ -43,7 +43,7 @@ use overload
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.109';
+our $VERSION = '0.110';
 
 =head1 METHODS
 
@@ -156,6 +156,18 @@ sub set_signature {
 }
 
 
+
+=head2 Method implement
+
+Takes key/value pairs as arguments. The keys are to be variable names
+and the values must be valid Math::Symbolic trees. All occurrances
+of the variables will be replaced with their implementation.
+
+=cut
+
+sub implement {
+	croak "implement() called on unsupported tree element.";
+}
 
 =head2 Method simplify
 

@@ -15,11 +15,12 @@ lib/Math/Symbolic/Parser.pm
 lib/Math/Symbolic/Variable.pm
 run.pl
 run10.pl
+run11.pl
+run12.pl
 run2.pl
 run3.pl
 run4.pl
 run5.pl
-run6.pl
 run7.pl
 run8.pl
 run9.pl
@@ -37,3 +38,4 @@ t/11trigonometric.t
 t/12overload.t
 t/13parse_more.t
 t/14compile.t
+t/15total_derivatives.t

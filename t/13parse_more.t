@@ -142,7 +142,6 @@ ok(
 );
 
 $str = join '|', $tree->signature();
-warn $str;
 ok(
 	(!$@ and $str eq
 	'E_pot|m|r|t|v'),

@@ -113,7 +113,7 @@ use Parse::RecDescent;
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.109';
+our $VERSION = '0.110';
 our $DEBUG = 0;
 
 our $Grammar = <<'GRAMMAR_END';
@@ -247,6 +247,7 @@ our $Grammar = <<'GRAMMAR_END';
 
 	function_name: 'log'
 		     | 'partial_derivative'
+		     | 'total_derivative'
 		     | 'sinh'
 		     | 'cosh'
 		     | 'asin'

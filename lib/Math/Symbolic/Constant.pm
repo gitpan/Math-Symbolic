@@ -31,7 +31,7 @@ use Math::Symbolic::ExportConstants qw/:all/;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.109';
+our $VERSION = '0.110';
 
 =head1 METHODS
 
@@ -137,7 +137,7 @@ any occurrances of variables of the name "x", aso.
 
 sub value {
 	my $self = shift;
-	if (@_) {
+	if (@_==1) {
 		$self->{value} = shift;
 	}
 	return $self->{value};
@@ -147,7 +147,8 @@ sub value {
 
 =head2 Method set_value
 
-set_value() returns nothing and for constants, it doesn't do anything either.
+set_value() returns nothing and for constants, and sets the constant's value
+to its first argument.
 
 Generally, set_value() works like this:
 
@@ -164,7 +165,11 @@ and does not evaluate the tree.
 
 =cut
 
-sub set_value {}
+sub set_value {
+	my $self = shift;
+	my $value = shift;
+	$self->{value} = $value if defined $value;
+}
 
 
 
@@ -193,6 +198,22 @@ have the signature ('acceleration', 'force1', 'force2',..., 'mass', 'time').
 =cut
 
 sub signature {return ();}
+
+
+
+=head2 Method implement
+
+A nop for Math::Symbolic::Constant objects.
+
+Takes key/value pairs as arguments. The keys are to be variable names
+and the values must be valid Math::Symbolic trees. All occurrances
+of the variables will be replaced with their implementation.
+
+=cut
+
+sub implement {
+	return();
+}
 
 
 

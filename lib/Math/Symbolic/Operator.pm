@@ -1,4 +1,3 @@
-
 =head1 NAME
 
 Math::Symbolic::Operator - Operators in symbolic calculations
@@ -55,7 +54,7 @@ use Math::Symbolic::Derivative qw//;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.109';
+our $VERSION = '0.110';
 
 =head1 CLASS DATA
 
@@ -150,7 +149,7 @@ our @Op_Types = (
 	# U_P_DERIVATIVE
 	{
 		arity => 2,
-		derive => 'partial derivative commutation',
+		derive => 'derivative commutation',
 		infix_string => undef,
 		prefix_string => 'partial_derivative',
 		application => \&Math::Symbolic::Derivative::partial_derivative,
@@ -158,7 +157,7 @@ our @Op_Types = (
 	# U_T_DERIVATIVE
 	{
 		arity => 2,
-		derive => 'defer',
+		derive => 'derivative commutation',
 		infix_string => undef,
 		prefix_string => 'total_derivative',
 		application => \&Math::Symbolic::Derivative::total_derivative,
@@ -335,13 +334,12 @@ sub new {
 		my $type = $Op_Symbols{$symbol};
 		defined $type
 			or croak "Invalid operator type specified ($symbol).";
-		my $operands = [@_[
-				0 .. 
-				$Op_Types[
-					$type
-				]{arity} - 1
-			]];
+		my $operands = [ @_[0 .. $Op_Types[$type]{arity} - 1] ];
 
+		croak "Undefined operands not supported by " .
+		      "Math::Symbolic::Operator objects."
+		  if grep +(not defined($_)), @$operands;
+		
 		@$operands = map
 			{
 				ref($_) =~ /^Math::Symbolic/ ?
@@ -349,7 +347,7 @@ sub new {
 				Math::Symbolic->parse_from_string($_)
 			} @$operands;
 
-		return bless {
+			return bless {
 			type => $type,
 			operands => $operands,
 		} => $class;
@@ -507,6 +505,38 @@ sub _to_string_prefix {
 
 
 
+=head2 Method implement
+
+Takes key/value pairs as arguments. The keys are to be variable names
+and the values must be valid Math::Symbolic trees. All occurrances
+of the variables will be replaced with their implementation.
+
+=cut
+
+sub implement {
+	my $self = shift;
+	my $op = $Op_Types[$self->type];
+	my $operands = $self->{operands};
+
+	my %args;
+	foreach (@$operands) {
+		my $ttype = $_->term_type();
+		if ($ttype == T_VARIABLE) {
+			%args = @_ unless keys %args;
+			my $name = $_->name();
+			if (exists $args{$name} and defined $args{$name}) {
+				$_ = $args{$name};
+			}
+		}
+		elsif ($ttype == T_OPERATOR) {
+			$_->implement(@_);
+		}
+	}
+	return();
+}
+
+
+
 =head2 Method term_type
 
 Returns the type of the term. ( T_OPERATOR )
@@ -659,18 +689,22 @@ sub op2 {
 Applies the operation to its operands' value() and returns the result
 as a constant (-object).
 
+Without arguments, all variables in the tree are required to have a value.
+To (temorarily, for this command) assign values to variables in the tree,
+you may provide key/value pairs of variable names and values.
+
 =cut
 
 sub apply {
 	my $self = shift;
+	my @args = @_;
 	my $op = $Op_Types[$self->type];
 	my $operands = $self->{operands};
 	my $application = $op->{application};
-	
+
 	if (ref($application) ne 'CODE') {
-		local @_ = map {$_->value()} @$operands;
+		local @_ = map {$_->value(@args)} @$operands;
 		local $@;
-		
 		my $result = eval $application;
 		die "Invalid operator application: $@" if $@;
 		die "Undefined result from operator application."
@@ -708,7 +742,9 @@ any occurrances of variables of the name "x", aso.
 
 sub value {
 	my $self = shift;
-	return $self->apply()->value(@_);
+	my @args = @_;
+
+	return $self->apply(@args)->value(@args);
 }
 
 
@@ -792,15 +828,24 @@ sub apply_derivatives {
 	$self = $self->new();
 	return $self if $self->term_type() == T_CONSTANT;
 	my $type = $self->type();
-
 	
 	while ($n && ($type == U_P_DERIVATIVE or $type == U_T_DERIVATIVE)) {
-		my $op = $Op_Types[$self->type];
+		my $op = $Op_Types[$type];
 		my $operands = $self->{operands};
 		my $application = $op->{application};
 
+		if (
+			$type == U_T_DERIVATIVE and
+			$operands->[0]->term_type() == T_VARIABLE
+		) {
+			my @sig = $operands->[0]->signature();
+			my $name = $operands->[1]->name();
+			if ((grep {$_ eq $name} @sig) > 0) {
+				return $self;
+			}
+		}
 		$self = $application->(@$operands);
-		return $self if $self->term_type() == T_CONSTANT;
+		return $self unless $self->term_type() == T_OPERATOR;
 		$type = $self->type();
 		$n--;
 	}

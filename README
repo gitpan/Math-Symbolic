@@ -1,4 +1,4 @@
-Math::Symbolic version 0.109
+Math::Symbolic version 0.110
 ============================
 
 Math::Symbolic is intended to offer symbolic calculation capabilities
@@ -14,12 +14,13 @@ Some information on the state of things:
 The interface has been improving steadily. Nonetheless, it'll take some more
 polishing. Since version 0.08, a parser for algebraic expressions is
 integrated into Math::Symbolic. Since version 0.106, the parser also
-parses unknown variables.
+parses unknown variables, and since version 0.109, it parses variable
+signatures.
 Since version 0.102, there is an overloaded interface for arithmetic
 operators and some overloadable functions and contexts.
 
-The interface is badly documented. Please also refer to the tests and example
-programs.
+The interface is not optimally documented. Please also refer to the tests
+and example programs.
 
 Partial derivatives of logarithms, exponentiations, arithmetic terms
 (*,/,+,- and unary minus as well as variables and constants),

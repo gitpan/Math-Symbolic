@@ -8,20 +8,7 @@ Sooner-than-later:
 
 	- Yes, damnit. I mean it.
 
-
-Version 0.110: (major milestone!)
-	+ Add signatures to variables.
-	+ Add signature() methods to all elements.
-	+ Amend parser to parse signatures.
-	- Given the signature-parser enhancements, total derivatives start
-	  making sense.
-	  Since function signatures must be defined by their signatures
-	  when they're used, total derivatives can be applied to all
-	  functions. (Or, if their implementation is still undefined, they
-	  can possibly still be kicked out because of their non-dependence
-	  on a particular variable.)
-	+ Add tests for sigs.
-	- Add tests for the new features.
+Version 0.111: (pushed back from 0.110)
 	- New, better example in the main man page.
 	- Write a coherent, easy-to-understand, central section on variable
 	  signatures and their purpose.
