@@ -29,7 +29,7 @@ use 5.006;
 use strict;
 use warnings;
 
-our $VERSION = '0.111';
+our $VERSION = '0.112';
 
 use Math::Symbolic::Custom::Base;
 BEGIN {*import = \&Math::Symbolic::Custom::Base::aggregate_import}
@@ -46,8 +46,10 @@ use Carp;
 our $Aggregate_Export = [qw/
 	is_sum
 	is_constant
+	is_simple_constant
 	is_integer
 	apply_derivatives
+	apply_constant_fold
 /];
 
 
@@ -84,6 +86,9 @@ of derivatives.
 
 It returns false (0) otherwise.
 
+If you need not pay the price of applying derivatives, you should use the
+is_simple_constant() method instead.
+
 =cut
 
 sub is_constant {
@@ -111,6 +116,43 @@ sub is_constant {
 	}
 	else {
 		croak "is_constant called on invalid tree type.";
+	}
+}
+
+
+
+=head2 is_simple_constant()
+
+is_simple_constant() returns a boolean.
+
+It returns true (1) if the tree consists of only constants and operators.
+As opposed to is_constant(), is_simple_constant() does not apply derivatives
+if necessary.
+
+It returns false (0) otherwise.
+
+=cut
+
+sub is_simple_constant {
+	my $tree = shift;
+
+	my $ttype = $tree->term_type();
+	if ($ttype == T_CONSTANT) {
+		return 1;
+	}
+	elsif ($ttype == T_VARIABLE) {
+		return 0;
+	}
+	elsif ($ttype == T_OPERATOR) {
+		my $type = $tree->type();
+		my $arity = $Math::Symbolic::Operator::Op_Types[$type]{arity};
+		foreach (1..$arity) {
+			return 0 unless is_constant($tree->{operands}[$_-1]);
+		}
+		return 1;
+	}
+	else {
+		croak "is_simple_constant called on invalid tree type.";
 	}
 }
 
@@ -267,7 +309,39 @@ sub apply_derivatives {
 	die "Sanity check in apply_derivatives() should not be reached.";
 }
 
+
+
+=head2 apply_constant_fold()
+
+Does not modify the tree in-place by default, but returns a modified copy
+of the original tree instead. If the first argument is true, the tree will
+not be cloned. If it is false or not existant, the tree will be cloned.
+
+Applied to variables and constants, this method just clones.
+
+Applied to operators, all tree segments that contain constants and
+operators only will be replaced with Constant objects.
+
+=cut
+
+sub apply_constant_fold {
+	my $tree = shift;
+	$tree = $tree->new() if @_ and $_[0];
 	
+	if (is_simple_constant($tree)) {
+		return $tree if $tree->term_type() == T_CONSTANT;
+		return $tree->apply();
+	}
+	
+	foreach (@{$tree->{operands}}) {
+		$_ = apply_constant_fold($_, 1);
+	}
+
+	return $tree;
+}
+
+
+
 1;
 __END__
 

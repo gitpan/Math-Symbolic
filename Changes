@@ -1,5 +1,11 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.112  Thu Aug  7 19:11:38 2003
+	- Continued moving functionality into the M::S::Custom::* namespace.
+	- Moved constant_fold into custom namespace
+	- Added tests.
+	- Fixed serious bugs.
+
 0.111  Tue Jul 29 12:38:40 2003
 	- Added Math::Symbolic::Custom::*.
 	- Added custom transformation and test functionality.

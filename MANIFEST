@@ -10,7 +10,6 @@ lib/Math/Symbolic/Compiler.pm
 lib/Math/Symbolic/Constant.pm
 lib/Math/Symbolic/Custom.pm
 lib/Math/Symbolic/Custom/Base.pm
-lib/Math/Symbolic/Custom/Default.html
 lib/Math/Symbolic/Custom/Default.pm
 lib/Math/Symbolic/Derivative.pm
 lib/Math/Symbolic/ExportConstants.pm
@@ -46,3 +45,4 @@ t/13parse_more.t
 t/14compile.t
 t/15total_derivatives.t
 t/16tests.t
+t/17modifications.t

@@ -103,6 +103,7 @@ use warnings;
 use Carp;
 
 use Math::Symbolic::ExportConstants qw/:all/;
+use Math::Symbolic::AuxFunctions;
 
 use Math::Symbolic::Base;
 use Math::Symbolic::Operator;
@@ -132,7 +133,7 @@ our %EXPORT_TAGS = (
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT = qw();
 
-our $VERSION = '0.111';
+our $VERSION = '0.112';
 
 =head1 CLASS DATA
 

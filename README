@@ -1,4 +1,4 @@
-Math::Symbolic version 0.111
+Math::Symbolic version 0.112
 ============================
 
 Math::Symbolic is intended to offer symbolic calculation capabilities
@@ -30,7 +30,7 @@ of algebraic terms is severely limited at this time and its interface has been
 significantly refactored in version 0.111. Since then, all method calls that
 start with 'is_', 'test_', 'apply_', or 'mod_' are delegated to a special
 namespace that is populated from user-defined modules.
-Additionally, all builtin tree-modifying and tree-testing methods have been
+Additionally, all builtin tree-modifying and tree-testing methods are being
 moved to the aforementioned namespace.
 
 INSTALLATION

@@ -54,7 +54,7 @@ use Math::Symbolic::Derivative qw//;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.111';
+our $VERSION = '0.112';
 
 =head1 CLASS DATA
 
@@ -571,7 +571,7 @@ sub simplify {
 		my $tt2 = $o2->term_type();
 		my $type = $self->type();
 		
-		if ($tt1 == T_CONSTANT and $tt2 == T_CONSTANT) {
+		if ($self->is_simple_constant()) {
 			return $self->apply();
 		}
 		elsif (
