@@ -7,6 +7,10 @@ Math::Symbolic::Parser - Parse strings into Math::Symbolic trees
   use Math::Symbolic::Parser;
   my $parser = Math::Symbolic::Parser->new();
   my $tree   = $parser->parse($string);
+  
+  # or:
+  use Math::Symbolic;
+  my $tree = Math::Symbolic->parse_from_string();
 
 =head1 DESCRIPTION
 
@@ -20,6 +24,14 @@ remove any whitespace from your input string.
 
 None by default.
 
+=head1 CLASS DATA
+
+While working with this module, you might get into the not-so-convient position
+of having to debug the parser and/or its grammar. In order to make this
+possible, there's the $DEBUG package variable which, when set to 1, makes
+the parser warn which grammar elements are being processed. Note, however,
+that their order is bottom-up, not top-down.
+
 =cut
 
 package Math::Symbolic::Parser;
@@ -32,16 +44,23 @@ use Parse::RecDescent;
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.08';
+our $VERSION = '0.100';
+our $DEBUG = 0;
 
 our $Grammar = <<'GRAMMAR_END';
 	parse: expr
 	     | <error>
 
-	expr: addition { $item[1] }
+	expr: addition
+		{
+			warn 'expr ' if $Math::Symbolic::Parser::DEBUG;
+			$item[1]
+		}
 
 	addition: <leftop:multiplication add_op multiplication>
 			{
+				warn 'addition '
+					if $Math::Symbolic::Parser::DEBUG;
 				Math::Symbolic::Parser::_leftop_list(
 					'addition', @item
 				)
@@ -52,6 +71,8 @@ our $Grammar = <<'GRAMMAR_END';
 
 	multiplication: <leftop:exp mult_op exp>
 			{
+				warn 'multiplication '
+					if $Math::Symbolic::Parser::DEBUG;
 				Math::Symbolic::Parser::_leftop_list(
 					'multiplication', @item
 				)
@@ -63,6 +84,7 @@ our $Grammar = <<'GRAMMAR_END';
 
 	exp: <leftop:factor exp_op factor>
 			{
+				warn 'exp ' if $Math::Symbolic::Parser::DEBUG;
 				Math::Symbolic::Parser::_leftop_list(
 					'exp', @item
 				)
@@ -70,11 +92,23 @@ our $Grammar = <<'GRAMMAR_END';
 
 	exp_op: '^'
 
-	factor: unary		{ $item[1] }
-		| '(' expr ')'	{ $item[2] }
+	factor: unary
+			{
+				warn 'factor '
+					if $Math::Symolic::Parser::DEBUG;
+				$item[1]
+			}
+		| '(' expr ')'
+			{
+				warn 'factor '
+					if $Math::Symbolic::Parser::DEBUG;
+				$item[2]
+			}
 
 	unary: unary_op number
 		{
+			warn 'unary '
+				if $Math::Symbolic::Parser::DEBUG;
 			if ($item[1] and $item[1] eq '-') {
 				Math::Symbolic::Operator->new({
 					type => Math::Symbolic::U_MINUS,
@@ -87,6 +121,8 @@ our $Grammar = <<'GRAMMAR_END';
 		}
 	     | unary_op function
 		{
+			warn 'unary '
+				if $Math::Symbolic::Parser::DEBUG;
 			if ($item[1] and $item[1] eq '-') {
 				Math::Symbolic::Operator->new({
 					type => Math::Symbolic::U_MINUS,
@@ -105,13 +141,16 @@ our $Grammar = <<'GRAMMAR_END';
 		
 	number: /\d+(\.\d+)?/
 		{
+			warn 'number ' if $Math::Symbolic::Parser::DEBUG;
 			Math::Symbolic::Constant->new($item[1])
 		}
 
 	function: function_name '(' expr_list ')'
 			{
+				warn 'function ' 
+					if $Math::Symbolic::Parser::DEBUG;
 				my $function =
-				$Math::Symbolic::Operator::OP_B_SYMBOLS{
+				$Math::Symbolic::Operator::Op_Symbols{
 					$item[1]
 				};
 				die "Invalid function '$item[1]'!"
@@ -123,11 +162,24 @@ our $Grammar = <<'GRAMMAR_END';
 				});
 			}
 
-	function_name: 'log' | 'partial_derivative'
+	function_name: 'log'
+		     | 'partial_derivative'
+		     | 'sinh'
+		     | 'cosh'
+		     | 'asin'
+		     | 'acos'
+		     | 'atan'
+		     | 'acot'
+		     | 'sin'
+		     | 'cos'
+		     | 'tan'
+		     | 'cot'
 
 
 	expr_list: <leftop:expr list_op expr>
 			{
+				warn 'expr_list '
+					if $Math::Symbolic::Parser::DEBUG;
 				my $i = 1;
 				[
 					grep {
@@ -196,7 +248,7 @@ sub _leftop_list {
 	
 	foreach my $elem (@ops) {
 		my $op = $elem->[0];
-		my $op_type = $Math::Symbolic::Operator::OP_B_SYMBOLS{
+		my $op_type = $Math::Symbolic::Operator::Op_Symbols{
 			$op
 		};
 		die "Invalid operator: '$op'"

@@ -41,6 +41,8 @@ use 5.006;
 use strict;
 use warnings;
 
+use Carp;
+
 use Math::Symbolic::ExportConstants qw/:all/;
 use Math::Symbolic::Derivative qw//;
 
@@ -48,20 +50,33 @@ use base 'Math::Symbolic::Base';
 
 use overload '""' => sub{ $_[0]->to_string() };
 
-our $VERSION = '0.08';
+our $VERSION = '0.100';
 
-our %OP_B_SYMBOLS = (
-	'+' => B_SUM,
-	'-' => B_DIFFERENCE,
-	'*' => B_PRODUCT,
-	'/' => B_DIVISION,
-	'log' => B_LOG,
-	'^' => B_EXP,
+our %Op_Symbols = (
+	'+'     => B_SUM,
+	'-'     => B_DIFFERENCE,
+	'*'     => B_PRODUCT,
+	'/'     => B_DIVISION,
+	'log'   => B_LOG,
+	'^'     => B_EXP,
+	'neg'   => U_MINUS,
 	'partial_derivative' => U_P_DERIVATIVE,
 	'total_derivative'   => U_T_DERIVATIVE,
+	'sin'   => U_SINE,
+	'cos'   => U_COSINE,
+	'tan'   => U_TANGENT,
+	'cot'   => U_COTANGENT,
+	'asin'  => U_ARCSINE,
+	'acos'  => U_ARCCOSINE,
+	'atan'  => U_ARCTANGENT,
+	'acot'  => U_ARCCOTANGENT,
+	'sinh'  => U_SINE_H,
+	'cosh'  => U_COSINE_H,
+	'asinh' => U_AREASINE_H,
+	'acosh' => U_AREACOSINE_H,
 );
 
-our @OP_TYPES = (
+our @Op_Types = (
 	# B_SUM
 	{
 		arity => 2,
@@ -134,7 +149,105 @@ our @OP_TYPES = (
 		prefix_string => 'log',
 		application => 'log($_[1]) / log($_[0])',
 	},
+	# U_SINE
+	{
+		arity => 1,
+		derive => 'trigonometric derivatives',
+		infix_string => undef,
+		prefix_string => 'sin',
+		application => 'sin($_[0])',
+	},
+	# U_COSINE
+	{
+		arity => 1,
+		derive => 'trigonometric derivatives',
+		infix_string => undef,
+		prefix_string => 'cos',
+		application => 'cos($_[0])',
+	},
+	# U_TANGENT
+	{
+		arity => 1,
+		derive => 'trigonometric derivatives',
+		infix_string => undef,
+		prefix_string => 'tan',
+		application => 'sin($_[0])/cos($_[0])',
+	},
+	# U_COTANGENT
+	{
+		arity => 1,
+		derive => 'trigonometric derivatives',
+		infix_string => undef,
+		prefix_string => 'cot',
+		application => 'cos($_[0])/sin($_[0])',
+	},
+	# U_ARCSINE
+	{
+		arity => 1,
+		derive => 'inverse trigonometric derivatives',
+		infix_string => undef,
+		prefix_string => 'asin',
+		application => 'Math::Symbolic::AuxFunctions::asin($_[0])',
+	},
+	# U_ARCCOSINE
+	{
+		arity => 1,
+		derive => 'inverse trigonometric derivatives',
+		infix_string => undef,
+		prefix_string => 'acos',
+		application => 'Math::Symbolic::AuxFunctions::acos($_[0])',
+	},
+	# U_ARCTANGENT
+	{
+		arity => 1,
+		derive => 'inverse trigonometric derivatives',
+		infix_string => undef,
+		prefix_string => 'atan',
+		application => 'Math::Symbolic::AuxFunctions::atan($_[0])',
+	},
+	# U_ARCCOTANGENT
+	{
+		arity => 1,
+		derive => 'inverse trigonometric derivatives',
+		infix_string => undef,
+		prefix_string => 'acot',
+		application => 'Math::Symbolic::AuxFunctions::acot($_[0])',
+	},
+	# U_SINE_H
+	{
+		arity => 1,
+		derive => 'trigonometric derivatives',
+		infix_string => undef,
+		prefix_string => 'sinh',
+		application => '0.5*(EULER**$_[0] - EULER**(-$_[0]))',
+	},
+	# U_COSINE_H
+	{
+		arity => 1,
+		derive => 'trigonometric derivatives',
+		infix_string => undef,
+		prefix_string => 'cosh',
+		application => '0.5*(EULER**$_[0] + EULER**(-$_[0]))',
+	},
+	# U_AREASINE_H
+	{
+		arity => 1,
+		derive => 'inverse trigonometric derivatives',
+		infix_string => undef,
+		prefix_string => 'asinh',
+		application => 'Math::Symbolic::AuxFunctions::asinh($_[0])',
+	},
+	# U_AREACOSINE_H
+	{
+		arity => 1,
+		derive => 'inverse trigonometric derivatives',
+		infix_string => undef,
+		prefix_string => 'acosh',
+		application => 'Math::Symbolic::AuxFunctions::acosh($_[0])',
+	},
+		
 );
+
 
 =head1 METHODS
 
@@ -150,6 +263,31 @@ operands. This special case will ignore attempts to clone objects.
 
 Returns a Math::Symbolic::Operator.
 
+Supported operator symbols: (number of operands and their
+function in parens)
+
+  +                  => sum (2)
+  -                  => difference (2)
+  *                  => product (2)
+  /                  => division (2)
+  log                => logarithm (2: base, function)
+  ^                  => exponentiation (2: base, exponent)
+  neg                => unary minus (1)
+  partial_derivative => partial derivative (2: function, var)
+  total_derivative   => total derivative (2: function, var)
+  sin                => sine (1)
+  cos                => cosine (1)
+  tan                => tangent (1)
+  cot                => cotangent (1)
+  asin               => arc sine (1)
+  acos               => arc cosine (1)
+  atan               => arc tangent (1)
+  acot               => arc cotangent (1)
+  sinh               => hyperbolic sine (1)
+  cosh               => hyperbolic cosine (1)
+  asinh              => hyperbolic area sine (1)
+  acosh              => hyperbolic area cosine (1)
+  
 =cut
 
 sub new {
@@ -158,9 +296,15 @@ sub new {
 
 	if (@_ and not (ref($_[0]) eq 'HASH')) {
 		my $symbol = shift;
-		my $operands = [@_[(0,1)]];
-		my $type = $OP_B_SYMBOLS{$symbol};
-		die "Invalid operator ($symbol)!" if not defined $type;
+		my $type = $Op_Symbols{$symbol};
+		defined $type
+			or croak "Invalid operator type specified ($symbol).";
+		my $operands = [@_[
+				0 .. 
+				$Op_Types[
+					$type
+				]{arity} - 1
+			]];
 		return bless {
 			type => $type,
 			operands => $operands,
@@ -198,7 +342,7 @@ Returns the operator's arity as an integer.
 
 sub arity {
 	my $self = shift;
-	return $OP_TYPES[$self->{type}]{arity};
+	return $Op_Types[$self->{type}]{arity};
 }
 
 
@@ -246,7 +390,7 @@ sub to_string {
 
 sub _to_string_infix {
 	my $self = shift;
-	my $op = $OP_TYPES[$self->{type}];
+	my $op = $Op_Types[$self->{type}];
 
 	my $op_str = $op->{infix_string};
 	my $string;
@@ -299,7 +443,7 @@ sub _to_string_infix {
 
 sub _to_string_prefix {
 	my $self = shift;
-	my $op = $OP_TYPES[$self->{type}];
+	my $op = $Op_Types[$self->{type}];
 
 	my $op_str = $op->{prefix_string};
 	my $string = "$op_str(";
@@ -335,7 +479,7 @@ sub simplify {
 	$self = $self->new();
 
 	my $operands = $self->{operands};
-	my $op = $OP_TYPES[$self->type()];
+	my $op = $Op_Types[$self->type()];
 
 	@$operands = map {$_->simplify()} @$operands;
 
@@ -380,10 +524,10 @@ sub simplify {
 			elsif ($type == B_DIFFERENCE) {
 				return $not_c
 				  if !$constant_first and $const->value == 0;
-				return Math::Symbolic::Operator(
+				return Math::Symbolic::Operator->new( {
 					type => U_MINUS,
 					operands => [$not_c],
-				) if $constant_first and $const->value == 0;
+				} ) if $constant_first and $const->value == 0;
 			}
 			elsif ($type == B_PRODUCT) {
 				return $not_c if $const->value() == 1;
@@ -468,7 +612,7 @@ as a constant (-object).
 
 sub apply {
 	my $self = shift;
-	my $op = $OP_TYPES[$self->type];
+	my $op = $Op_Types[$self->type];
 	my $operands = $self->{operands};
 	my $application = $op->{application};
 	
@@ -521,15 +665,17 @@ sub apply_derivatives {
 	my $n = shift || -1;
 	my $max_derivatives = $n;
 	$self = $self->new();
+	return $self if $self->term_type() == T_CONSTANT;
 	my $type = $self->type();
 
 	
 	while ($n && ($type == U_P_DERIVATIVE or $type == U_T_DERIVATIVE)) {
-		my $op = $OP_TYPES[$self->type];
+		my $op = $Op_Types[$self->type];
 		my $operands = $self->{operands};
 		my $application = $op->{application};
 
 		$self = $application->(@$operands);
+		return $self if $self->term_type() == T_CONSTANT;
 		$type = $self->type();
 		$n--;
 	}

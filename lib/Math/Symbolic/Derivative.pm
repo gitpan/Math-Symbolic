@@ -40,7 +40,7 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw();
 
-our $VERSION = '0.08';
+our $VERSION = '0.100';
 
 =head1  CLASS DATA
 
@@ -51,13 +51,17 @@ derivative rules as key-value pairs of names and subroutines.
 
 # lookup-table for partial derivative rules for various operators.
 our %Partial_Rules = (
-	'each operand'                    => \&_each_operand,
-	'product rule'                    => \&_product_rule,
-	'quotient rule'                   => \&_quotient_rule,
-	'logarithmic chain rule after ln' =>
+	'each operand'                      => \&_each_operand,
+	'product rule'                      => \&_product_rule,
+	'quotient rule'                     => \&_quotient_rule,
+	'logarithmic chain rule after ln'   =>
 		\&_logarithmic_chain_rule_after_ln,
-	'logarithmic chain rule'          => \&_logarithmic_chain_rule,
-	'partial derivative commutation'  => \&_partial_derivative_commutation,
+	'logarithmic chain rule'            => \&_logarithmic_chain_rule,
+	'partial derivative commutation'    =>
+		\&_partial_derivative_commutation,
+	'trigonometric derivatives'         => \&_trigonometric_derivatives,
+	'inverse trigonometric derivatives' =>
+		\&_inverse_trigonometric_derivatives,
 );
 
 
@@ -176,6 +180,106 @@ sub _partial_derivative_commutation {
 
 
 
+sub _trigonometric_derivatives {
+	my ($tree, $var, $cloned) = @_;
+	my $op = Math::Symbolic::Operator->new();
+	my $d_inner = partial_derivative($tree->{operands}[0], $var, 0);
+	my $trig;
+	if ($tree->type() == U_SINE) {
+		$trig = $op->new('cos', $tree->{operands}[0]);
+	}
+	elsif ($tree->type() == U_COSINE) {
+		$trig = $op->new('neg', $op->new('sin', $tree->{operands}[0]));
+	}
+	elsif ($tree->type() == U_SINE_H) {
+		$trig = $op->new('cosh', $tree->{operands}[0]);
+	}
+	elsif ($tree->type() == U_COSINE_H) {
+		$trig = $op->new('sinh', $tree->{operands}[0]);
+	}
+	elsif ($tree->type() == U_TANGENT or $tree->type() == U_COTANGENT) {
+		$trig = $op->new(
+				'/', Math::Symbolic::Constant->one(),
+				$op->new('^',
+					$op->new('cos', $tree->op1()),
+					Math::Symbolic::Constant->new(2)
+				)
+			);
+		$trig = $op->new('neg', $trig) if $tree->type() == U_COTANGENT;
+	}		
+	else {
+		die "Trigonometric derivative applied to invalid operator.";
+	}
+	$tree = $op->new('*', $d_inner, $trig);
+	
+	return $tree;
+}
+
+
+
+sub _inverse_trigonometric_derivatives {
+	my ($tree, $var, $cloned) = @_;
+	my $op = Math::Symbolic::Operator->new();
+	my $d_inner = partial_derivative($tree->{operands}[0], $var, 0);
+	my $trig;
+	if ($tree->type() == U_ARCSINE || $tree->type() == U_ARCCOSINE) {
+		my $one = Math::Symbolic::Constant->one();
+		$trig = $op->new(
+				'/', $one,
+				$op->new(
+					'-', $one,
+					$op->new(
+						'^', $tree->op1(),
+						$one->new(2)
+					)
+				)
+			);
+		if ($tree->type() == U_ARCCOSINE) {
+			$trig = $op->new('neg', $tree)
+		}
+	}
+	elsif ($tree->type() == U_ARCTANGENT or
+	       $tree->type() == U_ARCCOTANGENT) {
+		my $one = Math::Symbolic::Constant->one();
+		$trig = $op->new(
+			'/', $one,
+			$op->new(
+				'+', $one,
+				$op->new(
+					'^', $tree->op1(), $one->new(2)
+				)
+			)
+		);
+		$trig = $op->new('neg', $trig)
+			if $tree->type() == U_ARCCOTANGENT;
+	}
+	elsif ($tree->type() == U_AREASINE_H or
+	       $tree->type() == U_AREACOSINE_H) {
+		my $one = Math::Symbolic::Constant->one();
+		$trig = $op->new(
+			'/', $one,
+			$op->new(
+				'^',
+				$op->new(
+					($tree->type()==U_AREASINE_H?'+':'-'),
+					$op->new(
+						'^', $tree->op1(), $one->new(2)
+					),
+					$one
+				),
+				$one->new(0.5)
+			)
+		);
+	}
+	else {
+		die "Inverse trig. derivative applied to invalid operator.";
+	}
+	$tree = $op->new('*', $d_inner, $trig);
+	
+	return $tree;
+}
+
+
 =head1 SUBROUTINES
 
 =cut
@@ -202,7 +306,7 @@ sub partial_derivative {
 	}
 	
 	if ($tree->term_type() == T_OPERATOR) {
-		my $rulename = $Math::Symbolic::Operator::OP_TYPES[
+		my $rulename = $Math::Symbolic::Operator::Op_Types[
 					$tree->type()
 				]->{derive};
 		my $subref = $Partial_Rules{$rulename};
@@ -224,7 +328,7 @@ sub partial_derivative {
 		}
 	}
 	else {
-		die "Not a tree.";
+		die "Cannot apply partial derivative to anything but a tree.";
 	}
 
 	return $tree;

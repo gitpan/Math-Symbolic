@@ -1,31 +1,53 @@
 Revision history for Perl extension Math::Symbolic.
 
-0.08  Sun Jun  15 22:17:11 2003
+0.100  Fri Jun  20 01:32:32 2003
+	(Yep, I hack at random hours.)
+	- Implemented hyperbolic sine, h cosine.
+	- Implemented partial derivatives for h sine, h cosine
+	- Amended parser for h sine, h cosine.
+	- Same for tangents
+	- Myriad of bugfixes
+	- ExportConstants now includes (and exports) PI and EULER constants.
+	- Renamed class data in M::S::Operator.
+	- Cotangent.
+	- Arc sine, arc cosine, arc tangent, arc cotangent.
+	- Hyperbolic area sine, h. a. cosine
+	- Tests for the above.
+	- Broke the parser badly.
+	- (much later) Fixed it again.
+	- Some more documentation
+	- Renamed test files
+
+0.090  Wed Jun  18 16:37:56 2003
+	- Implemented sine, cosine, sine/cosine derivatives
+	- Amended parser for sine and cosine functions
+
+0.080  Sun Jun  15 22:17:11 2003
 	- Parser now a module (M::S::Parser)
 	- Parser accessible through new_from_string().
 
-0.07  Sat Jun  14 18:21:47 2003
+0.070  Sat Jun  14 18:21:47 2003
 	- Parser now outputs Math::Symbolic tree
 	- Fixed unary-minus to infix issues.
 
-0.06  Wed Jun  11 16:58:59 2003
+0.060  Wed Jun  11 16:58:59 2003
 	- Now including rudimentary parser for algebraic expressions.
 	- Some documentation added.
 
-0.05  Fri Jun  6 16:57:19 2003
+0.050  Fri Jun  6 16:57:19 2003
 	- Moved the rules for partial derivatives to separatE
 	  subs and introduced a lookup-table.
 
-0.04  Thu Jun  5 01:12:23 2003
+0.040  Thu Jun  5 01:12:23 2003
 	- Many changes again.
 
-0.03  Wed Jun  4 18:43:00 2003
+0.030  Wed Jun  4 18:43:00 2003
 	- More major enhancements (exp function, log, derivative as operator)
 
-0.02  Wed Jun  4 14:29:15 2003
+0.020  Wed Jun  4 14:29:15 2003
 	- First working version.
 
-0.01  Tue Jun  3 21:45:57 2003
+0.010  Tue Jun  3 21:45:57 2003
 	- original version; created by h2xs 1.21 with options
 		-AX Math::Symbolic
 

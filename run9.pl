@@ -17,11 +17,10 @@ print "Vars: x=" . $a->value() .
            " (Value is optional)\n\n";
 
 my $op  = Math::Symbolic::Operator->new();
-#my $sin = $op->new('sin', $op->new('*', $two, $a));
-my $sin = $op->new('sinh', $op->new('*', $two, $a));
+my $sin = $op->new('tan', $op->new('*', $two, $a));
 
 
-print "Expression: sinh(2*x)\n\n";
+print "Expression: tan(x)\n\n";
 
 print "prefix notation and evaluation:\n";
 print $sin->to_string('prefix') . " = " . $sin->value() . "\n\n";
@@ -44,15 +43,12 @@ print "Finally, we simplify the derived term as much as possible:\n";
 $derived = $derived->simplify();
 print "$derived = " . $derived->value() . "\n\n";
 
-
-print "Now, we do this three more times:\n";
-for (1..3) {
+print "Two more derivatives:\n\n";
+for (1..2) {
 	$derived = $op->new( {
-		type => U_P_DERIVATIVE,
-		operands => [$derived, $a],
-	} )->apply_derivatives()->simplify();
+				type => U_P_DERIVATIVE,
+				operands => [$derived, $a],
+			} )->apply_derivatives()->simplify();
+	print "$derived\n\n";
 }
-
-print "$derived = " . $derived->value() . "\n\n";
-
 

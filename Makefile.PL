@@ -5,6 +5,7 @@ WriteMakefile(
     'NAME'		=> 'Math::Symbolic',
     'VERSION_FROM'	=> 'lib/Math/Symbolic.pm', # finds $VERSION
     'PREREQ_PM'		=> {
+	    Data::Dumper  => 0,
 	    Parse::RecDescent => 0,
 	    Test::More => 0,
 	    Exporter => 0,

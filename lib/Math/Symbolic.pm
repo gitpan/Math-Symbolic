@@ -26,15 +26,33 @@ exported to your namespace using the standard Exporter semantics.
 There are two export tags: :all and :constants. :all will export
 all constants and the parse_from_string subroutine.
 
+  Constants for transcendetal numbers:
+    EULER (2.7182...)
+    PI    (3.14159...)
+    
   Constants representing operator types: (First letter indicates arity)
     B_SUM
     B_DIFFERENCE
     B_PRODUCT
     B_DIVISION
+    B_LOG
+    B_EXP
     U_MINUS
     U_P_DERIVATIVE
     U_T_DERIVATIVE
-  
+    U_SINE
+    U_COSINE
+    U_TANGENT
+    U_COTANGENT
+    U_ARCSINE
+    U_ARCCOSINE
+    U_ARCTANGENT
+    U_ARCCOTANGENT
+    U_SINE_H
+    U_COSINE_H
+    U_AREASINE_H
+    U_AREACOSINE_H
+    
   Constants representing Math::Symbolic term types:
     T_OPERATOR
     T_CONSTANT
@@ -80,7 +98,7 @@ our %EXPORT_TAGS = (
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT = qw();
 
-our $VERSION = '0.08';
+our $VERSION = '0.100';
 
 =head1 CLASS DATA
 

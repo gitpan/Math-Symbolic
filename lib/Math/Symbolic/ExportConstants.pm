@@ -6,6 +6,9 @@ use warnings;
 
 require Exporter;
 
+use constant EULER            => 2.718281828;
+use constant PI               => 3.141592654;
+
 use constant B_SUM            => 0;
 use constant B_DIFFERENCE     => 1;
 use constant B_PRODUCT        => 2;
@@ -15,6 +18,18 @@ use constant U_P_DERIVATIVE   => 5;
 use constant U_T_DERIVATIVE   => 6;
 use constant B_EXP            => 7;
 use constant B_LOG            => 8;
+use constant U_SINE           => 9;
+use constant U_COSINE         => 10;
+use constant U_TANGENT        => 11;
+use constant U_COTANGENT      => 12;
+use constant U_ARCSINE        => 13;
+use constant U_ARCCOSINE      => 14;
+use constant U_ARCTANGENT     => 15;
+use constant U_ARCCOTANGENT   => 16;
+use constant U_SINE_H         => 17;
+use constant U_COSINE_H       => 18;
+use constant U_AREASINE_H     => 19;
+use constant U_AREACOSINE_H   => 20;
 
 use constant T_OPERATOR       => 0;
 use constant T_CONSTANT       => 1;
@@ -23,6 +38,9 @@ use constant T_VARIABLE       => 2;
 our @ISA = qw(Exporter);
 
 our %EXPORT_TAGS = ( 'all' => [ qw(
+	EULER
+	PI
+	
 	B_SUM
 	B_DIFFERENCE
 	B_PRODUCT
@@ -32,7 +50,19 @@ our %EXPORT_TAGS = ( 'all' => [ qw(
 	U_MINUS
 	U_P_DERIVATIVE
 	U_T_DERIVATIVE
-
+	U_SINE
+	U_COSINE
+	U_TANGENT
+	U_COTANGENT
+	U_ARCSINE
+	U_ARCCOSINE
+	U_ARCTANGENT
+	U_ARCCOTANGENT
+	U_SINE_H
+	U_COSINE_H
+	U_AREASINE_H
+	U_AREACOSINE_H
+	
 	T_OPERATOR
 	T_CONSTANT
 	T_VARIABLE
@@ -42,7 +72,7 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw(
 );
-our $VERSION = '0.08';
+our $VERSION = '0.100';
 
 1;
 __END__

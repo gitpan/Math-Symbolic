@@ -28,13 +28,12 @@ use strict;
 use warnings;
 
 use Math::Symbolic::ExportConstants qw/:all/;
-use constant EULER => 2.718281828;
 
 use base 'Math::Symbolic::Base';
 
 use overload '""' => sub{ $_[0]->to_string() };
 
-our $VERSION = '0.08';
+our $VERSION = '0.100';
 
 =head1 METHODS
 

@@ -1,0 +1,68 @@
+This file contains the TODO milestones for Math::Symbolic.
++ => Met
+- => Not met
+
+Version 0.100: (Released)
+	+ Add sine/cosine
+	+ Amend parser to parse sine/cosine.
+	+ Add sinh/cosh or at least allow the user to use them in the input
+	  string to the parser and have them replaced with (e^x ± e^-x)/2
+	+ Amend parser to parse hyperbolic sine/h. cosine.
+	+ Add tan,
+	+ arctan
+	+ Amend parser to parse tan /
+	+ arctan.
+	+ Add arcsine/arccosine
+	+ Amend parser to parse arcsine/arccosine.
+	+ Find a more reasonable naming scheme for class data and rename
+	  appropriately.
+	+ Add tests for the new features.
+
+Version 0.110: (major milestone!)
+	- Instead of all terms being either a Math::Symbolic::Operator, a
+	  Math::Symbolic::Variable, or a Math::Symbolic::Constant object,
+	  introduce actual Math::Symbolic objects as container objects for
+	  any Math::Symbolic trees.
+	- These should then also hold symbol tables for variables.
+	  Two reasons:
+	  a) The parser can't parse variables without knowing their names
+	     in advance.
+	  b) Math::Symbolic objects should then be able to hold other
+	     Math::Symbolic objects (which needn't necessarily have an
+	     implementation at the time they're used!) as (unknown)
+	     functions with a defined signature.
+	- Symbol tables for variables.
+	- Make sure variables are unique in any Math::Symbolic tree.
+	- Store variable values in the symbol table, not in the objects
+	  themselves.
+	- Make sure that when wrapping operators around Math::Symbolic trees,
+	  the operator is *included* in the tree, not the tree included in the
+	  operator object as an operand. (And therefore acting as a function
+	  with a defined implementation which is not the generally desired
+	  behaviour!)
+	- According to the previously outlined major changes, make sure the
+	  (as of 0.090) current Math::Symbolic::parse_from_string becomes a
+	  Math::Symbolic OBJECT ONLY method. (Otherwise, the symbol table for
+	  parsing vars is missing.)
+	- Find a solution for the problem that parsers would currently need to
+	  be reconstructed for a given symbol table. (performance!)
+	- Add tests for the new features.
+
+Version 0.120: (major milestone!)
+	- Given the v0.110 enhancements, total derivatives start making sense.
+	  Since function signatures must be defined by their symbol table
+	  when they're used, total derivatives can be applied to all
+	  functions. (Or, if their implementation is still undefined, they
+	  can possibly still be kicked out because of their non-dependance
+	  on a particular variable.)
+	- Add tests for the new features.
+
+Somewhen:
+	- Clean up simplification and split it up into several methods that
+	  users can choose to combine into their own set of simplification
+	  routines.
+	- Add more simplification routines.
+	- Add transformation routines for particular types of terms such
+	  as polynomials. (Which can be brought into a canonical form.)
+	- Better testsuite as in: bring in some order and better coverage.
+

@@ -43,7 +43,7 @@ use base 'Math::Symbolic::Base';
 
 use overload '""' => sub{ $_[0]->to_string() };
 
-our $VERSION = '0.08';
+our $VERSION = '0.100';
 
 =head1 METHODS
 

@@ -26,7 +26,7 @@ use warnings;
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.08';
+our $VERSION = '0.100';
 
 =head1 METHODS
 
