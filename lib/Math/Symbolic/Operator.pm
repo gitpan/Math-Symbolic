@@ -54,7 +54,7 @@ use Math::Symbolic::Derivative qw//;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.112';
+our $VERSION = '0.113';
 
 =head1 CLASS DATA
 
@@ -505,38 +505,6 @@ sub _to_string_prefix {
 
 
 
-=head2 Method implement
-
-Takes key/value pairs as arguments. The keys are to be variable names
-and the values must be valid Math::Symbolic trees. All occurrances
-of the variables will be replaced with their implementation.
-
-=cut
-
-sub implement {
-	my $self = shift;
-	my $op = $Op_Types[$self->type];
-	my $operands = $self->{operands};
-
-	my %args;
-	foreach (@$operands) {
-		my $ttype = $_->term_type();
-		if ($ttype == T_VARIABLE) {
-			%args = @_ unless keys %args;
-			my $name = $_->name();
-			if (exists $args{$name} and defined $args{$name}) {
-				$_ = $args{$name};
-			}
-		}
-		elsif ($ttype == T_OPERATOR) {
-			$_->implement(@_);
-		}
-	}
-	return();
-}
-
-
-
 =head2 Method term_type
 
 Returns the type of the term. ( T_OPERATOR )
@@ -574,6 +542,38 @@ sub simplify {
 		if ($self->is_simple_constant()) {
 			return $self->apply();
 		}
+		
+		if ($o1->is_identical($o2)) {
+			if ($type == B_PRODUCT) {
+				my $two = Math::Symbolic::Constant->new(2);
+				return $self->new('^', $o1, $two)->simplify();
+			}
+			elsif ($type == B_SUM) {
+				my $two = Math::Symbolic::Constant->new(2);
+				return $self->new('*', $two, $o1)->simplify();
+
+			}
+		}
+
+		if (
+			$tt2 == T_CONSTANT and
+			$tt1 == T_OPERATOR and
+			$type == B_EXP and
+			$o2->value() == 0
+		) {
+			return Math::Symbolic::Constant->one();
+		}
+		elsif (
+			$tt2 == T_CONSTANT and
+			$tt1 == T_OPERATOR and
+			$type == B_EXP and
+			$o1->type() == B_EXP
+		) {
+			return $self->new(
+				'^', $o1->op1(),
+				$self->new('*', $o2, $o1->op2())
+			)->simplify();
+		}
 		elsif (
 			$tt1 == T_VARIABLE and
 			$tt2 == T_VARIABLE and
@@ -593,7 +593,7 @@ sub simplify {
 			elsif ($type == B_DIVISION) {
 				return Math::Symbolic::Constant->one();
 			}
-		}	
+		}
 		elsif ($tt1 == T_CONSTANT or $tt2 == T_CONSTANT) {
 			my $const = ($tt1==T_CONSTANT?$o1:$o2);
 			my $not_c = ($tt1==T_CONSTANT?$o2:$o1);
@@ -644,7 +644,7 @@ sub simplify {
 				  if $const->value == 0;
 			}
 		}
-
+		
 	}
 	elsif ($self->arity() == 1) {
 		my $o  = $operands->[0];
@@ -668,7 +668,10 @@ sub simplify {
 
 
 
-=head2 Method op1 and op2
+
+
+
+=head2 Methods op1 and op2
 
 Returns first/second operand of the operator if it exists or undef.
 
@@ -682,6 +685,7 @@ sub op1 {
 sub op2 {
 	return $_[0]{operands}[1] if @{$_[0]{operands}} >= 2;
 }
+
 
 
 =head2 Method apply
@@ -749,32 +753,6 @@ sub value {
 
 
 
-=head2 Method set_value
-
-set_value() returns nothing.
-
-set_value() requires named arguments (key/value pairs) that associate
-variable names of variables in the tree with the value-arguments if the
-corresponging key matches the variable name.
-(Can one say this any more complicated?)
-
-Example: $tree->set_value(x => 1, y => 2, z => 3, t => 0) assigns the value 1
-to any occurrances of variables of the name "x", aso.
-
-As opposed to value(), set_value() assigns to the variables I<permanently>
-and does not evaluate the tree.
-
-=cut
-
-sub set_value {
-	my $self = shift;
-	foreach (@{$self->{operands}}) {
-		$_->set_value(@_);
-	}
-}
-
-
-
 =head2 Method signature
 
 signature() returns a tree's signature.
@@ -801,7 +779,7 @@ have the signature ('acceleration', 'force1', 'force2',..., 'mass', 'time').
 sub signature {
 	my $self = shift;
 	my %sig;
-	foreach my $o (@{$self->{operands}}) {
+	foreach my $o ($self->descending_operands('all_vars')) {
 		$sig{$_} = undef for $o->signature();
 	}
 	return sort keys %sig;

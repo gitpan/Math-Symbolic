@@ -41,7 +41,7 @@ use Math::Symbolic::ExportConstants qw/:all/;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.112';
+our $VERSION = '0.113';
 
 =head1 METHODS
 
@@ -132,33 +132,6 @@ sub value {
 
 
 
-=head2 Method set_value
-
-set_value() returns nothing.
-
-set_value() requires named arguments (key/value pairs) that associate
-variable names of variables in the tree with the value-arguments if the
-corresponging key matches the variable name.
-(Can one say this any more complicated?)
-
-Example: $tree->set_value(x => 1, y => 2, z => 3, t => 0) assigns the value 1
-to any occurrances of variables of the name "x", aso.
-
-As opposed to value(), set_value() assigns to the variables I<permanently>
-and does not evaluate the tree.
-
-=cut
-
-sub set_value {
-	my $self = shift;
-	my %args = @_;
-	if (exists $args{$self->{name}}) {
-		$self->{value} = $args{$self->{name}};
-	}
-}
-
-
-
 =head2 Method name
 
 Optional argument: sets the object's name.
@@ -221,22 +194,6 @@ sub set_signature {
 	return();
 }
 
-
-
-=head2 Method implement
-
-A nop for variables because the implementation is handled by
-the operators.
-
-Takes key/value pairs as arguments. The keys are to be variable names
-and the values must be valid Math::Symbolic trees. All occurrances
-of the variables will be replaced with their implementation.
-
-=cut
-
-sub implement {
-	return();
-}
 
 
 =head2 Method to_string

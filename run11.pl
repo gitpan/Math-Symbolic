@@ -40,5 +40,21 @@ print "The derived term becomes:\n";
 print "$derived\n";
 
 print "Which simplifies as:\n";
-print $derived->simplify();
+$derived = $derived->simplify();
+print $derived, "\n\n";
+
+print "But we're not satisfied. The total derivative cannot be applied to\n" .
+"'a' because a depends on 'x', but we don't know how. Let's implement 'a'\n" .
+"as 'x^2' and try again.\n";
+
+$derived = $derived->implement(a => 'x^2');
+
+print "$derived\n\n";
+
+print "Which ultimately becomes:\n";
+$derived = $derived->apply_derivatives();
+$derived = $derived->simplify();
+print $derived,"\n";
+
+
 

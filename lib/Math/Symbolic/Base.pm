@@ -43,7 +43,7 @@ use overload
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.112';
+our $VERSION = '0.113';
 our $AUTOLOAD;
 
 =head1 METHODS
@@ -85,29 +85,6 @@ any occurrances of variables of the name "x", aso.
 =cut
 
 sub value {
-	croak "This is a method stub from Math::Symbolic::Base. Implement me.";
-}
-
-
-
-=head2 Method set_value
-
-set_value() returns nothing.
-
-set_value() requires named arguments (key/value pairs) that associate
-variable names of variables in the tree with the value-arguments if the
-corresponging key matches the variable name.
-(Can one say this any more complicated?)
-
-Example: $tree->set_value(x => 1, y => 2, z => 3, t => 0) assigns the value 1
-to any occurrances of variables of the name "x", aso.
-
-As opposed to value(), set_value() assigns to the variables I<permanently>
-and does not evaluate the tree.
-
-=cut
-
-sub set_value {
 	croak "This is a method stub from Math::Symbolic::Base. Implement me.";
 }
 
@@ -160,6 +137,8 @@ sub set_signature {
 
 =head2 Method implement
 
+implement() works in-place!
+
 Takes key/value pairs as arguments. The keys are to be variable names
 and the values must be valid Math::Symbolic trees. All occurrances
 of the variables will be replaced with their implementation.
@@ -167,8 +146,62 @@ of the variables will be replaced with their implementation.
 =cut
 
 sub implement {
-	croak "implement() called on unsupported tree element.";
+	my $self = shift;
+	my %args = @_;
+
+	return $self->descend(
+		in_place => 1,
+		after => sub {
+			my $tree = shift;
+			my $ttype = $tree->term_type();
+			if ($ttype == T_VARIABLE) {
+				my $name = $tree->name();
+				if (
+					exists $args{$name} and
+					defined $args{$name}
+				) {
+					$args{$name} =
+					Math::Symbolic::parse_from_string(
+						$args{$name}
+					)
+					  unless ref($args{$name});
+					$tree->replace($args{$name});
+				}
+			}
+			elsif ($ttype == T_OPERATOR or $ttype == T_CONSTANT) {
+			}
+			else {
+				croak "'implement' called on invalid term " .
+					"type.";
+			}
+		},
+		operand_finder => sub {
+			return $_[0]->descending_operands('all_vars')
+		},
+	);
 }
+
+
+
+=head2 Method replace
+
+First argument must be a valid Math::Symbolic tree.
+
+replace() modifies the object it is called on in-place in that it
+replaces it with its first argument. Doing that, it retains the original
+object reference. This destroys the object it is called on.
+
+=cut
+
+sub replace {
+	my $tree = shift;
+	my $new = shift;
+	%$tree = %$new;
+	bless $tree => ref $new;
+	return $tree;
+}
+
+
 
 =head2 Method simplify
 
@@ -183,6 +216,296 @@ sub simplify {
 
 
 
+=head2 Method descending_operands
+
+When called on an operator, descending_operands tries hard to determine
+which operands to descend into. (Which usually means all operands.)
+A list of these is returned.
+
+When called on a constant or a variable, it returns the empty list.
+
+Of course, some routines may have to descend into different branches of the
+Math::Symbolic tree, but this routine returns the default operands.
+
+The first argument to this method may control its behaviour. If it is any of
+the following key-words, behaviour is modified accordingly:
+
+  default   -- obvious. Use default heuristics.
+  
+  These are all supersets of 'default':
+  all       -- returns ALL operands. Use with caution.
+  all_vars  -- returns all operands that may contain vars.
+
+=cut
+
+sub descending_operands {
+	my $tree = shift;
+	my $ttype = $tree->term_type();
+
+	if ($ttype == T_CONSTANT or $ttype == T_VARIABLE) {
+		return();
+	}
+	elsif ($ttype == T_OPERATOR) {
+		my $action = shift || 'default';
+		my $type = $tree->type();
+
+		if ($action eq 'all') {
+			return @{$tree->{operands}};
+		}
+		elsif ($action eq 'all_vars') {
+			return @{$tree->{operands}};
+		}
+		else { # default
+			if (
+				$type == U_P_DERIVATIVE or
+				$type == U_T_DERIVATIVE
+			) {
+				return $tree->{operands}[0];
+			}
+			else {
+				return @{$tree->{operands}};
+			}
+		}
+	}
+	else {
+		croak "'descending_operands' called on invalid term type.";
+	}
+	die "Sanity check in 'descending_operands'. Should not be reached.";
+}
+
+
+
+=head2 Method descend
+
+The method takes named arguments (key/value pairs).
+descend() descends (Who would have guessed?) into the Math::Symbolic tree
+recursively and for each node, it calls code references with a copy of
+the current node as argument. The copy may be modified and will be used for
+construction of the returned tree. The automatic copying behaviour may be
+turned off.
+
+Returns a (modified) copy of the original tree. If in-place modification is
+turned on, the returned tree will not be a copy.
+
+Availlable parameters are:
+
+=over 2
+
+=item before
+
+A code reference to be used as a callback that will be invoked before descent.
+Depending on whether or not the "in_place" option is set, the callback will
+be passed a copy of the current node (default) or the original node itself.
+
+The callback may modify the tree node and the modified node will be used to
+construct descend()'s return value.
+
+The return value of this callback describes the way descend() handles the
+descent into the current node's operands.
+
+If it returns the empty list, the (possibly modified) copy of the current
+that was passed to the callback is used as the return value of descend(),
+but the recursive descent is continued for all of the current node's operands
+which may or may not be modified by the callback. The "after" callback will
+be called on the node after descent into the operands. (This is the
+normal behavior.)
+
+If the callback returns undef, the descent is stopped for the current branch
+and an exact copy of the current branch's children will be used for
+descend()'s return value. The "after" callback will be called immediately.
+
+If the callback returns a list of integers, these numbers are assumed to
+be the indexes of the current node's operands that are to be descended into.
+That means if the callback returns (1), descend will be called for the
+second operand and only the second. All other children/operands will be cloned.
+As usual, the "after" callback will be called after descent.
+
+Any other return lists will lead to hard-to-debug errors. Tough luck.
+
+Returning a hash reference from the callback allows for complete control
+over the descend() routine. The hash may contain the following elements:
+
+=over 2
+
+=item operands
+
+This is a referenced array that will be put in place of the previous
+operands. It is the callback's job to make sure the number of operands stays
+correct. The "operands" entry is evaluated I<before> the "descend_into"
+entry.
+
+=item descend_into
+
+This is a referenced array of integers and references. The integers are
+assumed to be indices of the array of operands. Returning (1) results in
+descent into the second operand and only the second.
+
+References are assumed to be operands to descend into. descend() will be
+directly called on them.
+
+If the array is empty, descend() will act just as if
+an empty list had been returned.
+
+=item in_place
+
+Boolean indicating whether or not to modify the operands in-place or not.
+If this is true, descend() will be called with the "in_place => 1" parameter.
+If false, it will be called with "in_place => 0" instead.
+Defaults to false. (Cloning)
+
+This does not affect the call to the "after" callback but only the descent
+into operands.
+
+=item skip_after
+
+If this option exists and is set to true, the "after" callback will not be
+invoked. This only applies to the current node, not to its children/operands.
+
+=back
+
+The list of options may grow in future versions.
+
+=item after
+
+This is a code reference which will be invoked as a callback after the descent
+into the operands.
+
+=item in_place
+
+Controls whether or not to modify the current tree node in-place. Defaults to
+false - cloning.
+
+=item operand_finder
+
+This option controls how the descend routine chooses which operands to
+recurse into by default. That means it controls which operands descend()
+recurses into if the 'before' routine returned the empty list or if
+no 'before' routine was specified.
+
+The option may either be a code reference or a string. If it is a code
+reference, this code reference will be called with the current node as
+argument. If it is a string, the method with that name will be called
+on the current node object.
+
+By default, descend() calls the 'descending_operands()' method on the current
+node to determine the operands to descend into.
+
+=back
+
+=cut
+
+sub descend {
+	my ($tree, %args) = @_;
+	$tree = $tree->new() unless exists $args{in_place} and $args{in_place};
+	
+	my @opt;
+
+	# Will be used at several locations inside this routine.
+	my $operand_finder = sub {
+		if (exists $args{operand_finder}) {
+			my $op_f = $args{operand_finder};
+			return $tree->$op_f() if not ref $op_f;
+			croak "Invalid 'operand_finder' option passed to " . 
+			  "descend() routine."
+			    if not ref($op_f) eq 'CODE';
+			return $op_f->($tree);
+		}
+		else {
+			return $tree->descending_operands();
+		}
+	};
+	
+	if (exists $args{before}) {
+		croak "'before' parameter to descend() must be code reference."
+		   unless ref($args{before}) eq 'CODE';
+		@opt = $args{before}->($tree);
+	}
+	if (exists $args{after} and ref($args{after}) ne 'CODE') {
+		croak "'after' parameter to descend() must be code reference.";
+	}
+	
+	my $has_control = (@opt == 1 && ref($opt[0]) eq 'HASH' ? 1 : 0);
+	
+	my $ttype = $tree->term_type();
+	# Do nothing!
+	if ($ttype != T_OPERATOR) {}
+	
+	# Fine control!
+	elsif ($has_control) {
+		my $opt = $opt[0];
+		my %new_args = %args;
+		$new_args{in_place} = $opt->{in_place}
+		   if exists $opt->{in_place};
+		
+		if (exists $opt->{operands}) {
+			croak "'operands' return value of 'begin' callback\n" .
+				"in descend() must be array reference."
+				unless ref($opt->{operands}) eq 'ARRAY';
+			
+			$tree->{operands} = $opt->{operands};
+		}
+		
+		if (exists $opt->{descend_into}) {
+			croak "'descend_into' return value of 'begin'\n" .
+				"callback in descend() must be array reference."
+				unless ref($opt->{descend_into}) eq 'ARRAY';
+
+			$opt->{descend_into} = [$operand_finder->()]
+			  if @{$opt->{descend_into}} == 0;
+
+			foreach (@{$opt->{descend_into}}) {
+				if (ref $_) {
+					$_->replace($_->descend(%new_args));
+				}
+				else {
+					$tree->{operands}[$_] =
+						$tree->{operands}[$_]
+							->descend(%new_args);
+				}
+			}
+		}
+	}
+	
+	# descend into all operands.
+	elsif (@opt == 0) {
+		foreach ($operand_finder->()) {
+			$_->replace($_->descend(%args));
+		}
+	}
+	
+	# Do nothing.
+	elsif (@opt == 1 and not defined($opt[0])) {}
+	
+	# Descend into indexed operands
+	elsif (@opt >= 1 and not grep {$_ !~ /^[+-]?\d+$/} @opt) {
+		foreach (@opt) {
+			$tree->{operands}[$_] =
+				$tree->{operands}[$_]->descend(%args);
+		}
+	}
+	
+	# Error!
+	else {
+		croak "Invalid return list from descend() 'before' callback.";
+	}
+	
+	# skip the after callback?
+	if (
+		exists $args{after} and
+		!$has_control ||
+			!(
+				exists $opt[0]{skip_after} and
+				$opt[0]{skip_after}
+			)
+	) {
+		$args{after}->($tree);
+	}
+
+	return $tree;
+}
+
+
+
 =head2 Method term_type
 
 Returns the type of the term. This is a stub to be overridden.
@@ -192,6 +515,62 @@ Returns the type of the term. This is a stub to be overridden.
 sub term_type {
 	croak "term_type not defined for " . __PACKAGE__;
 }
+
+
+
+=head2 Method set_value
+
+set_value() returns the tree it modifies, but acts in-place on the
+Math::Symbolic tree it was called on.
+
+set_value() requires named arguments (key/value pairs) that associate
+variable names of variables in the tree with the value-arguments if the
+corresponging key matches the variable name.
+(Can one say this any more complicated?)
+
+Example: $tree->set_value(x => 1, y => 2, z => 3, t => 0) assigns the value 1
+to any occurrances of variables of the name "x", aso.
+
+As opposed to value(), set_value() assigns to the variables I<permanently>
+and does not evaluate the tree.
+
+When called on constants, set_value() sets their value to its first
+argument, but only if there is only one argument.
+
+=cut
+
+sub set_value {
+	my ($self, %args) = @_;
+
+	my $ttype = $self->term_type();
+	if ($ttype == T_CONSTANT) {
+		return $self unless @_ == 2;
+		my $value = $_[1];
+		$self->{value} = $value if defined $value;
+		return $self;
+	}
+	
+	$self->descend(
+		after => sub {
+			my $tree = shift;
+			my $ttype = $tree->term_type();
+			if ($ttype == T_OPERATOR or $ttype == T_CONSTANT) {
+			}
+			elsif ($ttype == T_VARIABLE) {
+				if (exists $args{$tree->{name}}) {
+					$tree->{value} = $args{$tree->{name}};
+				}
+			}
+			else {
+				croak "'set_value' called on invalid term " .
+					"type.";
+			}
+		},
+	);
+
+	return $self;
+}
+
 
 
 =begin comment
@@ -327,10 +706,7 @@ sub AUTOLOAD {
 	$call =~ s/.*\:\:(\w+)$/$1/;
 	study $call;
 	if (
-		$call =~ /^(apply_\w+)/ or
-		$call =~ /^(mod_\w+)/ or
-		$call =~ /^(is_\w+)/ or
-		$call =~ /^(test_\w+)/
+		$call =~ /^((?:apply|mod|is|test|contains)_\w+)/
 	) {
 		my $method = $1;
 		my $ref = Math::Symbolic::Custom->can($method);

@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 20;
+use Test::More tests => 26;
 #use lib 'lib';
 
 use_ok('Math::Symbolic');
@@ -157,6 +157,72 @@ $x = Math::Symbolic::parse_from_string(
 ok(
 	$x->is_sum(),
 	'is_sum true for del/delx that evaluates to a sum'
+);
+
+my $y = Math::Symbolic::parse_from_string(
+	'partial_derivative(10*a^2+(-1/b(x))-3*sin(2),a)'
+);
+$x = Math::Symbolic::parse_from_string(
+	'partial_derivative(10*a^2+(-1/b(x))-3*sin(2),a)'
+);
+ok(
+	$x->is_identical($y),
+	'is_identical true involved term'
+);
+
+$y = Math::Symbolic::parse_from_string(
+	'total_derivative(10*a^2+(-1/b(x))-3*sin(c(d,f,g,i,a)2),a)'
+);
+$x = Math::Symbolic::parse_from_string(
+	'total_derivative(10*a^2+(-1/b(x))-3*sin(c(d,f,g,i,a)2),a)'
+);
+ok(
+	$x->is_identical($y),
+	'is_identical true involved term'
+);
+
+$y = Math::Symbolic::parse_from_string(
+	'total_derivative(10*a^2+(-1/b(a))-3*sin(2),a)'
+);
+$x = Math::Symbolic::parse_from_string(
+	'total_derivative(10*a^2+(-1/b(x))-3*sin(2),a)'
+);
+ok(
+	!$x->is_identical($y),
+	'is_identical false involved term differing in signature'
+);
+
+$y = Math::Symbolic::parse_from_string(
+	'total_derivative(10*a^2+(-2/b(x))-3*sin(2),a)'
+);
+$x = Math::Symbolic::parse_from_string(
+	'total_derivative(10*a^2+(-1/b(x))-3*sin(2),a)'
+);
+ok(
+	!$x->is_identical($y),
+	'is_identical false involved term differing in constant'
+);
+
+$y = Math::Symbolic::parse_from_string(
+	'total_derivative(10*x^2+(-1/b(x))-3*sin(2),a)'
+);
+$x = Math::Symbolic::parse_from_string(
+	'total_derivative(10*a^2+(-1/b(x))-3*sin(2),a)'
+);
+ok(
+	!$x->is_identical($y),
+	'is_identical false involved term differing in variable'
+);
+
+$y = Math::Symbolic::parse_from_string(
+	'total_derivative(10*a^2+(-1*b(x))-3*sin(2),a)'
+);
+$x = Math::Symbolic::parse_from_string(
+	'total_derivative(10*a^2+(-1/b(x))-3*sin(2),a)'
+);
+ok(
+	!$x->is_identical($y),
+	'is_identical false involved term differing in operator'
 );
 
 

@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 8;
+use Test::More tests => 10;
 #use lib 'lib';
 
 use_ok('Math::Symbolic');
@@ -25,6 +25,23 @@ ok(
 	$ten->special() eq '',
 	'constant creation, value(), and special()'
    );
+
+my $euler   = $const->euler();
+ok(
+	ref($euler) eq 'Math::Symbolic::Constant' && $euler->value() >= 2.7 &&
+	$euler->value() <= 2.8 &&
+	$euler->special() eq 'euler',
+	'euler constant creation, value(), and special()'
+   );
+
+my $pi   = $const->pi();
+ok(
+	ref($pi) eq 'Math::Symbolic::Constant' && $pi->value() >= 3.1 &&
+	$pi->value() <= 3.2 &&
+	$pi->special() eq 'pi',
+	'pi constant creation, value(), and special()'
+   );
+
 
 my $op   = Math::Symbolic::Operator->new();
 my $mul1 = $op->new('*', $a, $a);

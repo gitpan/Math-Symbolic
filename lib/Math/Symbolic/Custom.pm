@@ -24,13 +24,15 @@ Math::Symbolic::Custom - Aggregate class for tree tests and transformations
   $tree->mod_transformation2();
   die unless $tree->is_type1();
   die unless $tree->test_condition1();
-
+  die if $tree->contains_something1();
+  
 =head1 DESCRIPTION
 
 This is an aggregate class for all custom modification, transformation
 and testing extensions for Math::Symbolic trees.
 Some default transformations and tests are implemented in the
-Math::Symbolic::Custom::Default package which is automatically
+Math::Symbolic::Custom::DefaultMods and
+Math::Symbolic::Custom::DefaultTests packages which are automatically
 loaded by the Math::Symbolic::Custom class.
 
 Math::Symbolic::Custom imports all constants from
@@ -52,10 +54,11 @@ use Carp;
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.112';
+our $VERSION = '0.113';
 our $AUTOLOAD;
 
-use Math::Symbolic::Custom::Default;
+use Math::Symbolic::Custom::DefaultTests;
+use Math::Symbolic::Custom::DefaultMods;
 
 
 
@@ -71,7 +74,8 @@ New versions of this module can be found on http://steffen-mueller.net or CPAN.
 =head1 SEE ALSO
 
 L<Math::Symbolic::Custom::Base>
-L<Math::Symbolic::Custom::Default>
+L<Math::Symbolic::Custom::DefaultTests>
+L<Math::Symbolic::Custom::DefaultMods>
 
 L<Math::Symbolic>
 

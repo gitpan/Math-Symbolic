@@ -92,7 +92,7 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw();
 
-our $VERSION = '0.112';
+our $VERSION = '0.113';
 
 
 =head2 ($code, $trees) = compile_to_code($tree, $vars)
@@ -228,7 +228,6 @@ sub _rec_ms_to_sub {
 	else {
 		my $type = $tree->type();
 		my $otype = $Math::Symbolic::Operator::Op_Types[$type];
-		my $arity = $otype->{arity};
 		my $app = $otype->{application};
 		if (ref($app) eq 'CODE') {
 			push @$trees, $tree->new();
@@ -272,10 +271,9 @@ sub _find_vars {
 	elsif ($ttype == T_OPERATOR) {
 		my $type = $tree->type();
 		my $otype = $Math::Symbolic::Operator::Op_Types[$type];
-		my $arity = $otype->{arity} || die;
 		my %v = map {($_, undef)} @$vars;
-		foreach (1..$arity) {
-			my $v = _find_vars($tree->{operands}[$_-1]);
+		foreach (0..@{$tree->{operands}}-1) {
+			my $v = _find_vars($tree->{operands}[$_]);
 			foreach (@$v) {
 				$v{$_} = undef;
 			}

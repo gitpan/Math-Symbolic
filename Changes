@@ -1,5 +1,29 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.113  Sun Aug 17 19:13:28 2003
+	- Added the MS::Constant pi() constructor
+	- Added tests and docs.
+	- Added the MS::Base descend() routine. (This is a biggie.)
+	- Converted as many descending routines as possible to be using
+	  descend() instead of descending themselves.
+	  These include is_constant, is_simple_constant, is_sum,
+	  apply_constant_fold, apply_derivatives()
+	- Added new method namespace to be delegated to M::S::Custom:
+	  'contains_.
+	- Added docs and tests.
+	- Added replace().
+	- Fixed a bug in implement(). Now also autoparses strings.
+	- Added is_identical() to M::S::C::Default
+	- Split up M::S::C::Default into M::S::C::DefaultTests and
+	  M::S::C::DefaultMods.
+	- Added the M::S::Base::descending_operands() routine that tries to
+	  find the most sensible operands to descend into.
+	- Added the operand_finder parameter to descend().
+	- Moved set_value to M::S::Base and refactored it to use descend().
+	- Modified implement() similarily to set_value.
+	- Fixed some bugs in implement(), too.
+	- Hacked simplify() some more. This needs to be cleaned up real soon.
+
 0.112  Thu Aug  7 19:11:38 2003
 	- Continued moving functionality into the M::S::Custom::* namespace.
 	- Moved constant_fold into custom namespace

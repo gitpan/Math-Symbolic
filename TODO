@@ -18,7 +18,28 @@ Version 0.115: (pushed back from 0.111)
 	- Whatever's done about that last point, make sure the docs refer to
 	  the correct portion about the operator list.
 
-Version 0.120: (major milestone!) [pushed back from 0.110]
+Version 0.120:
+	- Major change to MS::Operator guts:
+	  - Separate ordinary operands such as the ones found with
+	    arithmetic operators and the special operands such as the
+	    deriving variable with derivatives.
+	    Ordinary operands are to stay in the {operands} hash entry.
+	    Special operands are to be put into a new {special} hash entry.
+	    {special} is an array ref containing the special operands.
+	    These are hashes themselves. They contain certain keys:
+	    - type: The type of operand. May be "variable", "tree", "constant",
+	      etc. ("identifier" even).
+	    - value: The "payload".
+	  - All code must be adapted to be aware of this change.
+	  - This fixes the trouble one may have when "implementing" a
+	    variable used for deriving, etc.
+	  - Makes summation possible as a new operator. The function would
+	    be the only ordinary operand. Lower, upper, and index variable
+	    would all be special.
+	- Documentation for the changes.
+	- Tests for the changes.
+
+Version 0.130: (major milestone!) [pushed back from 0.110]
 	- Instead of all terms being either a Math::Symbolic::Operator, a
 	  Math::Symbolic::Variable, or a Math::Symbolic::Constant object,
 	  introduce actual Math::Symbolic objects as container objects for
@@ -52,7 +73,7 @@ Version 0.120: (major milestone!) [pushed back from 0.110]
 	- Add tests for the new features.
 
 
-Version 0.130: (major milestone!)
+Version 0.140: (major milestone!)
 	- Introduce vector-operators and functions.
 	- Math::Symbolic objects to become functions mapping m
 	  dimensions onto n dimensions.

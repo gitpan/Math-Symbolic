@@ -31,7 +31,7 @@ use Math::Symbolic::ExportConstants qw/:all/;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.112';
+our $VERSION = '0.113';
 
 =head1 METHODS
 
@@ -116,6 +116,23 @@ sub euler {
 
 
 
+=head2 Constructor pi
+
+Arguments are treated as key-value pairs of object attributes.
+Returns a Math::Symbolic::Constant with value of pi.
+The object has its 'special' attribute set to 'pi'.
+
+=cut
+
+sub pi {
+	my $proto = shift;
+	my $class = ref($proto) || $proto;
+
+	return $class->new({@_, value => PI, special => 'pi'})
+}
+
+
+
 =head2 Method value
 
 value() evaluates the Math::Symbolic tree to its numeric representation.
@@ -145,34 +162,6 @@ sub value {
 
 
 
-=head2 Method set_value
-
-set_value() returns nothing and for constants, and sets the constant's value
-to its first argument.
-
-Generally, set_value() works like this:
-
-set_value() requires named arguments (key/value pairs) that associate
-variable names of variables in the tree with the value-arguments if the
-corresponging key matches the variable name.
-(Can one say this any more complicated?)
-
-Example: $tree->set_value(x => 1, y => 2, z => 3, t => 0) assigns the value 1
-to any occurrances of variables of the name "x", aso.
-
-As opposed to value(), set_value() assigns to the variables I<permanently>
-and does not evaluate the tree.
-
-=cut
-
-sub set_value {
-	my $self = shift;
-	my $value = shift;
-	$self->{value} = $value if defined $value;
-}
-
-
-
 =head2 Method signature
 
 signature() returns a tree's signature. (Which is the empty list in case
@@ -198,22 +187,6 @@ have the signature ('acceleration', 'force1', 'force2',..., 'mass', 'time').
 =cut
 
 sub signature {return ();}
-
-
-
-=head2 Method implement
-
-A nop for Math::Symbolic::Constant objects.
-
-Takes key/value pairs as arguments. The keys are to be variable names
-and the values must be valid Math::Symbolic trees. All occurrances
-of the variables will be replaced with their implementation.
-
-=cut
-
-sub implement {
-	return();
-}
 
 
 

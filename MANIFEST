@@ -10,7 +10,8 @@ lib/Math/Symbolic/Compiler.pm
 lib/Math/Symbolic/Constant.pm
 lib/Math/Symbolic/Custom.pm
 lib/Math/Symbolic/Custom/Base.pm
-lib/Math/Symbolic/Custom/Default.pm
+lib/Math/Symbolic/Custom/DefaultMods.pm
+lib/Math/Symbolic/Custom/DefaultTests.pm
 lib/Math/Symbolic/Derivative.pm
 lib/Math/Symbolic/ExportConstants.pm
 lib/Math/Symbolic/Operator.pm

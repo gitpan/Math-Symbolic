@@ -133,7 +133,7 @@ our %EXPORT_TAGS = (
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT = qw();
 
-our $VERSION = '0.112';
+our $VERSION = '0.113';
 
 =head1 CLASS DATA
 
@@ -163,7 +163,7 @@ Please refer to L<Math::Symbolic::Parser> for more information.
 
 sub parse_from_string {
 	my $string = shift;
-	die "Missing string argument from parse_from_string() call"
+	croak "Missing string argument from parse_from_string() call"
 		unless defined $string;
 	$string = shift if $string eq __PACKAGE__ and @_;
 	$string =~ s/\s+//gs;
@@ -257,7 +257,8 @@ L<Math::Symbolic::Variable>
 
 L<Math::Symbolic::Custom>
 L<Math::Symbolic::Custom::Base>
-L<Math::Symbolic::Custom::Default>
+L<Math::Symbolic::Custom::DefaultTests>
+L<Math::Symbolic::Custom::DefaultMods>
 
 L<Math::Symbolic::Derivative>
 
