@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 6;
+use Test::More tests => 8;
 #use lib 'lib';
 
 use_ok('Math::Symbolic');
@@ -69,4 +69,16 @@ HERE
 ok(!$@, 'simplify() did not complain');
 
 print "$simplified = " . $derived->value() . "\n\n";
+
+$@ = undef;
+eval <<'HERE';
+$simplified->value(a=>2);
+HERE
+ok(!$@, 'value() with arguments did not complain');
+
+$@ = undef;
+eval <<'HERE';
+$simplified->set_value(a=>2);
+HERE
+ok(!$@, 'set_value() with arguments did not complain');
 

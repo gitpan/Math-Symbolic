@@ -6,13 +6,13 @@ TODO
 lib/Math/Symbolic.pm
 lib/Math/Symbolic/AuxFunctions.pm
 lib/Math/Symbolic/Base.pm
+lib/Math/Symbolic/Compiler.pm
 lib/Math/Symbolic/Constant.pm
 lib/Math/Symbolic/Derivative.pm
 lib/Math/Symbolic/ExportConstants.pm
 lib/Math/Symbolic/Operator.pm
 lib/Math/Symbolic/Parser.pm
 lib/Math/Symbolic/Variable.pm
-to_sub.pl
 run.pl
 run10.pl
 run2.pl
@@ -35,3 +35,6 @@ t/09hyperbolic.t
 t/10hyperbolic.t
 t/11trigonometric.t
 t/12overload.t
+t/13parse_more.t
+t/14compile.t
+to_sub_new.pl

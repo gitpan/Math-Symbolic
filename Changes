@@ -1,5 +1,15 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.108  Wed Jul 16 22:41:01 2003
+	- Added Math::Symbolic::Compiler (as a modified to_sub.pl).
+	- Modified value() semantics to optionally take arguments.
+	- Added set_value() method.
+	- Added lots of docs.
+	- Added some tests.
+
+0.107  Sun Jul 13 21:25:29 2003
+	- Fixed tests. (Note to self: recreate MANIFEST for dists.)
+
 0.106  Sun Jul 13 19:56:29 2003
 	- Modified the parser to parse unknown identifiers as variables.
 	- Modified Operator constructor to send operands through the parser

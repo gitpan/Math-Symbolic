@@ -31,6 +31,10 @@ Version 0.105:
 	+ Tests for the above.
 	+ Documentation for the above changes
 
+Version 0.108:
+	+ Refactor the to_sub.pl code to a package that allows to compile
+	  Math::Symbolic trees to subroutines and/or code.
+
 Version 0.110: (major milestone!)
 	- Instead of all terms being either a Math::Symbolic::Operator, a
 	  Math::Symbolic::Variable, or a Math::Symbolic::Constant object,
@@ -40,7 +44,7 @@ Version 0.110: (major milestone!)
 	  Two reasons:
 	+ a) The parser can't parse variables without knowing their names
 	     in advance. (Update: That's bullshit. The M::S parser now does
-	     this.)
+	     this perfectly all right.)
 	- b) Math::Symbolic objects should then be able to hold other
 	     Math::Symbolic objects (which needn't necessarily have an
 	     implementation at the time they're used!) as (unknown)
@@ -62,10 +66,6 @@ Version 0.110: (major milestone!)
 	  be reconstructed for a given symbol table. (performance!)
 	  (Now parsing identifiers as vars.)
 	- Add tests for the new features.
-
-Version 0.118:
-	- Refactor the to_sub.pl code to a package that allows to compile
-	  Math::Symbolic trees to subroutines and/or code.
 
 Version 0.120: (major milestone!)
 	- Given the v0.110 enhancements, total derivatives start making sense.

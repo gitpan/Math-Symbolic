@@ -31,7 +31,7 @@ use Math::Symbolic::ExportConstants qw/:all/;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.106';
+our $VERSION = '0.108';
 
 =head1 METHODS
 
@@ -118,8 +118,20 @@ sub euler {
 
 =head2 Method value
 
-Optional argument: sets the object's value.
-Returns the object's value.
+value() evaluates the Math::Symbolic tree to its numeric representation.
+
+value() without arguments requires that every variable in the tree contains
+a defined value attribute. Please note that this refers to every variable
+I<object>, not just every named variable.
+
+value() with one argument sets the object's value.
+
+value() with named arguments (key/value pairs) associates variables in the tree
+with the value-arguments if the corresponging key matches the variable name.
+(Can one say this any more complicated?)
+
+Example: $tree->value(x => 1, y => 2, z => 3, t => 0) assigns the value 1 to
+any occurrances of variables of the name "x", aso.
 
 =cut
 
@@ -130,6 +142,29 @@ sub value {
 	}
 	return $self->{value};
 }
+
+
+
+=head2 Method set_value
+
+set_value() returns nothing and for constants, it doesn't do anything either.
+
+Generally, set_value() works like this:
+
+set_value() requires named arguments (key/value pairs) that associate
+variable names of variables in the tree with the value-arguments if the
+corresponging key matches the variable name.
+(Can one say this any more complicated?)
+
+Example: $tree->set_value(x => 1, y => 2, z => 3, t => 0) assigns the value 1
+to any occurrances of variables of the name "x", aso.
+
+As opposed to value(), set_value() assigns to the variables I<permanently>
+and does not evaluate the tree.
+
+=cut
+
+sub set_value {}
 
 
 

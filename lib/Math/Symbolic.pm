@@ -106,6 +106,7 @@ use Math::Symbolic::Constant;
 use Math::Symbolic::Derivative;
 
 use Math::Symbolic::Parser;
+use Math::Symbolic::Compiler;
 
 require Exporter;
 
@@ -123,7 +124,7 @@ our %EXPORT_TAGS = (
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT = qw();
 
-our $VERSION = '0.106';
+our $VERSION = '0.108';
 
 =head1 CLASS DATA
 
@@ -248,5 +249,6 @@ L<Math::Symbolic::Variable>
 L<Math::Symbolic::Derivative>
 
 L<Math::Symbolic::Parser>
+L<Math::Symbolic::Compiler>
 
 =cut

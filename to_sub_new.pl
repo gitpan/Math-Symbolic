@@ -127,46 +127,19 @@ sub _find_vars {
 	return $vars;
 }
 
-my $v = Math::Symbolic::Variable->new();
-
-my $a = $v->new('a');
-my $b = $v->new('b');
-my $c = $v->new('c');
-my $d = $v->new('d');
-
-my $cn = Math::Symbolic::Constant->new();
-my $one = $cn->one();
-my $two = $cn->new(2);
-
-my $op = Math::Symbolic::Operator->new();
-my $tree = $op->new(
-	'*', $a,
-	$op->new(
-		'+',
-		$op->new(
-			'-',
-			$one,
-			$b
-		),
-		$op->new(
-			'*',
-			$c,
-			$op->new(
-				'/',
-				$d,
-				$op->new(
-					'neg',
-					$two
-				)
+my $string = <<'HERE';
+partial_derivative(
+	a * (
+		1 - b + partial_derivative(
+						0.5 * c^2 * d / -2,
+						c
 			)
-		)
-	)
-);
+	),
+	a
+)
+HERE
 
-$tree = $op->new({
-	type => U_P_DERIVATIVE,
-	operands => [$tree, $a],
-});
+my $tree = Math::Symbolic->parse_from_string($string);
 
 my $vars = [qw(b a d)];
 
@@ -179,3 +152,4 @@ print "Evaluation of sub with (1,2,1,1): ", $sub->(1,2,1,1),"\n";
 print "Required trees:\n";
 use Data::Dumper;
 print Dumper $trees;
+
