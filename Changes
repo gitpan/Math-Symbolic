@@ -1,5 +1,29 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.150  Tue Aug 02 22:48:56 2005
+	- Optimized a couple of bits in the module. This should help a very slight
+	  bit with performance.
+	- Nothing that warrants the jump in version number. The jump is meant to
+	  signal that you should upgrade if you haven't already. Anything
+	  prior to 0.135 may become a problem due to ::Precompiled.
+
+0.136  Sat Jul 30 23:27:03 2005
+	- Added a (long) paragraph about performance to Math::Symbolic docs.
+	- Cleaned the README from some old cruft. (Who cares what was introduced
+	  in version 0.110? Read the change log. Oh. Well, that's what you're
+	  doing right now!)
+
+0.135  Fri Jul 29 21:23:36 2005
+	- Math::Symbolic is over 2 years old now.
+	- It's been 1 year since the last released version.
+	- Fixed bugs in Math::Symbolic::Parser::Precompiled that might cause it
+	  to not compile on some systems. Probably due to different behaviour of
+	  Parse::RecDescent in different versions or so.
+	- Sped up t/18vectorcalc.t which is, well, still slow, but it now has
+	  some Data::Dumper dumped code in its DATA section. That's because Perl
+	  parses *much* faster than Parse::RecDescent!
+	- Doctored around a bit on the docs.
+
 0.134  Thu Jul 29 17:51:53 2004
 	- Corrected embarassing derivative bug.
 	- Modified value() and apply() behaviour. Should not break

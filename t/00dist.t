@@ -10,7 +10,7 @@ BEGIN {
         exit;
     }
     else {
-        Test::Distribution->import( not => [qw(sig prereq)] );
+        Test::Distribution->import( not => [qw(sig prereq podcover)] );
     }
 }
 

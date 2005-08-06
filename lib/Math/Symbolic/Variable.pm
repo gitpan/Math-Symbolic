@@ -42,7 +42,7 @@ use Math::Symbolic::ExportConstants qw/:all/;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.134';
+our $VERSION = '0.150';
 
 =head1 METHODS
 
@@ -69,7 +69,6 @@ sub new {
     my $class = ref($proto) || $proto;
 
     if (    @_ == 1
-        and defined $_[0]
         and ref( $_[0] ) eq 'Math::Symbolic::Variable' )
     {
         return $_[0]->new();
@@ -81,18 +80,13 @@ sub new {
           bless { name => $name, value => $value, signature => [@_] } => $class;
     }
 
-    my %args;
-    %args = %{ shift() }
-      if @_
-      and defined $_[0]
-      and ref( $_[0] ) eq 'HASH';
 
     my $self = {
         value     => undef,
         name      => undef,
         signature => [],
         ( ref($proto) ? %$proto : () ),
-        %args,
+        ((@_ and ref($_[0]) eq 'HASH') ? %{$_[0]} : ()),
     };
 
     bless $self => $class;
@@ -269,3 +263,4 @@ Sourceforge at http://sourceforge.net/projects/math-symbolic/
 L<Math::Symbolic>
 
 =cut
+

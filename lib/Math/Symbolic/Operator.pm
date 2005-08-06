@@ -58,7 +58,7 @@ use Math::Symbolic::Derivative qw//;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.134';
+our $VERSION = '0.150';
 
 =head1 CLASS DATA
 
@@ -234,7 +234,8 @@ our @Op_Types = (
         derive        => 'inverse trigonometric derivatives',
         infix_string  => undef,
         prefix_string => 'asin',
-        application   => 'Math::Symbolic::AuxFunctions::asin($_[0])',
+        #application   => 'Math::Symbolic::AuxFunctions::asin($_[0])',
+        application   => 'atan2( $_[0], sqrt( 1 - $_[0] * $_[0] ) )',
     },
 
     # U_ARCCOSINE
@@ -243,7 +244,8 @@ our @Op_Types = (
         derive        => 'inverse trigonometric derivatives',
         infix_string  => undef,
         prefix_string => 'acos',
-        application   => 'Math::Symbolic::AuxFunctions::acos($_[0])',
+        application   => 'atan2( sqrt( 1 - $_[0] * $_[0] ), $_[0] ) ',
+        #application   => 'Math::Symbolic::AuxFunctions::acos($_[0])',
     },
 
     # U_ARCTANGENT
@@ -252,7 +254,8 @@ our @Op_Types = (
         derive        => 'inverse trigonometric derivatives',
         infix_string  => undef,
         prefix_string => 'atan',
-        application   => 'Math::Symbolic::AuxFunctions::atan($_[0])',
+        application   => 'atan2($_[0], 1)',
+        #application   => 'Math::Symbolic::AuxFunctions::atan($_[0])',
     },
 
     # U_ARCCOTANGENT
@@ -261,7 +264,8 @@ our @Op_Types = (
         derive        => 'inverse trigonometric derivatives',
         infix_string  => undef,
         prefix_string => 'acot',
-        application   => 'Math::Symbolic::AuxFunctions::acot($_[0])',
+        application   => 'atan2(1 / $_[0], 1)',
+        #application   => 'Math::Symbolic::AuxFunctions::acot($_[0])',
     },
 
     # U_SINE_H
@@ -270,7 +274,8 @@ our @Op_Types = (
         derive        => 'trigonometric derivatives',
         infix_string  => undef,
         prefix_string => 'sinh',
-        application   => '0.5*(EULER**$_[0] - EULER**(-$_[0]))',
+        #application   => '0.5*(EULER**$_[0] - EULER**(-$_[0]))',
+        application   => '0.5*('.EULER.'**$_[0] - '.EULER.'**(-$_[0]))',
     },
 
     # U_COSINE_H
@@ -279,7 +284,8 @@ our @Op_Types = (
         derive        => 'trigonometric derivatives',
         infix_string  => undef,
         prefix_string => 'cosh',
-        application   => '0.5*(EULER**$_[0] + EULER**(-$_[0]))',
+        application   => '0.5*('.EULER.'**$_[0] + '.EULER.'**(-$_[0]))',
+        #application   => '0.5*(EULER**$_[0] + EULER**(-$_[0]))',
     },
 
     # U_AREASINE_H
@@ -288,7 +294,8 @@ our @Op_Types = (
         derive        => 'inverse trigonometric derivatives',
         infix_string  => undef,
         prefix_string => 'asinh',
-        application   => 'Math::Symbolic::AuxFunctions::asinh($_[0])',
+        application   => 'log( $_[0] + sqrt( $_[0] * $_[0] + 1 ) ) ',
+        #application   => 'Math::Symbolic::AuxFunctions::asinh($_[0])',
     },
 
     # U_AREACOSINE_H
@@ -297,7 +304,8 @@ our @Op_Types = (
         derive        => 'inverse trigonometric derivatives',
         infix_string  => undef,
         prefix_string => 'acosh',
-        application   => 'Math::Symbolic::AuxFunctions::acosh($_[0])',
+        application   => 'log( $_[0] + sqrt( $_[0] * $_[0] - 1 ) ) ',
+        #application   => 'Math::Symbolic::AuxFunctions::acosh($_[0])',
     },
 
 );
@@ -368,7 +376,7 @@ sub new {
           map {
             ref($_) =~ /^Math::Symbolic/
               ? $_
-              : Math::Symbolic->parse_from_string($_)
+              : Math::Symbolic::parse_from_string($_)
           } @$operands;
 
         return bless {
@@ -378,7 +386,10 @@ sub new {
     }
 
     my %args;
-    %args = %{ $_[0] } if @_ and ref( $_[0] ) eq 'HASH';
+    %args = %{ $_[0] } if @_;
+	# and ref( $_[0] ) eq 'HASH';
+	# above condition isn't necessary since that'd otherwise have been
+	# the above branch.
 
     my $operands = [];
     if ( ref $proto ) {
@@ -398,7 +409,7 @@ sub new {
       map {
         ref($_) =~ /^Math::Symbolic/
           ? $_
-          : Math::Symbolic->parse_from_string($_)
+          : Math::Symbolic::parse_from_string($_)
       } @{ $self->{operands} };
 
     bless $self => $class;
@@ -519,9 +530,7 @@ Returns the type of the term. ( T_OPERATOR )
 
 =cut
 
-sub term_type {
-    return T_OPERATOR;
-}
+sub term_type {T_OPERATOR}
 
 =head2 Method simplify
 
@@ -886,7 +895,7 @@ sub apply {
                 (
                     defined $v
                     ? $v
-                    : die
+                    : croak 
                       "Undefined operand in Math::Symbolic::Operator->apply()"
                   )
             } @$operands;
@@ -901,8 +910,7 @@ sub apply {
         return Math::Symbolic::Constant->new($result);
     }
     else {
-        my $result = $application->(@$operands);
-        return $result;
+        return $application->(@$operands);
     }
 }
 
@@ -1023,3 +1031,5 @@ Sourceforge at http://sourceforge.net/projects/math-symbolic/
 L<Math::Symbolic>
 
 =cut
+
+

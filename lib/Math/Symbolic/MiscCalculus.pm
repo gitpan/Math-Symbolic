@@ -70,7 +70,7 @@ our %EXPORT_TAGS = (
 
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
-our $VERSION = '0.134';
+our $VERSION = '0.150';
 
 =begin comment
 
@@ -312,3 +312,4 @@ Sourceforge at http://sourceforge.net/projects/math-symbolic/
 L<Math::Symbolic>
 
 =cut
+

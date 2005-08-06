@@ -11,6 +11,10 @@ that can be found in $Math::Symbolic::Parser::Grammar. It is used internally
 to improve startup performance. Please use the new() method in the
 Math::Symbolic::Parser namespace to generate new parsers.
 
+Also note that some modules on CPAN (like Math::SymbolicX::Complex, etc.) modify
+the parser which is stored in $Math::Symbolic::Parser at the time of loading
+the module.
+
 =head1 AUTHOR
 
 Please send feedback, bug reports, and support requests to the Math::Symbolic
@@ -39,15 +43,16 @@ L<Math::Symbolic>
 L<Math::Symbolic::Parser>
 
 =cut
+
 package Math::Symbolic::Parser::Precompiled;
-our $VERSION = '0.134';
+our $VERSION = '0.15';
 use Parse::RecDescent;
 
 { my $ERRORS;
 
 
 package Parse::RecDescent::Math::Symbolic::Parser::Precompiled;
-use strict;
+
 use vars qw($skip $AUTOLOAD  );
 $skip = '\s*';
 

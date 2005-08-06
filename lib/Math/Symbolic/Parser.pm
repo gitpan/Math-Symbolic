@@ -117,7 +117,7 @@ use Math::Symbolic::ExportConstants qw/:all/;
 #use Parse::RecDescent;
 my $Required_Parse_RecDescent = 0;
 
-our $VERSION = '0.134';
+our $VERSION = '0.150';
 our $DEBUG   = 0;
 
 our $Grammar = <<'GRAMMAR_END';
@@ -129,14 +129,14 @@ our $Grammar = <<'GRAMMAR_END';
 
 	expr: addition
 			{
-				warn 'expr ' if $Math::Symbolic::Parser::DEBUG;
+				#warn 'expr ' if $Math::Symbolic::Parser::DEBUG;
 				$item[1]
 			}
 
 	addition: <leftop:multiplication add_op multiplication>
 			{
-				warn 'addition '
-				  if $Math::Symbolic::Parser::DEBUG;
+				#warn 'addition '
+				#  if $Math::Symbolic::Parser::DEBUG;
 				Math::Symbolic::Parser::_left_right_op_list(
 				  'addition', @item
 				)
@@ -147,8 +147,8 @@ our $Grammar = <<'GRAMMAR_END';
 
 	multiplication: <leftop:exp mult_op exp>
 			{
-				warn 'multiplication '
-				  if $Math::Symbolic::Parser::DEBUG;
+				#warn 'multiplication '
+				#  if $Math::Symbolic::Parser::DEBUG;
 				Math::Symbolic::Parser::_left_right_op_list(
 				  'multiplication', @item
 				)
@@ -160,7 +160,7 @@ our $Grammar = <<'GRAMMAR_END';
 
 	exp: <rightop:factor exp_op factor>
 			{
-				warn 'exp ' if $Math::Symbolic::Parser::DEBUG;
+				#warn 'exp ' if $Math::Symbolic::Parser::DEBUG;
 				Math::Symbolic::Parser::_left_right_op_list(
 				  'exp', @item
 				)
@@ -170,21 +170,21 @@ our $Grammar = <<'GRAMMAR_END';
 
 	factor: unary
 			{
-				warn 'factor '
-				  if $Math::Symolic::Parser::DEBUG;
+				#warn 'factor '
+				#  if $Math::Symolic::Parser::DEBUG;
 				$item[1]
 			}
 		| '(' expr ')'
 			{
-				warn 'factor '
-					if $Math::Symbolic::Parser::DEBUG;
+				#warn 'factor '
+				#	if $Math::Symbolic::Parser::DEBUG;
 				$item[2]
 			}
 
 	unary: forced_unary_op factor
 			{
-				warn 'unary '
-				  if $Math::Symbolic::Parser::DEBUG;
+				#warn 'unary '
+				#  if $Math::Symbolic::Parser::DEBUG;
 				if ($item[1] and $item[1] eq '-') {
 					Math::Symbolic::Operator->new(
 					  {
@@ -200,8 +200,8 @@ our $Grammar = <<'GRAMMAR_END';
 
 	       | unary_op number
 			{
-				warn 'unary '
-				  if $Math::Symbolic::Parser::DEBUG;
+				#warn 'unary '
+				#  if $Math::Symbolic::Parser::DEBUG;
 				if ($item[1] and $item[1] eq '-') {
 					Math::Symbolic::Operator->new(
 					  {
@@ -216,8 +216,8 @@ our $Grammar = <<'GRAMMAR_END';
 			}
 	       | unary_op function
 			{
-				warn 'unary '
-				  if $Math::Symbolic::Parser::DEBUG;
+				#warn 'unary '
+				#  if $Math::Symbolic::Parser::DEBUG;
 				if ($item[1] and $item[1] eq '-') {
 					Math::Symbolic::Operator->new(
 					  {
@@ -232,8 +232,8 @@ our $Grammar = <<'GRAMMAR_END';
 			}
 	       | unary_op variable
 			{
-				warn 'unary '
-				  if $Math::Symbolic::Parser::DEBUG;
+				#warn 'unary '
+				#  if $Math::Symbolic::Parser::DEBUG;
 				if ($item[1] and $item[1] eq '-') {
 					Math::Symbolic::Operator->new(
 					  {
@@ -259,15 +259,15 @@ our $Grammar = <<'GRAMMAR_END';
 		
 	number: /\d+(\.\d+)?/
 			{
-				warn 'number '
-				  if $Math::Symbolic::Parser::DEBUG;
+				#warn 'number '
+				#  if $Math::Symbolic::Parser::DEBUG;
 				Math::Symbolic::Constant->new($item[1])
 			}
 
 	function: function_name '(' expr_list ')'
 			{
-				warn 'function ' 
-				  if $Math::Symbolic::Parser::DEBUG;
+				#warn 'function ' 
+				#  if $Math::Symbolic::Parser::DEBUG;
 				my $function =
 				  $Math::Symbolic::Operator::Op_Symbols{
 				    $item[1]
@@ -302,8 +302,8 @@ our $Grammar = <<'GRAMMAR_END';
 
 	expr_list: <leftop:expr list_op expr>
 			{
-				warn 'expr_list '
-				  if $Math::Symbolic::Parser::DEBUG;
+				#warn 'expr_list '
+				#  if $Math::Symbolic::Parser::DEBUG;
 				my $i = 1;
 				[
 					grep {
@@ -319,8 +319,8 @@ our $Grammar = <<'GRAMMAR_END';
 
 	variable: identifier '(' identifier_list ')'
 			{
-				warn 'variable '
-				  if $Math::Symbolic::Parser::DEBUG;
+				#warn 'variable '
+				#  if $Math::Symbolic::Parser::DEBUG;
 				Math::Symbolic::Variable->new(
 				  {
 				    name => $item[1],
@@ -331,13 +331,9 @@ our $Grammar = <<'GRAMMAR_END';
 
 		| identifier
 			{
-				warn 'variable '
-				  if $Math::Symbolic::Parser::DEBUG;
-				Math::Symbolic::Variable->new(
-				  {
-				    name => $item[1],
-				  }
-				);
+				#warn 'variable '
+				#  if $Math::Symbolic::Parser::DEBUG;
+				Math::Symbolic::Variable->new( name => $item[1] );
 			}
 
 	identifier: /([a-zA-Z][a-zA-Z0-9_]*)/
@@ -347,8 +343,8 @@ our $Grammar = <<'GRAMMAR_END';
 
 	identifier_list: <leftop:identifier list_op identifier>
 			{
-				warn 'identifier_list '
-				  if $Math::Symbolic::Parser::DEBUG;
+				#warn 'identifier_list '
+				#  if $Math::Symbolic::Parser::DEBUG;
 				my $i = 1;
 				[
 					grep {
@@ -480,7 +476,7 @@ sub new {
         eval 'require Math::Symbolic::Parser::Precompiled;';
         croak "Could not require Math::Symbolic::Parser::Precompiled.\n"
           . "Please install the latest version of Math::Symbolic"
-          . "(>=0.126)."
+          . "(>=0.135)."
           if $@;
         $parser = Math::Symbolic::Parser::Precompiled->new();
     }
@@ -518,3 +514,4 @@ L<Math::Symbolic>
 L<Math::Symbolic::Parser::Precompiled>
 
 =cut
+

@@ -45,7 +45,7 @@ use overload
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.134';
+our $VERSION = '0.150';
 our $AUTOLOAD;
 
 =head1 METHODS
@@ -232,8 +232,7 @@ sub fill_in_vars {
         in_place => 0,
         before   => sub {
             my $term = shift;
-            if ( $term->term_type() == T_VARIABLE
-                and defined $term->{value} )
+            if ( $term->term_type() == T_VARIABLE and defined $term->{value} )
             {
                 $term->replace(
                     Math::Symbolic::Constant->new( $term->{value} ) );
@@ -575,6 +574,7 @@ argument, but only if there is only one argument.
 sub set_value {
     my ( $self, %args );
     if ( @_ == 1 ) {
+		return();
     }
     elsif ( @_ == 2 ) {
         $self = shift;
@@ -630,7 +630,7 @@ sub _overload_make_object {
         if ( not defined $operand ) {
             return $operand;
         }
-        elsif ( $operand =~ /\D/ ) {
+        elsif ( $operand !~ /^\s*\d+\s*$/ ) {
             $operand = Math::Symbolic::parse_from_string($operand);
         }
         else {
@@ -810,3 +810,4 @@ Sourceforge at http://sourceforge.net/projects/math-symbolic/
 L<Math::Symbolic>
 
 =cut
+

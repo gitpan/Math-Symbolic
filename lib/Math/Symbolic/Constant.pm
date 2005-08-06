@@ -33,7 +33,7 @@ use Math::Symbolic::ExportConstants qw/:all/;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.134';
+our $VERSION = '0.150';
 
 =head1 METHODS
 
@@ -54,7 +54,7 @@ sub new {
     my %args;
     %args = %{ shift() } if @_ && ref( $_[0] ) eq 'HASH';
 
-    my $value = ( @_ && !%args ? shift: $args{value} );
+    my $value = ( @_ && !%args ? shift : $args{value} );
     $value = $proto->value() if !defined($value) and ref($proto);
 
     croak("Math::Symbolic::Constant created with undefined value!")
@@ -81,7 +81,13 @@ sub zero {
     my $proto = shift;
     my $class = ref($proto) || $proto;
 
-    return $class->new( { @_, value => 0, special => 'zero' } );
+    croak("Uneven number of arguments to zero()") if @_ % 2;
+
+    return(
+	    bless {@_, value => 0, special => 'zero' } => $class
+	);
+
+#    return $class->new( { @_, value => 0, special => 'zero' } );
 }
 
 =head2 Constructor one
@@ -95,7 +101,13 @@ sub one {
     my $proto = shift;
     my $class = ref($proto) || $proto;
 
-    return $class->new( { @_, value => 1 } );
+    croak("Uneven number of arguments to one()") if @_ % 2;
+
+    return(
+	    bless {@_, value => 1, special => 'one' } => $class
+	);
+	
+    #return $class->new( { @_, value => 1 } );
 }
 
 =head2 Constructor euler
@@ -110,7 +122,13 @@ sub euler {
     my $proto = shift;
     my $class = ref($proto) || $proto;
 
-    return $class->new( { @_, value => EULER, special => 'euler' } );
+    croak("Uneven number of arguments to euler()") if @_ % 2;
+
+    return(
+	    bless {@_, value => EULER, special => 'euler' } => $class
+	);
+    
+	#return $class->new( { @_, value => EULER, special => 'euler' } );
 }
 
 =head2 Constructor pi
@@ -125,7 +143,13 @@ sub pi {
     my $proto = shift;
     my $class = ref($proto) || $proto;
 
-    return $class->new( { @_, value => PI, special => 'pi' } );
+    croak("Uneven number of arguments to pi()") if @_ % 2;
+
+    return(
+	    bless {@_, value => PI, special => 'pi' } => $class
+	);
+    
+	#return $class->new( { @_, value => PI, special => 'pi' } );
 }
 
 =head2 Method value
@@ -157,11 +181,12 @@ it temporarily), the call to value() returns undef.
 sub value {
     my $self = shift;
     if ( @_ == 1 and not ref( $_[0] ) eq 'HASH' ) {
-        $self->{value}   = shift;
+        croak "Constant assigned undefined value!"
+          if not defined $_[0];
+        
+		$self->{value}   = $_[0];
         $self->{special} = undef;    # !!!FIXME!!! one day, this
                                      # needs better handling.
-        croak "Constant assigned undefined value!"
-          if not defined $self->{value};
     }
     return $self->{value};
 }
@@ -239,9 +264,7 @@ Returns the type of the term. (T_CONSTANT)
 
 =cut
 
-sub term_type {
-    return T_CONSTANT;
-}
+sub term_type { T_CONSTANT }
 
 1;
 __END__
@@ -272,3 +295,5 @@ Sourceforge at http://sourceforge.net/projects/math-symbolic/
 L<Math::Symbolic>
 
 =cut
+
+
