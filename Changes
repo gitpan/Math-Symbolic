@@ -1,10 +1,17 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.160  Wed Aug 17 21:16:46 2005
+	- Fixed a bug in the parser that prevented it from parsing C
+	  floating point numbers of the form 1e10.
+	- Hacked on the parser so it's now at least 50% faster!
+	  This results in a very noticeably speedup. Test times jumped
+	  from 17 seconds to 12 seconds on my machine.
+
 0.150  Tue Aug 02 22:48:56 2005
-	- Optimized a couple of bits in the module. This should help a very slight
-	  bit with performance.
-	- Nothing that warrants the jump in version number. The jump is meant to
-	  signal that you should upgrade if you haven't already. Anything
+	- Optimized a couple of bits in the module. This should help a
+	  very slight bit with performance.
+	- Nothing that warrants the jump in version number. The jump is meant
+	  to signal that you should upgrade if you haven't already. Anything
 	  prior to 0.135 may become a problem due to ::Precompiled.
 
 0.136  Sat Jul 30 23:27:03 2005

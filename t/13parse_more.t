@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 15;
+use Test::More tests => 17;
 
 #use lib 'lib';
 
@@ -11,14 +11,12 @@ use_ok('Math::Symbolic');
 use Math::Symbolic::ExportConstants qw/:all/;
 
 my $tree;
-undef $@;
 eval <<'HERE';
 $tree = Math::Symbolic->parse_from_string('a');
 HERE
 ok( ( !$@ and ref($tree) eq 'Math::Symbolic::Variable' ), 'Parsing variables' );
 
 my $str;
-undef $@;
 eval <<'HERE';
 $tree = Math::Symbolic->parse_from_string('a*a');
 HERE
@@ -26,7 +24,6 @@ $str = $tree->to_string();
 $str =~ s/\(|\)|\s+//g;
 ok( ( !$@ and $str eq 'a*a' ), 'Parsing multiplication of variables' );
 
-undef $@;
 eval <<'HERE';
 $tree = $tree + '(b + a)';
 HERE
@@ -35,18 +32,21 @@ $str =~ s/\s+//g;
 ok( ( !$@ and $str eq '(a*a)+(b+a)' ),
     'Parsing parens and addition, precedence, overloaded ops' );
 
-undef $@;
 eval <<'HERE';
-$tree = Math::Symbolic->parse_from_string('a-a+a-a');
+$tree = Math::Symbolic->parse_from_string('a-a+a-a-a');
 HERE
-$str = $tree->to_string();
-$str =~ s/\s+//g;
-ok(
-    ( !$@ and $str eq '((a+a)-a)-a' ),
-    'Parsing difference, chaining, reordering'
-);
+# As with the equivalent in 06parser.t which deals with constants,
+# you can't rely on the parser's reordering any more since version
+# 0.160.
+#$str = $tree->to_string();
+#$str =~ s/\s+//g;
+#ok(
+#    ( !$@ and $str eq '((a+a)-a)-a' ),
+#    'Parsing difference, chaining, reordering'
+#);
+ok( !$@, 'did not die' );
+is($tree->value(a=>5), -5, 'Parsing difference, chaining');
 
-undef $@;
 eval <<'HERE';
 $tree = Math::Symbolic->parse_from_string('-BLABLAIdent_1213_ad');
 HERE
@@ -57,7 +57,6 @@ ok(
     'Parsing unary minus and complex identifier'
 );
 
-undef $@;
 eval <<'HERE';
 $tree = Math::Symbolic->parse_from_string('(1+t)^log(t*2,x^2)');
 HERE
@@ -72,7 +71,6 @@ ok(
     'Parsing exp and log'
 );
 
-undef $@;
 eval <<'HERE';
 $tree = Math::Symbolic->parse_from_string('a') * 3 + 'b' - (
 	Math::Symbolic->parse_from_string('2*c') **
@@ -90,7 +88,6 @@ ok(
     'Parsing complicated term'
 );
 
-undef $@;
 eval <<'HERE';
 $tree = Math::Symbolic::Operator->new('*', 'a', 'b');
 HERE
@@ -99,7 +96,6 @@ $str = $tree->to_string('prefix');
 $str =~ s/\s+//g;
 ok( ( !$@ and $str eq 'multiply(a,b)' ), 'Autoparsing at operator creation' );
 
-undef $@;
 eval <<'HERE';
 $tree = Math::Symbolic->parse_from_string('a(b, c, d)');
 HERE
@@ -110,27 +106,27 @@ ok( ( !$@ and $str eq 'a' ), 'Parsing variable with signature' );
 $str = join '|', $tree->signature();
 ok( ( !$@ and $str eq 'a|b|c|d' ), 'Checking variable for correct signature' );
 
-undef $@;
 eval <<'HERE';
 $tree = Math::Symbolic->parse_from_string('E_pot(r, t) + 1/2 * m(t) * v(t)^2');
 HERE
 
-$str = $tree->to_string('prefix');
-$str =~ s/\s+//g;
-ok(
-    (
-        !$@
-          and $str eq
-          'add(E_pot,divide(multiply(multiply(1,m),exponentiate(v,2)),2))'
-    ),
-    'Parsing term involving variables with signatures'
-);
+#$str = $tree->to_string('prefix');
+#$str =~ s/\s+//g;
+#ok(
+#    (
+#        !$@
+#          and $str eq
+#          'add(E_pot,divide(multiply(multiply(1,m),exponentiate(v,2)),2))'
+#    ),
+#    'Parsing term involving variables with signatures'
+#);
+ok(!$@, 'did not die');
+ok(abs($tree->value(E_pot => 5, m => 3, v => 7) - 78.5) < 1e-8, 'Parsing term involving variables with signatures.' );
 
 $str = join '|', $tree->signature();
 ok( ( !$@ and $str eq 'E_pot|m|r|t|v' ),
     'Checking term for correct signature' );
 
-undef $@;
 eval <<'HERE';
 $tree = Math::Symbolic->parse_from_string('--(a-b)');
 HERE
@@ -141,7 +137,6 @@ ok(
     'Parsing term involving multiple unary minuses'
 );
 
-undef $@;
 eval <<'HERE';
 $tree = Math::Symbolic->parse_from_string('---(a-b)');
 HERE

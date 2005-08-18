@@ -117,7 +117,7 @@ use Math::Symbolic::ExportConstants qw/:all/;
 #use Parse::RecDescent;
 my $Required_Parse_RecDescent = 0;
 
-our $VERSION = '0.150';
+our $VERSION = '0.160';
 our $DEBUG   = 0;
 
 our $Grammar = <<'GRAMMAR_END';
@@ -137,9 +137,19 @@ our $Grammar = <<'GRAMMAR_END';
 			{
 				#warn 'addition '
 				#  if $Math::Symbolic::Parser::DEBUG;
-				Math::Symbolic::Parser::_left_right_op_list(
-				  'addition', @item
-				)
+				if (@{$item[1]} == 1) {
+					$item[1][0]
+				}
+				else {
+					my @it = @{$item[1]};
+					my $tree = shift @it;
+					while (@it) {
+						$tree = Math::Symbolic::Operator->new(
+							shift(@it), $tree, shift(@it)
+						);
+					}
+					$tree;
+				}
 			}
 
 	add_op: '+'
@@ -149,115 +159,112 @@ our $Grammar = <<'GRAMMAR_END';
 			{
 				#warn 'multiplication '
 				#  if $Math::Symbolic::Parser::DEBUG;
-				Math::Symbolic::Parser::_left_right_op_list(
-				  'multiplication', @item
-				)
+				if (@{$item[1]} == 1) {
+					$item[1][0]
+				}
+				else {
+					my @it = @{$item[1]};
+					my $tree = shift @it;
+					while (@it) {
+						$tree = Math::Symbolic::Operator->new(
+							shift(@it), $tree, shift(@it)
+						);
+					}
+					$tree;
+				}
 			}
   
 	mult_op: '*'
 	       | '/'
 
 
-	exp: <rightop:factor exp_op factor>
+	exp: <rightop:factor '^' factor>
 			{
 				#warn 'exp ' if $Math::Symbolic::Parser::DEBUG;
-				Math::Symbolic::Parser::_left_right_op_list(
-				  'exp', @item
-				)
+				if (@{$item[1]} == 1) {
+					$item[1][0]
+				}
+				else {
+					my @it = reverse @{$item[1]};
+					my $tree = shift @it;
+					while (@it) {
+						$tree = Math::Symbolic::Operator->new(
+							'^', shift(@it), $tree
+						);
+					}
+					$tree;
+				}
 			}
 
-	exp_op: '^'
-
-	factor: unary
+	factor: /(?:\+|-)*/ number
 			{
-				#warn 'factor '
-				#  if $Math::Symolic::Parser::DEBUG;
-				$item[1]
+				#warn 'unary_n '
+				#  if $Math::Symbolic::Parser::DEBUG;
+				if ($item[1]) {
+					my @it = split //, $item[1];
+					my $ret = $item[2];
+					foreach (grep {$_ eq '-'} @it) {
+						$ret = Math::Symbolic::Operator->new('neg',$ret);
+					}
+					$ret
+				}
+				else {
+					$item[2]
+				}
 			}
-		| '(' expr ')'
+			
+	       | /(?:\+|-)*/ function
 			{
-				#warn 'factor '
+				#warn 'unary_f '
+				#  if $Math::Symbolic::Parser::DEBUG;
+				if ($item[1]) {
+					my @it = split //, $item[1];
+					my $ret = $item[2];
+					foreach (grep {$_ eq '-'} @it) {
+						$ret = Math::Symbolic::Operator->new('neg',$ret);
+					}
+					$ret
+				}
+				else {
+					$item[2]
+				}
+			}
+			
+	       | /(?:\+|-)*/ variable
+			{
+				#warn 'unary_v '
+				#  if $Math::Symbolic::Parser::DEBUG;
+				if ($item[1]) {
+					my @it = split //, $item[1];
+					my $ret = $item[2];
+					foreach (grep {$_ eq '-'} @it) {
+						$ret = Math::Symbolic::Operator->new('neg',$ret);
+					}
+					$ret
+				}
+				else {
+					$item[2]
+				}
+			}
+
+		| /(?:\+|-)*/ '(' expr ')'
+			{
+				#warn 'unary_expr '
 				#	if $Math::Symbolic::Parser::DEBUG;
-				$item[2]
-			}
-
-	unary: forced_unary_op factor
-			{
-				#warn 'unary '
-				#  if $Math::Symbolic::Parser::DEBUG;
-				if ($item[1] and $item[1] eq '-') {
-					Math::Symbolic::Operator->new(
-					  {
-					    type => Math::Symbolic::U_MINUS,
-					    operands => [$item[2]],
-					  }
-					);
+				if ($item[1]) {
+					my @it = split //, $item[1];
+					my $ret = $item[3];
+					foreach (grep {$_ eq '-'} @it) {
+						$ret = Math::Symbolic::Operator->new('neg',$ret);
+					}
+					$ret
 				}
 				else {
-					$item[2]
+					$item[3]
 				}
 			}
 
-	       | unary_op number
-			{
-				#warn 'unary '
-				#  if $Math::Symbolic::Parser::DEBUG;
-				if ($item[1] and $item[1] eq '-') {
-					Math::Symbolic::Operator->new(
-					  {
-					    type => Math::Symbolic::U_MINUS,
-					    operands => [$item[2]],
-					  }
-					);
-				}
-				else {
-					$item[2]
-				}
-			}
-	       | unary_op function
-			{
-				#warn 'unary '
-				#  if $Math::Symbolic::Parser::DEBUG;
-				if ($item[1] and $item[1] eq '-') {
-					Math::Symbolic::Operator->new(
-					  {
-					    type => Math::Symbolic::U_MINUS,
-					    operands => [$item[2]],
-					  }
-					);
-				}
-				else {
-					$item[2]
-				}
-			}
-	       | unary_op variable
-			{
-				#warn 'unary '
-				#  if $Math::Symbolic::Parser::DEBUG;
-				if ($item[1] and $item[1] eq '-') {
-					Math::Symbolic::Operator->new(
-					  {
-					    type => Math::Symbolic::U_MINUS,
-					    operands => [$item[2]],
-					  }
-					);
-				}
-				else {
-					$item[2]
-				}
-			}
-		
-	unary_op: /([+-]?)/
-			{
-				$item[1]
-			}
-
-	forced_unary_op: /([+-])/
-			{
-				$item[1]
-			}
-		
-	number: /\d+(\.\d+)?/
+	number:	/([+-]?)(?=\d|\.\d)\d*(\.\d*)?([Ee]([+-]?\d+))?/
 			{
 				#warn 'number '
 				#  if $Math::Symbolic::Parser::DEBUG;
@@ -300,24 +307,14 @@ our $Grammar = <<'GRAMMAR_END';
 		     | 'cot'
 
 
-	expr_list: <leftop:expr list_op expr>
+	expr_list: <leftop:expr ',' expr>
 			{
 				#warn 'expr_list '
 				#  if $Math::Symbolic::Parser::DEBUG;
-				my $i = 1;
-				[
-					grep {
-						$i==1 ?
-						(--$i, 1) :
-						(++$i, 0)
-					}
-					@{$item[1]}
-				]
+				$item[1]
 			}
 
-	list_op: ','
-
-	variable: identifier '(' identifier_list ')'
+	variable: /[a-zA-Z][a-zA-Z0-9_]*/ '(' identifier_list ')'
 			{
 				#warn 'variable '
 				#  if $Math::Symbolic::Parser::DEBUG;
@@ -329,118 +326,22 @@ our $Grammar = <<'GRAMMAR_END';
 				);
 			}
 
-		| identifier
+		| /[a-zA-Z][a-zA-Z0-9_]*/
 			{
 				#warn 'variable '
 				#  if $Math::Symbolic::Parser::DEBUG;
-				Math::Symbolic::Variable->new( name => $item[1] );
+				Math::Symbolic::Variable->new( $item[1] );
 			}
 
-	identifier: /([a-zA-Z][a-zA-Z0-9_]*)/
-			{
-				$item[1]
-			}
-
-	identifier_list: <leftop:identifier list_op identifier>
+	identifier_list: <leftop:/[a-zA-Z][a-zA-Z0-9_]*/ ',' /[a-zA-Z][a-zA-Z0-9_]*/>
 			{
 				#warn 'identifier_list '
 				#  if $Math::Symbolic::Parser::DEBUG;
-				my $i = 1;
-				[
-					grep {
-						$i==1 ?
-						(--$i, 1) :
-						(++$i, 0)
-					}
-					@{$item[1]}
-				]
+				$item[1]
 			}
 	
 GRAMMAR_END
 
-=begin comment
-
-This subroutine (_left_right_op_list) is used by the parser to generate
-Math::Symbolic trees.
-
-=end comment
-
-=cut
-
-sub _left_right_op_list {
-    my $type = shift;
-    my $item = $_[1];
-
-    my @ops;
-    if ( @$item == 1 ) {
-        return $item->[0];
-    }
-    elsif ( $type eq 'exp' ) {
-        @ops = ( [ '^', shift @$item ] );
-    }
-    elsif ( $type eq 'multiplication' ) {
-        @ops = ( [ '*', shift @$item ] );
-    }
-    elsif ( $type eq 'addition' ) {
-        @ops = ( [ '+', shift @$item ] );
-    }
-    else {
-        die "Invalid operator!";
-    }
-
-    while ( @$item >= 2 ) {
-        push @ops, [ shift @$item, shift @$item ];
-    }
-    my %mapper = (
-        '*' => 0,
-        '/' => 1,
-        '+' => 2,
-        '-' => 3,
-        '^' => 4
-    );
-    @ops = sort { $mapper{ $a->[0] } <=> $mapper{ $b->[0] } } @ops;
-    my $tree;
-
-    if ( $type eq 'exp' ) {
-        @ops  = reverse @ops;
-        $tree = $ops[0][1];
-        shift @ops;
-        foreach my $elem (@ops) {
-            my $op      = $elem->[0];
-            my $op_type = $Math::Symbolic::Operator::Op_Symbols{$op};
-
-            die "Invalid operator: '$op'"
-              unless defined $op_type;
-
-            $tree = Math::Symbolic::Operator->new(
-                {
-                    type     => $op_type,
-                    operands => [ $elem->[1], $tree ],
-                }
-            );
-        }
-    }
-    elsif ( $type eq 'multiplication' or $type eq 'addition' ) {
-        $tree = $ops[0][1];
-        shift @ops;
-        foreach my $elem (@ops) {
-            my $op      = $elem->[0];
-            my $op_type = $Math::Symbolic::Operator::Op_Symbols{$op};
-
-            die "Invalid operator: '$op'"
-              unless defined $op_type;
-
-            $tree = Math::Symbolic::Operator->new(
-                {
-                    type     => $op_type,
-                    operands => [ $tree, $elem->[1] ],
-                }
-            );
-        }
-    }
-
-    return $tree;
-}
 
 =head2 Constructor new
 

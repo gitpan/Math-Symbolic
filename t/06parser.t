@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 10;
+use Test::More tests => 11;
 
 #use lib 'lib';
 
@@ -38,12 +38,18 @@ undef $@;
 eval <<'HERE';
 $tree = Math::Symbolic->parse_from_string('2-2+2-2');
 HERE
-$str = $tree->to_string();
-$str =~ s/\s+//g;
-ok(
-    ( !$@ and $str eq '((2+2)-2)-2' ),
-    'Parsing difference, chaining, reordering'
-);
+# as of version 0.160, this is no longer true.
+# The parser doesn't reorder the same way it used to.
+# It was a bad test anyway.
+#$str = $tree->to_string();
+#$str =~ s/\s+//g;
+#ok(
+#    ( !$@ and $str eq '((2+2)-2)-2' ),
+#    'Parsing difference, chaining, reordering'
+#);
+
+ok( !$@, 'no fatal error.');
+is($tree->value(), 2+2-2-2, 'Parsing difference, chaining.' );
 
 undef $@;
 eval <<'HERE';
