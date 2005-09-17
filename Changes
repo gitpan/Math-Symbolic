@@ -1,5 +1,17 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.161  Wed Sep  7 21:04:02 2005
+	- Corrected a few bugs in ::Derivative.
+	- Sped up ::Derivative a bit.
+	- Included obvious simplifications into the derivative
+	  routines that avoid crap such as '0*foo'.
+	- Small modifications to t/04deep_derivatives.t.
+	  We derive only ten times instead of twenty.
+	- simplify() now takes an argument: A boolean indicating
+	  whether or not the routine has to clone.
+	- Fixed bugs in simplify().
+	- Improved the simplification routines.
+
 0.160  Wed Aug 17 21:16:46 2005
 	- Fixed a bug in the parser that prevented it from parsing C
 	  floating point numbers of the form 1e10.

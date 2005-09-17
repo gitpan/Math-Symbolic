@@ -58,7 +58,7 @@ use Math::Symbolic::Derivative qw//;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.160';
+our $VERSION = '0.161';
 
 =head1 CLASS DATA
 
@@ -535,17 +535,37 @@ sub term_type {T_OPERATOR}
 =head2 Method simplify
 
 Term simpilification.
+First argument: Boolean indicating that the tree does not
+need to be cloned, but can be restructured instead.
+While this is faster, you might not be able to use the old
+tree any more.
+
+Example:
+
+  my $othertree = $tree->simplify();
+  # can use $othertree and $tree now.
+
+  my $yetanothertree = $tree->simplify(1);
+  # must not use $tree any more because its internal
+  # representation might have been destroyed.
+
+If you want to optimize a routine and you're sure that you
+won't need the unsimplified tree any more, go ahead and use
+the first parameter. In all other cases, you should go the
+safe route.
 
 =cut
 
 sub simplify {
     my $self = shift;
-    $self = $self->new();
+	my $dont_clone = shift;
+    $self = $self->new() unless $dont_clone;
 
     my $operands = $self->{operands};
     my $op       = $Op_Types[ $self->type() ];
 
-    @$operands = map { $_->simplify() } @$operands;
+	# simplify operands without cloning.
+    @$operands = map { $_->simplify(1) } @$operands;
 
     if ( $self->arity() == 2 ) {
         my $o1   = $operands->[0];
@@ -561,11 +581,11 @@ sub simplify {
         if ( $o1->is_identical($o2) ) {
             if ( $type == B_PRODUCT ) {
                 my $two = Math::Symbolic::Constant->new(2);
-                return $self->new( '^', $o1, $two )->simplify();
+                return $self->new( '^', $o1, $two )->simplify(1);
             }
             elsif ( $type == B_SUM ) {
                 my $two = Math::Symbolic::Constant->new(2);
-                return $self->new( '*', $two, $o1 )->simplify();
+                return $self->new( '*', $two, $o1 )->simplify(1);
             }
             elsif ( $type == B_DIVISION ) {
                 croak "Symbolic division by zero."
@@ -586,48 +606,54 @@ sub simplify {
         {
             return Math::Symbolic::Constant->one();
         }
-        elsif ( $tt2 == T_CONSTANT
+		
+        if ( $tt2 == T_CONSTANT
             and $type == B_EXP
             and ( $o2->value() == 1 or $o2->special() eq 'one' ) )
         {
             return $o1;
         }
-        elsif ( $tt2 == T_CONSTANT
+		
+        if ( $tt2 == T_CONSTANT
             and $tt1 == T_OPERATOR
             and $type == B_EXP
             and $o1->type() == B_EXP )
         {
             return $self->new( '^', $o1->op1(),
-                $self->new( '*', $o2, $o1->op2() ) )->simplify();
+                $self->new( '*', $o2, $o1->op2() ) )->simplify(1);
         }
-        elsif ( $tt1 == T_VARIABLE
-            and $tt2 == T_VARIABLE
-            and $o1->name() eq $o2->name() )
-        {
-            if ( $type == B_SUM ) {
-                my $two = Math::Symbolic::Constant->new(2);
-                return $self->new( '*', $two, $o1 );
-            }
-            elsif ( $type == B_DIFFERENCE ) {
-                return Math::Symbolic::Constant->zero();
-            }
-            elsif ( $type == B_PRODUCT ) {
-                my $two = Math::Symbolic::Constant->new(2);
-                return $self->new( '^', $o1, $two );
-            }
-            elsif ( $type == B_DIVISION ) {
-                return Math::Symbolic::Constant->one();
-            }
-        }
-        elsif ( $tt1 == T_CONSTANT or $tt2 == T_CONSTANT ) {
+
+# redundant
+#        if ( $tt1 == T_VARIABLE
+#            and $tt2 == T_VARIABLE
+#            and $o1->name() eq $o2->name() )
+#        {
+#            if ( $type == B_SUM ) {
+#                my $two = Math::Symbolic::Constant->new(2);
+#                return $self->new( '*', $two, $o1 );
+#            }
+#            elsif ( $type == B_DIFFERENCE ) {
+#                return Math::Symbolic::Constant->zero();
+#            }
+#            elsif ( $type == B_PRODUCT ) {
+#                my $two = Math::Symbolic::Constant->new(2);
+#                return $self->new( '^', $o1, $two );
+#            }
+#            elsif ( $type == B_DIVISION ) {
+#                return Math::Symbolic::Constant->one();
+#            }
+#        }
+        if ( $tt1 == T_CONSTANT or $tt2 == T_CONSTANT ) {
             my $const = ( $tt1 == T_CONSTANT ? $o1 : $o2 );
             my $not_c = ( $tt1 == T_CONSTANT ? $o2 : $o1 );
             my $constant_first = $tt1 == T_CONSTANT;
 
             if ( $type == B_SUM ) {
                 return $not_c if $const->value() == 0;
+				return Math::Symbolic::Operator->new('+', $const, $not_c);
             }
-            elsif ( $type == B_DIFFERENCE ) {
+            
+			if ( $type == B_DIFFERENCE ) {
                 return $not_c
                   if !$constant_first
                   and $const->value == 0;
@@ -640,7 +666,8 @@ sub simplify {
                     );
                 }
             }
-            elsif ( $type == B_PRODUCT ) {
+            
+			if ( $type == B_PRODUCT ) {
                 return $not_c if $const->value() == 1;
                 return Math::Symbolic::Constant->zero()
                   if $const->value == 0;
@@ -694,38 +721,34 @@ sub simplify {
 
         if ( $type == B_SUM ) {
             my @ops;
-            my @vars;
-            my @neg_vars;
             my @const;
             my @todo = ( $o1, $o2 );
+            my %vars;
             while (@todo) {
-                if ( $todo[0]->term_type() == T_OPERATOR ) {
-                    my $t = $todo[0]->type();
+				my $this = shift @todo;
+                if ( $this->term_type() == T_OPERATOR ) {
+                    my $t = $this->type();
                     if ( $t == B_SUM ) {
-                        push @todo, @{ $todo[0]->{operands} };
-                        shift @todo;
+                        push @todo, @{ $this->{operands} };
                     }
                     elsif ( $t == B_DIFFERENCE ) {
-                        push @todo, $todo[0]->op1(),
+                        push @todo, $this->op1(),
                           Math::Symbolic::Operator->new( 'neg',
-                            $todo[0]->op2() );
+                            $this->op2() );
                     }
                     elsif ( $t == U_MINUS ) {
-                        my $op = $todo[0]->op1();
+                        my $op = $this->op1();
                         my $tt = $op->term_type();
                         if ( $tt == T_VARIABLE ) {
-                            push @neg_vars, $op;
-                            shift @todo;
+                            $vars{$op->name}--;
                         }
                         elsif ( $tt == T_CONSTANT ) {
                             push @const, $todo[0]->value();
-                            shift @todo;
                         }
                         else {
                             my $ti = $op->type();
                             if ( $ti == U_MINUS ) {
                                 push @todo, $op->op1();
-                                shift @todo;
                             }
                             elsif ( $ti == B_SUM ) {
                                 push @todo,
@@ -734,65 +757,75 @@ sub simplify {
                                   ),
                                   Math::Symbolic::Operator->new( 'neg',
                                     $op->op2() );
-                                shift @todo;
                             }
                             elsif ( $ti == B_DIFFERENCE ) {
-                                push @todo, $op->op1(),
+                                push @todo, $op->op2(),
                                   Math::Symbolic::Operator->new( 'neg',
-                                    $op->op2() );
-                                shift @todo;
+                                    $op->op1() );
                             }
-                        }
+							else {
+								push @ops, $this;
+							}
+						}
+					}
+					elsif ( $t == B_PRODUCT ) {
+						my ($o1, $o2) = @{$this->{operands}};
+						my $tl = $o1->term_type();
+						my $tr = $o2->term_type();
+						
+						if ($tl == T_VARIABLE and $tr == T_CONSTANT) {
+							$vars{$o1->name}+= $o2->value();
+						}
+						elsif ($tr == T_VARIABLE and $tl == T_CONSTANT) {
+							$vars{$o2->name}+= $o1->value();
+						}
+						else {
+                        	push @ops, $this;
+						}
                     }
                     else {
-                        push @ops, shift @todo;
+                        push @ops, $this;
                     }
                 }
-                elsif ( $todo[0]->term_type() == T_VARIABLE ) {
-                    push @vars, shift @todo;
+                elsif ( $this->term_type() == T_VARIABLE ) {
+                    $vars{$this->name}++;
                 }
                 else {
-                    push @const, shift @todo;
+                    push @const, $this->value();
                 }
             }
-            my %vars;
-            foreach (@vars) {
-                my $name = $_->name();
-                if ( exists $vars{$name} ) {
-                    push @{ $vars{$name} }, $_;
-                }
-                else {
-                    $vars{ $_->name() } = [$_];
-                }
-            }
-            my @leftoverneg;
-            foreach (@neg_vars) {
-                my $name = $_->name();
-                push( @leftoverneg, $_ ), next if not exists $vars{$name};
-                shift @{ $vars{ $_->name() } };
-                delete $vars{$name} if not @{ $vars{$name} };
-            }
-            my $const = Math::Symbolic::Constant->zero();
-            $const += $_ foreach @const;
-            $const = $const->simplify();
 
-            foreach ( keys %vars ) {
-                my $ary = $vars{$_};
-                if ( @$ary == 1 ) {
-                    $const =
-                      Math::Symbolic::Operator->new( '+', $const, $ary->[0] );
-                }
-                else {
-                    $const = Math::Symbolic::Operator->new(
-                        '+', $const,
-                        Math::Symbolic::Operator->new(
-                            '*', Math::Symbolic::Constant->new( scalar(@$ary) ),
-                            $ary->[0]
-                        )
-                    );
-                }
+			my @vars = ();
+			foreach (keys %vars) {
+				my $num  = $vars{$_};
+				if (!$num) { next; }
+				
+				if ($num == 1) {
+					push @vars, Math::Symbolic::Variable->new($_);
+					next;
+				}
+				my $mul = Math::Symbolic::Operator->new(
+					'*',
+					Math::Symbolic::Constant->new($num),
+					Math::Symbolic::Variable->new($_)
+				);
+				push @ops, $num < 0
+					? Math::Symbolic::Operator->new('neg', $mul)
+					: $mul;				
+			}
+            
+			my $const = 0;
+            $const += $_ foreach @const;
+            $const = Math::Symbolic::Constant->new($const) if $const != 0;
+
+			$const = shift @vars if not defined $const;
+            foreach ( @vars ) {
+				$const = Math::Symbolic::Operator->new('+', $const, $_);
             }
+			
+			@ops = map {$_->simplify(1)} @ops;
             my @newops;
+			push @newops, $const if defined $const;
             foreach my $out ( 0 .. $#ops ) {
                 next if not defined $ops[$out];
                 my $identical = 0;
@@ -812,15 +845,15 @@ sub simplify {
                         $ops[$out] );
                 }
             }
+			
+			my $sumops;
             if (@newops) {
-                my $sumops = shift @newops;
+                $sumops = shift @newops;
                 $sumops += $_ foreach @newops;
-                $const += $sumops;
             }
+			else {return Math::Symbolic::Constant->zero()}
 
-            $const -= $_ foreach @leftoverneg;
-
-            return $const;
+            return $sumops;
         }
     }
     elsif ( $self->arity() == 1 ) {
@@ -837,7 +870,7 @@ sub simplify {
                     return $o->{operands}[0];
                 }
                 elsif ( $inner_type == B_DIFFERENCE ) {
-                    return $o->new( '-', $o->op2(), $o->op1() );
+                    return $o->new( '-', @{$o->{operands}}[1,0] );
                 }
             }
         }

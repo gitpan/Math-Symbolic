@@ -43,7 +43,6 @@ print "Expression: (a+c)/(a*b)\n\n";
 
 print "prefix notation and evaluation:\n";
 
-$@ = undef;
 eval <<'HERE';
 print $div1->to_string('prefix') . " = " . $div1->value() . "\n\n";
 HERE
@@ -51,7 +50,6 @@ ok( !$@, 'to_string("prefix") did not complain' );
 
 print "Now, we derive this partially to a: (prefix again)\n";
 
-$@ = undef;
 my $n_tree;
 eval <<'HERE';
 $n_tree = $op->new( {
@@ -87,7 +85,7 @@ my $simplified;
 eval <<'HERE';
 $simplified = $derived->simplify();
 HERE
-ok( !$@, 'simplify() did not complain' );
+ok( !$@&&defined($simplified), 'simplify() did not complain' );
 
 print "$simplified = " . $derived->value() . "\n\n";
 

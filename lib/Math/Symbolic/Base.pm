@@ -45,7 +45,7 @@ use overload
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.160';
+our $VERSION = '0.161';
 our $AUTOLOAD;
 
 =head1 METHODS
@@ -752,11 +752,17 @@ sub AUTOLOAD {
             goto &$ref;
         }
         else {
-            croak "Invalid method called on Math::Symbolic " . "tree: '$call'.";
+			my $obj = $_[0];
+			my $class = ref $obj;
+            croak "Invalid method '$call' called on Math::Symbolic "
+			."tree. Tree was of type '$class'";
         }
     }
     else {
-        croak "Invalid method called on Math::Symbolic tree: '$call'.";
+        my $obj = $_[0];
+        my $class = ref $obj;
+        croak "Invalid method '$call' called on Math::Symbolic "
+        ."tree. Tree was of type '$class'";
     }
 }
 

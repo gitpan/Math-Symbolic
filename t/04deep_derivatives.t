@@ -24,7 +24,7 @@ my $exp1 = $op->new( '^', $e, $mul1 );
 print "prefix notation and evaluation:\n";
 print $exp1->to_string('prefix') . " = " . $exp1->value() . "\n\n";
 
-print "Now, we derive this partially to a (20 times): (infix)\n";
+print "Now, we derive this partially to 'a' (10 times): (infix)\n";
 
 my $n_tree = $op->new(
     {
@@ -32,7 +32,7 @@ my $n_tree = $op->new(
         operands => [ $exp1, $a ],
     }
 );
-foreach ( 1 .. 20 ) {
+foreach ( 1 .. 10 ) {
     print "$_\n";
     $n_tree = $op->new(
         {
@@ -46,7 +46,7 @@ foreach ( 1 .. 20 ) {
 
 print $n_tree->to_string('infix') . " = " . $n_tree->value() . "\n\n";
 
-ok( $n_tree->op1()->value() > 1e6, 'Large coefficient and op1() method' );
+ok( abs($n_tree->op1()->value()-2048)<1e-10 , 'Large coefficient and op1() method' );
 ok( $n_tree->op2()->op2()->op1()->value() == 2, 'op2() method' );
 ok(
     $n_tree->op2()->op1()->{special} eq 'euler',
