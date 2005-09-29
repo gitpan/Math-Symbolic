@@ -1,9 +1,4 @@
 Changes
-MANIFEST
-META.yml
-Makefile.PL
-README
-TODO
 examples/run01.pl
 examples/run02.pl
 examples/run03.pl
@@ -23,6 +18,7 @@ examples/run16.pl
 examples/run17.pl
 examples/run18.pl
 examples/run19.pl
+examples/run20.pl
 lib/Math/Symbolic.pm
 lib/Math/Symbolic/AuxFunctions.pm
 lib/Math/Symbolic/Base.pm
@@ -40,9 +36,15 @@ lib/Math/Symbolic/MiscCalculus.pm
 lib/Math/Symbolic/Operator.pm
 lib/Math/Symbolic/Parser.pm
 lib/Math/Symbolic/Parser/Precompiled.pm
+lib/Math/Symbolic/t.txt
 lib/Math/Symbolic/Variable.pm
 lib/Math/Symbolic/VectorCalculus.pm
+Makefile.PL
+MANIFEST
+META.yml
+README
 t/00dist.t
+t/00pod.t
 t/00podcover.t
 t/01basic.t
 t/02basic.t
@@ -65,3 +67,4 @@ t/18vectorcalc.t
 t/19misccalc.t
 t/20miscalgebra.t
 t/21dumpers.t
+TODO

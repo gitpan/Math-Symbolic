@@ -33,7 +33,7 @@ use Math::Symbolic::ExportConstants qw/:all/;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.161';
+our $VERSION = '0.162';
 
 =head1 METHODS
 

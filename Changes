@@ -1,5 +1,9 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.162  Thu Sep 22 22:19:41 2005
+	- Added t/00pod.t which runs Test::Pod if it is availlable.
+	- Added a "license" line to META.yml
+
 0.161  Wed Sep  7 21:04:02 2005
 	- Corrected a few bugs in ::Derivative.
 	- Sped up ::Derivative a bit.
