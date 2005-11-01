@@ -1,14 +1,78 @@
-# http://module-build.sourceforge.net/META-spec.html
-#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
-name:         Math-Symbolic
-version:      0.162
-version_from: lib/Math/Symbolic.pm
-installdirs:  site
+---
+name: Math-Symbolic
+version: 0.163
+author:
+  - Steffen Mueller <modules at steffen-mueller dot net>
+abstract: Symbolic calculations
+license: perl
 requires:
-    Data::Dumper:                  0
-    Memoize:                       1.01
-    Parse::RecDescent:             0
-    Test::More:                    0
-
-distribution_type: module
-generated_by: ExtUtils::MakeMaker version 6.30
+  Data::Dumper: 0
+  Memoize: 1.01
+  Parse::RecDescent: 0
+recommends:
+  Test::Pod: 1.0
+  Test::Pod::Coverage: 1.0
+build_requires:
+  Test::More: 0
+provides:
+  Math::Symbolic:
+    file: lib/Math/Symbolic.pm
+    version: 0.163
+  Math::Symbolic::AuxFunctions:
+    file: lib/Math/Symbolic/AuxFunctions.pm
+    version: 0.163
+  Math::Symbolic::Base:
+    file: lib/Math/Symbolic/Base.pm
+    version: 0.163
+  Math::Symbolic::Compiler:
+    file: lib/Math/Symbolic/Compiler.pm
+    version: 0.163
+  Math::Symbolic::Constant:
+    file: lib/Math/Symbolic/Constant.pm
+    version: 0.163
+  Math::Symbolic::Custom:
+    file: lib/Math/Symbolic/Custom.pm
+    version: 0.163
+  Math::Symbolic::Custom::Base:
+    file: lib/Math/Symbolic/Custom/Base.pm
+    version: 0.163
+  Math::Symbolic::Custom::DefaultDumpers:
+    file: lib/Math/Symbolic/Custom/DefaultDumpers.pm
+    version: 0.163
+  Math::Symbolic::Custom::DefaultMods:
+    file: lib/Math/Symbolic/Custom/DefaultMods.pm
+    version: 0.163
+  Math::Symbolic::Custom::DefaultTests:
+    file: lib/Math/Symbolic/Custom/DefaultTests.pm
+    version: 0.163
+  Math::Symbolic::Derivative:
+    file: lib/Math/Symbolic/Derivative.pm
+    version: 0.163
+  Math::Symbolic::ExportConstants:
+    file: lib/Math/Symbolic/ExportConstants.pm
+    version: 0.163
+  Math::Symbolic::MiscAlgebra:
+    file: lib/Math/Symbolic/MiscAlgebra.pm
+    version: 0.163
+  Math::Symbolic::MiscCalculus:
+    file: lib/Math/Symbolic/MiscCalculus.pm
+    version: 0.163
+  Math::Symbolic::Operator:
+    file: lib/Math/Symbolic/Operator.pm
+    version: 0.163
+  Math::Symbolic::Parser:
+    file: lib/Math/Symbolic/Parser.pm
+    version: 0.163
+  Math::Symbolic::Parser::Precompiled:
+    file: lib/Math/Symbolic/Parser/Precompiled.pm
+    version: 0.163
+  Math::Symbolic::Variable:
+    file: lib/Math/Symbolic/Variable.pm
+    version: 0.163
+  Math::Symbolic::VectorCalculus:
+    file: lib/Math/Symbolic/VectorCalculus.pm
+    version: 0.163
+  Parse::RecDescent::Math::Symbolic::Parser::Precompiled:
+    file: lib/Math/Symbolic/Parser/Precompiled.pm
+    version: 0.163
+generated_by: Module::Build version 0.2611

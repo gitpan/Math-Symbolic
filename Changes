@@ -1,5 +1,11 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.163  Thu Oct 06 21:43:59 2005
+	- Added 'use strict;' to the top of ::Parser::Precompiled.
+	- Added 'use strict;' to the parser generator.
+	- Changed build process to use Module::Build but still supports
+	  Makefile.PL.
+
 0.162  Thu Sep 22 22:19:41 2005
 	- Added t/00pod.t which runs Test::Pod if it is availlable.
 	- Added a "license" line to META.yml

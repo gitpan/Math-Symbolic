@@ -1,4 +1,4 @@
-
+use strict;
 
 =head1 NAME
 
@@ -45,7 +45,7 @@ L<Math::Symbolic::Parser>
 =cut
 
 package Math::Symbolic::Parser::Precompiled;
-our $VERSION = '0.162';
+our $VERSION = '0.163';
 use Parse::RecDescent;
 
 { my $ERRORS;

@@ -1,3 +1,4 @@
+Build.PL
 Changes
 examples/run01.pl
 examples/run02.pl
@@ -39,8 +40,7 @@ lib/Math/Symbolic/Parser/Precompiled.pm
 lib/Math/Symbolic/t.txt
 lib/Math/Symbolic/Variable.pm
 lib/Math/Symbolic/VectorCalculus.pm
-Makefile.PL
-MANIFEST
+MANIFEST			This list of files
 META.yml
 README
 t/00dist.t
@@ -68,3 +68,5 @@ t/19misccalc.t
 t/20miscalgebra.t
 t/21dumpers.t
 TODO
+Makefile.PL
+SIGNATURE    Added here by Module::Build

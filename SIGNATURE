@@ -1,0 +1,94 @@
+This file contains message digests of all files listed in MANIFEST,
+signed via the Module::Signature module, version 0.50.
+
+To verify the content in this distribution, first make sure you have
+Module::Signature installed, then type:
+
+    % cpansign -v
+
+It will check each file's integrity, as well as the signature's
+validity.  If "==> Signature verified OK! <==" is not displayed,
+the distribution may already have been compromised, and you should
+not run its Makefile.PL or Build.PL.
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+SHA1 1439805f7d3f4554140b10ca8ef0209de5b2471b Build.PL
+SHA1 d37726e00ff43ecc250dba8386ef61d500afda38 Changes
+SHA1 5f4c5dff61394a412c49acbf8b819e1bd81a0d8a MANIFEST
+SHA1 0ccae3d78335116a39e70a3354c25309717ee540 META.yml
+SHA1 c810e34cc1db571e0f802e2d2a3082b0fcd8f616 Makefile.PL
+SHA1 4d065caac2a3885077b22b293c712553258c8217 README
+SHA1 72bfadaa10e40bdfef68089fca0cb97000c10970 TODO
+SHA1 da3fb177006ce574df4f8eb181a206788bacea31 examples/run01.pl
+SHA1 994e58bdaaa7d596d30f444931579915850faba3 examples/run02.pl
+SHA1 a492d7cbce35ebf4fd85f1a75419282bf81e2f7a examples/run03.pl
+SHA1 3458857681e68ad3c1782c389f88f69722078900 examples/run04.pl
+SHA1 c58f89c38cf7c71d511eb52f52abf96e651c165f examples/run05.pl
+SHA1 f2479013e86916832528e63ed39ac8024b26d904 examples/run06.pl
+SHA1 1e7777922fb6fb89ff550c0a08c016c5c822254c examples/run07.pl
+SHA1 a98e17c51d1c0546d05dcf4d68567590b99c3df7 examples/run08.pl
+SHA1 d33f7193c8211d38839792310105b31514ac4220 examples/run09.pl
+SHA1 83a588cde36febc6b9334e91b612d3a746747225 examples/run10.pl
+SHA1 7f62fa4e1074dba5136d181d825696be5259d136 examples/run11.pl
+SHA1 181c890cc97473fa44828385bd23900cb3192e0e examples/run12.pl
+SHA1 f253f7d082795c20d22f542eb817c2c8101b1c01 examples/run13.pl
+SHA1 228602ad50b8efd5e2f777cf8f316acf9414ff02 examples/run14.pl
+SHA1 8effa7fbffa7a1d6c8cd581241e2569acee69e48 examples/run15.pl
+SHA1 ff49a76651882f2b4c1502f46482d9aee58339fb examples/run16.pl
+SHA1 2a9fc278210ee6fe53eac308c8f35e7023e2dc39 examples/run17.pl
+SHA1 c7c62124b991582da86854895cd3cd104d40f012 examples/run18.pl
+SHA1 c526570e7e1b507d62813cc5dcee9a4089080978 examples/run19.pl
+SHA1 0627af697bd71d91144e83888dfb708819733034 examples/run20.pl
+SHA1 dd796af4a4be8f29b8843eafafc86a83041a2ff7 lib/Math/Symbolic.pm
+SHA1 4bfe7ed9511831c668330d01e0afc6e1631d1fba lib/Math/Symbolic/AuxFunctions.pm
+SHA1 8b8f46dfcb87b04424c9ffca6d515d6efe26e874 lib/Math/Symbolic/Base.pm
+SHA1 a66d6e9e0209d810d799429d6669f7ce6baea7af lib/Math/Symbolic/Compiler.pm
+SHA1 e9ff8e68718fdb4612c3ca77a6181f5a9ae6a517 lib/Math/Symbolic/Constant.pm
+SHA1 512f3be970d8e2d1aa2b975ac7772a1e09d12434 lib/Math/Symbolic/Custom.pm
+SHA1 f2242121ec7ebce94d9fd4ef006e25d6227d8b56 lib/Math/Symbolic/Custom/Base.pm
+SHA1 8d898969e6d172802c7df8173c26bcde1e26eb3a lib/Math/Symbolic/Custom/DefaultDumpers.pm
+SHA1 23e94f33f0547148c0116f39e57347ab2d94407d lib/Math/Symbolic/Custom/DefaultMods.pm
+SHA1 968740308b6a467b48c9bbf1d7e5ed28ca600b14 lib/Math/Symbolic/Custom/DefaultTests.pm
+SHA1 fd18c92e0ee6f6c2a90e455c6b0b34fe1ac0b724 lib/Math/Symbolic/Derivative.pm
+SHA1 06652127e560724926da6ab37170173acb61482c lib/Math/Symbolic/ExportConstants.pm
+SHA1 261f3be172fdbfece30164026df6f39c2dbd2e1b lib/Math/Symbolic/MiscAlgebra.pm
+SHA1 20358ea892c65ec632643813522125b821252225 lib/Math/Symbolic/MiscCalculus.pm
+SHA1 a35ea29f1af3710a6564632cedc8a88fa384393e lib/Math/Symbolic/Operator.pm
+SHA1 12d6c4290caadd73f1b9a93356fad8c389803e5c lib/Math/Symbolic/Parser.pm
+SHA1 5b3011e1f781d543ee14b5aea0a1b2e7782a23ff lib/Math/Symbolic/Parser/Precompiled.pm
+SHA1 8abde24f250f970eedd796f9133403a912e535da lib/Math/Symbolic/Variable.pm
+SHA1 6750b3d0ac09a82b7ad82f921338de49451b8643 lib/Math/Symbolic/VectorCalculus.pm
+SHA1 40b0e51ab97839217ccc2465bc6a46b757bba5d1 lib/Math/Symbolic/t.txt
+SHA1 a4528ed9a43f2e85e2d312b99d846fd791d6ed8c t/00dist.t
+SHA1 659cd8c86e779270012c45220a6e1f23d28dcc5e t/00pod.t
+SHA1 7e5bd67a41d86ed38cb3eab8547a8ff2ef0d1582 t/00podcover.t
+SHA1 5c8867b56ed27c9428c15caa64e212bc34505714 t/01basic.t
+SHA1 5412387cc61ec15d48c2429119a3fb23bae3ba3e t/02basic.t
+SHA1 67d6255e7502ab57f73ffd559e4363a433883916 t/03exp.t
+SHA1 2100cb365490d2bc4a287f8d2280cc725cfab7f4 t/04deep_derivatives.t
+SHA1 7ccb3aee4204f1e8728d07718bc1d9cfb0b31eaf t/05unary_minus.t
+SHA1 3d26c64f05a369004094018dca292f429d9ef5df t/06parser.t
+SHA1 bb1e6e729506d2a3107596feadda5314fcc36c24 t/07simple_trig.t
+SHA1 b6385b83c256078b53a299d0db77ffbd5df30e5e t/08parse_hyperbolic.t
+SHA1 c165c484e42c4deb8305ea984b0c5ae5e7d7c232 t/09hyperbolic.t
+SHA1 73f8f572cfb3cf88f7c4392241bc91c8d4f764b4 t/10hyperbolic.t
+SHA1 b974715e2384ab3a7c3bc15d7269a0126c074bdf t/11trigonometric.t
+SHA1 0ec20a7ea24d9feb71df17d989172d7ba63147fc t/12overload.t
+SHA1 548539a5d113ec9f9eac4c71ae1b2d801eec5436 t/13parse_more.t
+SHA1 f47fa1783e6117aa61b754a83aa07859f7ee910b t/14compile.t
+SHA1 ab2332d8dc0e45612ab7ab9b5e189b27eee61837 t/15total_derivatives.t
+SHA1 db16a60cb47052b3b2f339922fce5ff0f0dd9fa7 t/16tests.t
+SHA1 d0896d5bf8b9ea69632dc22c9aa730f93b2e7217 t/17modifications.t
+SHA1 92a0ef4092273e5beb315cee0d0e753dee33fcf2 t/18vectorcalc.t
+SHA1 9cd78efe65a7ecb005f2e8f97ddb0255ab3829fa t/19misccalc.t
+SHA1 ad2158bef843490208666cbba1a8580b99615626 t/20miscalgebra.t
+SHA1 f4a743b8ac1992738d8a050f17a3d3919b61225a t/21dumpers.t
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.0 (GNU/Linux)
+
+iD8DBQFDZ2kUZCuimE51gxcRAqCfAJ9S3FnID3GWBf4cJ5UCm87FCMqt0ACfUSkW
+HPwIIzhryQjzr0IUSM5Kxng=
+=rGXC
+-----END PGP SIGNATURE-----

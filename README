@@ -1,4 +1,4 @@
-Math::Symbolic version 0.161
+Math::Symbolic version 0.163
 ============================
 
 Math::Symbolic is intended to offer symbolic calculation capabilities
@@ -36,6 +36,20 @@ INSTALLATION
 
 To install this module type the following:
 
+   perl Build.PL
+   ./Build
+   ./Build test
+   ./Build install
+
+On platforms that don't support the "./" notation, that would be:
+
+   perl Build.PL
+   perl Build
+   perl Build test
+   perl Build install
+
+If you wish, you may use the old MakeMaker style instead:
+
    perl Makefile.PL
    make
    make test
@@ -48,6 +62,7 @@ This module requires these other modules and libraries:
   Test::More
   Exporter
   Parse::RecDescent
+  Memoize
 
 SEE ALSO
 
@@ -62,10 +77,10 @@ math-symbolic-develop at lists dot sourceforge dot net
 
 COPYRIGHT AND LICENCE
 
-Copyright (C) 2003-2004 Steffen Mueller
+Copyright (C) 2003-2005 Steffen Mueller
 
 This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself. 
+it under the same terms as Perl (5) itself. 
 
 CONTRIBUTIONS
 
