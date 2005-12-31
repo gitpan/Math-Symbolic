@@ -63,7 +63,7 @@ our %EXPORT_TAGS = (
 
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
-our $VERSION = '0.163';
+our $VERSION = '0.164';
 
 =head2 det
 
@@ -82,7 +82,7 @@ which can be calculated using LR decomposition much faster.
 On a related note: Calculating the determinant of a 20x20 matrix would take
 over 77146 years if your Perl could do 1 million calculations per second.
 Given that we're talking about several method calls per calculation, that's
-a much more than todays computers could do. On the other hand, if you'd be
+much more than todays computers could do. On the other hand, if you'd be
 using this straightforward algorithm with numbers only and in C, you might
 be done in 26 years alright, so please go for the smarter route (better
 algorithm) instead if you have numbers only.
@@ -118,20 +118,17 @@ sub _det_helper {
       $matrix->[0][1] * $matrix->[1][0]
       if $size == 3;
 
-    my $det =
-      $matrix->[0][0] *
-      _det_helper( _matrix_slice( $matrix, 0, 0 ), $size - 1 );
-
-    foreach ( 1 .. $size - 1 ) {
+    my $det;
+    foreach ( 0 .. $size - 1 ) {
         if ( $_ % 2 ) {
             $det -=
               $matrix->[0][$_] *
-              _det_helper( _matrix_slice( $matrix, 1, $_ ), $size - 1 );
+              _det_helper( _matrix_slice( $matrix, 0, $_ ), $size - 1 );
         }
         else {
             $det +=
               $matrix->[0][$_] *
-              _det_helper( _matrix_slice( $matrix, 1, $_ ), $size - 1 );
+              _det_helper( _matrix_slice( $matrix, 0, $_ ), $size - 1 );
         }
     }
     return $det;

@@ -1,5 +1,10 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.164  Sat Dec 31 09:57:20 2005
+	- Fixed bug in det() of ::MiscAlgebra. Thanks to Markus Laire who
+	  noticed it.
+	- Added better tests to test for det() on 4x4 matrices and larger.
+
 0.163  Thu Oct 06 21:43:59 2005
 	- Added 'use strict;' to the top of ::Parser::Precompiled.
 	- Added 'use strict;' to the parser generator.
