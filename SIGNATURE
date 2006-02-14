@@ -15,11 +15,11 @@ not run its Makefile.PL or Build.PL.
 Hash: SHA1
 
 SHA1 1439805f7d3f4554140b10ca8ef0209de5b2471b Build.PL
-SHA1 ffddd09b8773ccabc21a711e00a87a96bc1521bf Changes
-SHA1 5f4c5dff61394a412c49acbf8b819e1bd81a0d8a MANIFEST
-SHA1 35fe813d0291556b1d063a64f2c054ab4c5b5573 META.yml
+SHA1 e1aeb713d94f9963aab6cb0e26a7409c46a19323 Changes
+SHA1 f499c39dfda204a8470ca675d912a50ac4581789 MANIFEST
+SHA1 fa26b7c45f8d7c4f73868382dced73f3abf7d658 META.yml
 SHA1 c810e34cc1db571e0f802e2d2a3082b0fcd8f616 Makefile.PL
-SHA1 68c5c47c91b85387b45b566fc0a6e99abbb0b1bd README
+SHA1 58f8845c654eec46f1cf605467782cf663905741 README
 SHA1 72bfadaa10e40bdfef68089fca0cb97000c10970 TODO
 SHA1 da3fb177006ce574df4f8eb181a206788bacea31 examples/run01.pl
 SHA1 994e58bdaaa7d596d30f444931579915850faba3 examples/run02.pl
@@ -41,26 +41,25 @@ SHA1 2a9fc278210ee6fe53eac308c8f35e7023e2dc39 examples/run17.pl
 SHA1 c7c62124b991582da86854895cd3cd104d40f012 examples/run18.pl
 SHA1 c526570e7e1b507d62813cc5dcee9a4089080978 examples/run19.pl
 SHA1 0627af697bd71d91144e83888dfb708819733034 examples/run20.pl
-SHA1 2aff4652a7b35cd49a7d0f07bfc5fcfa282f5eea lib/Math/Symbolic.pm
-SHA1 e2644009f95edd905d45f4b474072bacfc957826 lib/Math/Symbolic/AuxFunctions.pm
-SHA1 a4aef6843020cbb856ae800f922d49c605e9efd0 lib/Math/Symbolic/Base.pm
-SHA1 8ef91703c32b6bf624a235ef8caa271cc2003f7f lib/Math/Symbolic/Compiler.pm
-SHA1 ecb7150a85bacc6b1805a7729d2130a422ee4c5f lib/Math/Symbolic/Constant.pm
-SHA1 2fe14dcf863b3578cc95b98393e543f11af785e2 lib/Math/Symbolic/Custom.pm
-SHA1 f2a80dbf9770316390f2b1d1425c7b9ab927eb9b lib/Math/Symbolic/Custom/Base.pm
-SHA1 e511a4943433f6eeb59b8d83b6ca6af2d4db03ac lib/Math/Symbolic/Custom/DefaultDumpers.pm
-SHA1 f777e11d158b1a6b9027d13a1d34bebd7906d1e6 lib/Math/Symbolic/Custom/DefaultMods.pm
-SHA1 c0457fb6ff64a9fe4454a0071f10ce0978ec97bd lib/Math/Symbolic/Custom/DefaultTests.pm
-SHA1 baf7281ba1a4fd8baa1eb7e89a55569e16fac2f1 lib/Math/Symbolic/Derivative.pm
-SHA1 833032d413c49de442ce183d1f1e64e7a49494c0 lib/Math/Symbolic/ExportConstants.pm
-SHA1 eb745e84407f4a99f89a5ea07dec6f846f5f1621 lib/Math/Symbolic/MiscAlgebra.pm
-SHA1 3e41f1097062a535d1cd5749bb50151527d3bdbd lib/Math/Symbolic/MiscCalculus.pm
-SHA1 ae1527f622350b32522f0b254c6ec688bbba1285 lib/Math/Symbolic/Operator.pm
-SHA1 8596b09a119fc3fe7ea1bb36be038df6ccb15bfb lib/Math/Symbolic/Parser.pm
-SHA1 1e071e3bb16677ca7f9557ce128f7248233749e3 lib/Math/Symbolic/Parser/Precompiled.pm
-SHA1 ac951f8a12fd401cf53101ca3800a2b1fe05084b lib/Math/Symbolic/Variable.pm
-SHA1 c20d0ba87615359ef997ce78be03dbd58c68876a lib/Math/Symbolic/VectorCalculus.pm
-SHA1 40b0e51ab97839217ccc2465bc6a46b757bba5d1 lib/Math/Symbolic/t.txt
+SHA1 d4b05e8aaa3ca3ea63bcd6702e6fc0eaba744371 lib/Math/Symbolic.pm
+SHA1 4b3041ee5fe06ee63c2d920f9e5e3705e717b3c2 lib/Math/Symbolic/AuxFunctions.pm
+SHA1 8ac60cbf6fbdf1bc860f69d02bd2a3d9eb889ae9 lib/Math/Symbolic/Base.pm
+SHA1 f04fabe73629e2f1bf40d301762b9aa54e01938a lib/Math/Symbolic/Compiler.pm
+SHA1 e5bdbf1a58cdd387506df90c9d7cf8583cc125bb lib/Math/Symbolic/Constant.pm
+SHA1 b025c3e88999f1c429b6ab0b4c39d952bb4e21ed lib/Math/Symbolic/Custom.pm
+SHA1 48651733405fcb37685ecd6a4ae0ae1daf231568 lib/Math/Symbolic/Custom/Base.pm
+SHA1 407bd69fbbf502311d238f01fa02e885da4da3c1 lib/Math/Symbolic/Custom/DefaultDumpers.pm
+SHA1 503d1eb891f9c8556d850ac1398ded3b81a3c65c lib/Math/Symbolic/Custom/DefaultMods.pm
+SHA1 74f101f4d3ec254bf9fb8163d80ef6f23d9249eb lib/Math/Symbolic/Custom/DefaultTests.pm
+SHA1 7413982f9574f961f7b920ba4ee320a74278b8f9 lib/Math/Symbolic/Derivative.pm
+SHA1 208017a207a31f0ecb8aa18f6c283b3f6c935dd5 lib/Math/Symbolic/ExportConstants.pm
+SHA1 1a263fa86aee663921f8b0e9b56bb41b7ff9f1f4 lib/Math/Symbolic/MiscAlgebra.pm
+SHA1 d4180d6cc40a0c6c1ad17393a238346fa4eb505b lib/Math/Symbolic/MiscCalculus.pm
+SHA1 3c8357de6d12ea1c395cf727a38c4df0d88691f1 lib/Math/Symbolic/Operator.pm
+SHA1 d22b1e8ed7503abb76e5020fd18b021375a7b769 lib/Math/Symbolic/Parser.pm
+SHA1 5ae7f46358edd4a18f8194eda1bc4cb5292956d0 lib/Math/Symbolic/Parser/Precompiled.pm
+SHA1 43005cc1d16830b0c65212d360b39eb51410996f lib/Math/Symbolic/Variable.pm
+SHA1 379dae7007c58d95db82fdabefbf742b492d5eb4 lib/Math/Symbolic/VectorCalculus.pm
 SHA1 a4528ed9a43f2e85e2d312b99d846fd791d6ed8c t/00dist.t
 SHA1 659cd8c86e779270012c45220a6e1f23d28dcc5e t/00pod.t
 SHA1 7e5bd67a41d86ed38cb3eab8547a8ff2ef0d1582 t/00podcover.t
@@ -84,11 +83,10 @@ SHA1 d0896d5bf8b9ea69632dc22c9aa730f93b2e7217 t/17modifications.t
 SHA1 92a0ef4092273e5beb315cee0d0e753dee33fcf2 t/18vectorcalc.t
 SHA1 9cd78efe65a7ecb005f2e8f97ddb0255ab3829fa t/19misccalc.t
 SHA1 317d60f0c3d360fad9eec23ba1cb8bd6e72daee1 t/20miscalgebra.t
-SHA1 f4a743b8ac1992738d8a050f17a3d3919b61225a t/21dumpers.t
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.0 (GNU/Linux)
 
-iD8DBQFDtklkZCuimE51gxcRAmelAJ9pb5F4bqsyDU9B3jbU9YLCPPJhSwCfYGwC
-mU0iO36YPwWvi3BdBE0PZCg=
-=/iS6
+iD8DBQFD8e48ZCuimE51gxcRAtYsAJ9LPYvjg7tqrNd3oS9RbSWOIGjl8wCggZd4
+wSkkXP/hwrfGYjD2JH981p0=
+=I3PE
 -----END PGP SIGNATURE-----

@@ -1,4 +1,4 @@
-Math::Symbolic version 0.164
+Math::Symbolic version 0.201
 ============================
 
 Math::Symbolic is intended to offer symbolic calculation capabilities
@@ -29,8 +29,8 @@ not loaded by default.
 Similarily, algebra related functions like determinants are offered by
 Math::Symbolic::MiscAlgebra.
 
-Since version 0.122, Math::Symbolic trees can be dumped as LaTeX via
-the to_latex() method.
+Using the Math::Symbolic::Custom::LaTeXDumper distribution from CPAN, it is
+possible to dump Math::Symbolic trees as LaTeX formulae!
 
 INSTALLATION
 

@@ -1,5 +1,18 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.201  Tue Feb 14 15:32 2006
+	- Rewrote the to_latex() LaTeX dumper. Since it's quite a bit of code
+	  which few people actually need to load, the LaTeX dumper will be
+	  availlable as a separate distribution
+	  Math::Symbolic::Custom::LaTeXDumper.
+	- Ergo: Removed to_latex() from Math::Symbolic::Custom::DefaultDumpers.
+	- For some, this might be a change that breaks backwards compatibility.
+	  All you would need to do when upgrading Math::Symbolic is
+	  installing the aforementioned distribution and adding a call
+	  'use Math::Symbolic::Custom::LaTeXDumper;' to your program and the new,
+	  shiny *much* improved to_latex() method will be availlable.
+	- Don't blame me! to_latex() was flagged as 'extremely experimental'!
+
 0.164  Sat Dec 31 09:57:20 2005
 	- Fixed bug in det() of ::MiscAlgebra. Thanks to Markus Laire who
 	  noticed it.
