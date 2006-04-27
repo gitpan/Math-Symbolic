@@ -5,9 +5,15 @@ use warnings;
 
 use Test::More tests => 11;
 
-#use lib 'lib';
+BEGIN {
+	use_ok('Math::Symbolic');
+}
 
-use_ok('Math::Symbolic');
+if ($ENV{TEST_YAPP_PARSER}) {
+	require Math::Symbolic::Parser::Yapp;
+	$Math::Symbolic::Parser = Math::Symbolic::Parser::Yapp->new();
+}
+
 use Math::Symbolic::ExportConstants qw/:all/;
 
 my $tree;
@@ -69,11 +75,11 @@ ok( ( !$@ and $str eq 'exponentiate(5,log(2,4))' ), 'Parsing exp and log' );
 
 undef $@;
 eval <<'HERE';
-$tree = Math::Symbolic->parse_from_string('1+2*-5^log(2,4)');
+$tree = Math::Symbolic->parse_from_string('1+2*(-5)^log(2,4)');
 HERE
 $str = $tree->to_string('prefix');
 $str =~ s/\s+//g;
-ok( ( !$@ and $str eq 'add(1,multiply(2,exponentiate(negate(5),log(2,4))))' ),
+ok( ( !$@ and $str eq 'add(1,multiply(2,exponentiate(-5,log(2,4))))' or $str eq 'add(1,multiply(2,exponentiate(negate(5),log(2,4))))' ),
     'Parsing complicated term' );
 
 undef $@;
@@ -86,6 +92,8 @@ ok(
     (
         !$@
           and $str eq
+          'cos(sin(add(1,multiply(2,exponentiate(-5,log(2,4))))))'
+		  or $str eq
           'cos(sin(add(1,multiply(2,exponentiate(negate(5),log(2,4))))))'
     ),
     'Parsing complicated term involving sine and cosine'
