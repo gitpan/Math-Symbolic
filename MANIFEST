@@ -70,4 +70,3 @@ t/19misccalc.t
 t/20miscalgebra.t
 TODO
 Yapp.yp
-SIGNATURE    Added here by Module::Build
