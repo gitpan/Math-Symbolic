@@ -141,7 +141,7 @@ use Math::Symbolic::ExportConstants qw/:all/;
 #use Parse::RecDescent;
 my $Required_Parse_RecDescent = 0;
 
-our $VERSION = '0.504';
+our $VERSION = '0.505';
 our $DEBUG   = 0;
 
 # Functions that are parsed and translated to specific M::S trees
@@ -397,39 +397,83 @@ This constructor does not expect any arguments and returns a Parse::RecDescent
 parser to parse algebraic expressions from a string into Math::Symbolic
 trees.
 
-The constructor takes key/value pairs of options. Currently, the only option
-is to regenerate the parser from the grammar in the scalar
-$Math::Symbolic::Parser::Grammar instead of using the (faster) precompiled
-grammar from Math::Symbolic::Parser::Precompiled.
+The constructor takes key/value pairs of options. 
+
+You can regenerate the parser from the grammar in the scalar
+C<$Math::Symbolic::Parser::Grammar> instead of using the (slightly faster)
+precompiled grammar from L<Math::Symbolic::Parser::Precompiled>.
 You can enable recompilation from the grammar with the option
-"recompile => 1".
+C<recompile =E<gt> 1>. This only has an effect if the implementation
+is the L<Parse::RecDescent> based parser (which is the default).
+
+If you care about parsing speed more than about being able to extend the
+parser at run-time, you can specify the C<implementation> option. Currently
+recognized are C<RecDescent> and C<Yapp> implementations. C<RecDescent> is
+the default and C<Yapp> is significantly faster. The L<Parse::Yapp> based
+implementation does not support all extension modules. In particular not
+those using L<Math::SymbolicX::ParserExtensionFactory>.
 
 =cut
 
 sub new {
     my $class = shift;
+    my %args = @_;
+
+    my $impl = $args{implementation} || 'RecDescent';
+
+    if ($impl eq 'RecDescent') {
+        return $class->_new_recdescent(\%args);
+    }
+    elsif ($impl eq 'Yapp') {
+        return $class->_new_yapp(\%args);
+    }
+    else {
+        croak("'implementation' must be one of RecDescent or Yapp");
+    }
+    die "Sanity Check!";
+}
+
+sub _new_recdescent {
+    my $class = shift;
+    my $args = shift;
+
     if ( not $Required_Parse_RecDescent ) {
         local $@;
         eval 'require Parse::RecDescent;';
         croak "Could not require Parse::RecDescent. Please install\n"
-          . "Parse::RecDescent in order to use Math::Symbolic::Parser."
+          . "Parse::RecDescent in order to use Math::Symbolic::Parser.\n"
+          . "(Error: $@)"
           if $@;
     }
-    my %args = @_;
+
     my $parser;
 
-    if ( exists $args{recompile} and $args{recompile} ) {
+    if ( $args->{recompile} ) {
         $parser = new Parse::RecDescent($Grammar);
     }
     else {
         eval 'require Math::Symbolic::Parser::Precompiled;';
-        croak "Could not require Math::Symbolic::Parser::Precompiled.\n"
-          . "Please install the latest version of Math::Symbolic"
-          . "(>=0.135)."
-          if $@;
-        $parser = Math::Symbolic::Parser::Precompiled->new();
+        if ($@) {
+            $parser = Parse::RecDescent->new($Grammar);
+        }
+        else {
+            $parser = Math::Symbolic::Parser::Precompiled->new();
+        }
     }
     return $parser;
+}
+
+sub _new_yapp {
+    my $class = shift;
+    my $args = shift;
+    eval 'require Math::Symbolic::Parser::Yapp';
+
+    if ($@) {
+        croak("Could not load Math::Symbolic::Parser::Yapp. Error: $@");
+    }
+    else {
+        return Math::Symbolic::Parser::Yapp->new();
+    }
 }
 
 1;

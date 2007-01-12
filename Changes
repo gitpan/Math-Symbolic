@@ -1,5 +1,15 @@
 Revision history for Perl extension Math::Symbolic.
 
+0.505  Fri Jan 12 11:35 2007
+    - Fixed bug in ::Parser related to missing precompiled parsers.
+      (Thanks, Jerrad Pierce)
+    - You can now request a Parse::Yapp-based parser from the ::Parser->new()
+      method.
+    - Add is_one, is_zero, is_zero_or_one to DefaultTests
+    - Now does some simplification while deriving.
+    - Fix bug while deriving some logarithms.
+    - More derivative tests.
+
 0.504  Fri Nov  3 16:15 2006
     - Improved POD coverage tests.
     - This release is mainly intended to fix some PAUSE indexing trouble
