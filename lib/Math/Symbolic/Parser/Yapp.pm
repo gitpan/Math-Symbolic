@@ -504,8 +504,9 @@ sub new {
 			'NUM' => 2,
 			"-" => 1,
 			"(" => 4,
+			'EFUNC' => 6,
 			'VAR' => 5,
-			'FUNC' => 6
+			'FUNC' => 7
 		},
 		GOTOS => {
 			'exp' => 3
@@ -516,11 +517,12 @@ sub new {
 			'NUM' => 2,
 			"-" => 1,
 			"(" => 4,
+			'EFUNC' => 6,
 			'VAR' => 5,
-			'FUNC' => 6
+			'FUNC' => 7
 		},
 		GOTOS => {
-			'exp' => 7
+			'exp' => 8
 		}
 	},
 	{#State 2
@@ -528,12 +530,12 @@ sub new {
 	},
 	{#State 3
 		ACTIONS => {
-			'' => 9,
-			"-" => 8,
-			"^" => 10,
-			"*" => 11,
-			"+" => 12,
-			"/" => 13
+			'' => 10,
+			"-" => 9,
+			"^" => 11,
+			"*" => 12,
+			"+" => 13,
+			"/" => 14
 		}
 	},
 	{#State 4
@@ -541,61 +543,55 @@ sub new {
 			'NUM' => 2,
 			"-" => 1,
 			"(" => 4,
+			'EFUNC' => 6,
 			'VAR' => 5,
-			'FUNC' => 6
+			'FUNC' => 7
 		},
 		GOTOS => {
-			'exp' => 14
+			'exp' => 15
 		}
 	},
 	{#State 5
-		DEFAULT => -3
+		DEFAULT => -4
 	},
 	{#State 6
-		ACTIONS => {
-			"(" => 15
-		}
+		DEFAULT => -3
 	},
 	{#State 7
 		ACTIONS => {
-			"^" => 10
-		},
-		DEFAULT => -8
+			"(" => 16
+		}
 	},
 	{#State 8
 		ACTIONS => {
-			'NUM' => 2,
-			"-" => 1,
-			"(" => 4,
-			'VAR' => 5,
-			'FUNC' => 6
+			"^" => 11
 		},
-		GOTOS => {
-			'exp' => 16
-		}
+		DEFAULT => -9
 	},
 	{#State 9
-		DEFAULT => 0
-	},
-	{#State 10
 		ACTIONS => {
 			'NUM' => 2,
 			"-" => 1,
 			"(" => 4,
+			'EFUNC' => 6,
 			'VAR' => 5,
-			'FUNC' => 6
+			'FUNC' => 7
 		},
 		GOTOS => {
 			'exp' => 17
 		}
+	},
+	{#State 10
+		DEFAULT => 0
 	},
 	{#State 11
 		ACTIONS => {
 			'NUM' => 2,
 			"-" => 1,
 			"(" => 4,
+			'EFUNC' => 6,
 			'VAR' => 5,
-			'FUNC' => 6
+			'FUNC' => 7
 		},
 		GOTOS => {
 			'exp' => 18
@@ -606,8 +602,9 @@ sub new {
 			'NUM' => 2,
 			"-" => 1,
 			"(" => 4,
+			'EFUNC' => 6,
 			'VAR' => 5,
-			'FUNC' => 6
+			'FUNC' => 7
 		},
 		GOTOS => {
 			'exp' => 19
@@ -618,8 +615,9 @@ sub new {
 			'NUM' => 2,
 			"-" => 1,
 			"(" => 4,
+			'EFUNC' => 6,
 			'VAR' => 5,
-			'FUNC' => 6
+			'FUNC' => 7
 		},
 		GOTOS => {
 			'exp' => 20
@@ -627,98 +625,113 @@ sub new {
 	},
 	{#State 14
 		ACTIONS => {
-			"-" => 8,
-			"^" => 10,
-			"*" => 11,
-			"+" => 12,
-			"/" => 13,
-			")" => 21
+			'NUM' => 2,
+			"-" => 1,
+			"(" => 4,
+			'EFUNC' => 6,
+			'VAR' => 5,
+			'FUNC' => 7
+		},
+		GOTOS => {
+			'exp' => 21
 		}
 	},
 	{#State 15
 		ACTIONS => {
-			'NUM' => 2,
-			"-" => 1,
-			"(" => 4,
-			'VAR' => 5,
-			'FUNC' => 6
-		},
-		GOTOS => {
-			'exp' => 22,
-			'list' => 23
+			"-" => 9,
+			"^" => 11,
+			"*" => 12,
+			"+" => 13,
+			"/" => 14,
+			")" => 22
 		}
 	},
 	{#State 16
 		ACTIONS => {
-			"/" => 13,
-			"^" => 10,
-			"*" => 11
+			'NUM' => 2,
+			"-" => 1,
+			"(" => 4,
+			'EFUNC' => 6,
+			'VAR' => 5,
+			'FUNC' => 7
 		},
-		DEFAULT => -5
+		GOTOS => {
+			'exp' => 23,
+			'list' => 24
+		}
 	},
 	{#State 17
 		ACTIONS => {
-			"^" => 10
-		},
-		DEFAULT => -9
-	},
-	{#State 18
-		ACTIONS => {
-			"^" => 10
+			"/" => 14,
+			"^" => 11,
+			"*" => 12
 		},
 		DEFAULT => -6
 	},
+	{#State 18
+		ACTIONS => {
+			"^" => 11
+		},
+		DEFAULT => -10
+	},
 	{#State 19
 		ACTIONS => {
-			"/" => 13,
-			"^" => 10,
-			"*" => 11
-		},
-		DEFAULT => -4
-	},
-	{#State 20
-		ACTIONS => {
-			"^" => 10
+			"^" => 11
 		},
 		DEFAULT => -7
 	},
+	{#State 20
+		ACTIONS => {
+			"/" => 14,
+			"^" => 11,
+			"*" => 12
+		},
+		DEFAULT => -5
+	},
 	{#State 21
-		DEFAULT => -10
+		ACTIONS => {
+			"^" => 11
+		},
+		DEFAULT => -8
 	},
 	{#State 22
-		ACTIONS => {
-			"-" => 8,
-			"^" => 10,
-			"*" => 11,
-			"+" => 12,
-			"/" => 13,
-			"," => 24
-		},
-		DEFAULT => -12
+		DEFAULT => -11
 	},
 	{#State 23
 		ACTIONS => {
-			")" => 25
-		}
+			"-" => 9,
+			"^" => 11,
+			"*" => 12,
+			"+" => 13,
+			"/" => 14,
+			"," => 25
+		},
+		DEFAULT => -13
 	},
 	{#State 24
+		ACTIONS => {
+			")" => 26
+		}
+	},
+	{#State 25
 		ACTIONS => {
 			'NUM' => 2,
 			"-" => 1,
 			"(" => 4,
+			'EFUNC' => 6,
 			'VAR' => 5,
-			'FUNC' => 6
+			'FUNC' => 7
 		},
 		GOTOS => {
-			'exp' => 22,
-			'list' => 26
+			'exp' => 23,
+			'list' => 27
 		}
 	},
-	{#State 25
+	{#State 26
 		DEFAULT => -2
 	},
-	{#State 26
-		DEFAULT => -11
+	{#State 27
+		DEFAULT => -12
 	}
 ],
                                   yyrules  =>
@@ -733,48 +746,58 @@ sub { $_[1] }
 	[#Rule 2
 		 'exp', 4,
 sub {
-                exists($Math::Symbolic::Parser::Parser_Functions{$_[1]})
-                ? $Math::Symbolic::Parser::Parser_Functions{$_[1]}->($_[1], @{$_[3]})
-                : Math::Symbolic::Operator->new($_[1], @{$_[3]})
+                if (exists($Math::Symbolic::Parser::Parser_Functions{$_[1]})) {
+                    $Math::Symbolic::Parser::Parser_Functions{$_[1]}->($_[1], @{$_[3]})
+                }
+                else {
+                    Math::Symbolic::Operator->new($_[1], @{$_[3]})
+                }
             }
 	],
 	[#Rule 3
 		 'exp', 1,
-sub { $_[1] }
+sub {
+                $_[1] =~ /^([^(]+)\((.+)\)$/o or die;
+                $Math::SymbolicX::ParserExtensionFactory::Functions->{$1}->($2)
+            }
 	],
 	[#Rule 4
-		 'exp', 3,
-sub { Math::Symbolic::Operator->new('+', $_[1], $_[3]) }
+		 'exp', 1,
+sub { $_[1] }
 	],
 	[#Rule 5
 		 'exp', 3,
-sub { Math::Symbolic::Operator->new('-', $_[1], $_[3]) }
+sub { Math::Symbolic::Operator->new('+', $_[1], $_[3]) }
 	],
 	[#Rule 6
 		 'exp', 3,
-sub { Math::Symbolic::Operator->new('*', $_[1], $_[3]) }
+sub { Math::Symbolic::Operator->new('-', $_[1], $_[3]) }
 	],
 	[#Rule 7
 		 'exp', 3,
-sub { Math::Symbolic::Operator->new('/', $_[1], $_[3]) }
+sub { Math::Symbolic::Operator->new('*', $_[1], $_[3]) }
 	],
 	[#Rule 8
+		 'exp', 3,
+sub { Math::Symbolic::Operator->new('/', $_[1], $_[3]) }
+	],
+	[#Rule 9
 		 'exp', 2,
 sub { Math::Symbolic::Operator->new('neg', $_[2]) }
 	],
-	[#Rule 9
+	[#Rule 10
 		 'exp', 3,
 sub { Math::Symbolic::Operator->new('^', $_[1], $_[3]) }
 	],
-	[#Rule 10
+	[#Rule 11
 		 'exp', 3,
 sub { $_[2] }
 	],
-	[#Rule 11
+	[#Rule 12
 		 'list', 3,
 sub { unshift @{$_[3]}, $_[1]; $_[3] }
 	],
-	[#Rule 12
+	[#Rule 13
 		 'list', 1,
 sub { [$_[1]] }
 	]
@@ -804,8 +827,12 @@ sub _Error {
 my $Num = qr/[+-]?(?=\d|\.\d)\d*(?:\.\d*)?(?:[Ee]([+-]?\d+))?/o;
 my $Ident = qr/[a-zA-Z][a-zA-Z0-9_]*/o;
 my $Op =  qr/\+|\-|\*|\/|\^/o;
-my $Func = qr/log|partial_derivative|total_derivative|a?(?:sin|sinh|cos|cosh|tan|cot)|exp/;
+my $Func = qr/log|partial_derivative|total_derivative|a?(?:sin|sinh|cos|cosh|tan|cot)|exp|sqrt/;
 my $Unary = qr/\+|\-/o;
+
+# taken from perlre
+my $balanced_parens_re;
+$balanced_parens_re = qr{\((?:(?>[^()]+)|(??{$balanced_parens_re}))*\)};
 
 # This is a hack so we can hook into the new() method.
 {
@@ -819,6 +846,9 @@ my $Unary = qr/\+|\-/o;
 sub _Lexer {
     my($parser)=shift;
 
+    my $ExtFunc = $Math::SymbolicX::ParserExtensionFactory::RegularExpression
+                    || qr/(?!)/o;
+
 	my $data = $parser->{USER};
 
 		pos($data->{INPUT}) < length($data->{INPUT})
@@ -826,9 +856,13 @@ sub _Lexer {
 
     for ($data->{INPUT}) {
 		if ($data->{STATE} == DAT) {
-			if ($data->{INPUT} =~ /\G($Func)(?=\()/cgo) {
+			if ($data->{INPUT} =~ /\G($Func)(?=\()/cg) {
 				return('FUNC', $1);
 			}
+            elsif ($data->{INPUT} =~ /\G($ExtFunc$balanced_parens_re)/cg) {
+				$data->{STATE} = OP;
+                return('EFUNC', $1);
+            }
 			elsif ($data->{INPUT} =~ /\G($Ident)(?:\(($Ident(?:,$Ident)*)\))?/cgo) {
 				$data->{STATE} = OP;
 				if (defined $2) {

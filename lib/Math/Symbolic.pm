@@ -151,7 +151,7 @@ our %EXPORT_TAGS = (
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT    = qw();
 
-our $VERSION = '0.505';
+our $VERSION = '0.506';
 
 =head1 CLASS DATA
 
@@ -182,7 +182,14 @@ sub parse_from_string {
     my $string = shift;
     croak "Missing string argument from parse_from_string() call"
       unless defined $string;
-    $string = shift if $string eq 'Math::Symbolic' and @_;
+    if ($string eq 'Math::Symbolic') {
+        if (@_) {
+            $string = shift;
+        }
+        else {
+          croak("Missing string argument from Math::Symbolic->parse_from_string() call");
+        }
+    }
     $string =~ s/\s+//gso;
     if ( not defined $Parser ) {
         $Parser = Math::Symbolic::Parser->new();
