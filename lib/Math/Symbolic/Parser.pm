@@ -147,7 +147,7 @@ use Math::Symbolic::ExportConstants qw/:all/;
 #use Parse::RecDescent;
 my $Required_Parse_RecDescent = 0;
 
-our $VERSION = '0.506';
+our $VERSION = '0.507';
 our $DEBUG   = 0;
 
 # Functions that are parsed and translated to specific M::S trees
@@ -482,12 +482,14 @@ sub _new_yapp {
     my $class = shift;
     my $args = shift;
     eval 'require Math::Symbolic::Parser::Yapp';
-
+    my %yapp_args;
+    $yapp_args{predicates} = $args->{yapp_predicates}
+      if $args->{yapp_predicates};
     if ($@) {
         croak("Could not load Math::Symbolic::Parser::Yapp. Error: $@");
     }
     else {
-        return Math::Symbolic::Parser::Yapp->new();
+        return Math::Symbolic::Parser::Yapp->new(%yapp_args);
     }
 }
 

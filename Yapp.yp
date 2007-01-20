@@ -20,7 +20,14 @@ exp:        NUM                 { $_[1] }
                     Math::Symbolic::Operator->new($_[1], @{$_[3]})
                 }
             }
-        | EFUNC
+        |   PRED '{' exp '}'
+            {
+                Math::Symbolic::Variable->new(
+                    'TRANSFORMATION_HOOK',
+                    [$_[1], $_[3]]
+                );
+            }
+        |   EFUNC
             {
                 $_[1] =~ /^([^(]+)\((.+)\)$/o or die;
                 $Math::SymbolicX::ParserExtensionFactory::Functions->{$1}->($2)
@@ -71,7 +78,15 @@ $balanced_parens_re = qr{\((?:(?>[^()]+)|(??{$balanced_parens_re}))*\)};
 	no warnings; no strict;
 	*real_new = \&new;
 	*new = sub {
-		goto &real_new;
+        my $class = shift;
+        my %args = @_;
+        my $predicates = $args{predicates};
+        delete $args{predicates};
+		my $parser = real_new($class, %args);
+        if ($predicates) {
+            $parser->{__PREDICATES} = $predicates;
+        }
+        return $parser;
 	};
 }
 
@@ -82,65 +97,134 @@ sub _Lexer {
                     || qr/(?!)/o;
 
 	my $data = $parser->{USER};
+    my $predicates = $parser->{__PREDICATES};
 
-		pos($data->{INPUT}) < length($data->{INPUT})
+	pos($data->{INPUT}) < length($data->{INPUT})
     or  return('',undef);
 
-    for ($data->{INPUT}) {
-		if ($data->{STATE} == DAT) {
-			if ($data->{INPUT} =~ /\G($Func)(?=\()/cg) {
-				return('FUNC', $1);
-			}
-            elsif ($data->{INPUT} =~ /\G($ExtFunc$balanced_parens_re)/cg) {
-				$data->{STATE} = OP;
-                return('EFUNC', $1);
+    # This is a huge hack
+    if (defined $predicates) {
+        for ($data->{INPUT}) {
+            if ($data->{STATE} == DAT) {
+                if ($data->{INPUT} =~ /\G($Func)(?=\()/cg) {
+                    return('FUNC', $1);
+                }
+                elsif ($data->{INPUT} =~ /\G($ExtFunc$balanced_parens_re)/cg) {
+                    $data->{STATE} = OP;
+                    return('EFUNC', $1);
+                }
+                elsif ($data->{INPUT} =~ /\G($predicates)(?=\{)/cg) {
+                    return('PRED', $1);
+                }
+                elsif ($data->{INPUT} =~ /\G($Ident)(?:\(($Ident(?:,$Ident)*)\))?/cgo) {
+                    $data->{STATE} = OP;
+                    if (defined $2) {
+                        return(
+                            'VAR',
+                            Math::Symbolic::Variable->new({name=>$1, signature=>[split /,/, $2]})
+                        );
+                    }
+                    else {
+                        return('VAR', Math::Symbolic::Variable->new({name=>$1}));
+                    }
+                }
+                elsif ($data->{INPUT} =~ /\G\(/cgo) {
+                    return('(', '(');
+                }
+                elsif ($data->{INPUT} =~ /\G\{/cgo) {
+                    return('{', '{');
+                }
+                elsif ($data->{INPUT} =~ /\G($Num)/cgo) {
+                    $data->{STATE} = OP;
+                    return('NUM', Math::Symbolic::Constant->new($1));
+                }
+                elsif ($data->{INPUT} =~ /\G($Unary)/cgo) {
+                    return($1, $1);
+                }
+                else {
+                    my $pos = pos($data->{INPUT});
+                    die "Parse error at position $pos of string '$data->{INPUT}'.\nCould not find a suitable token while expecting data (identifier, function, number, etc.).";
+                }
             }
-			elsif ($data->{INPUT} =~ /\G($Ident)(?:\(($Ident(?:,$Ident)*)\))?/cgo) {
-				$data->{STATE} = OP;
-				if (defined $2) {
-					return(
-						'VAR',
-						Math::Symbolic::Variable->new({name=>$1, signature=>[split /,/, $2]})
-					);
-				}
-				else {
-					return('VAR', Math::Symbolic::Variable->new({name=>$1}));
-				}
-			}
-			elsif ($data->{INPUT} =~ /\G\(/cgo) {
-				return('(', '(');
-			}
-			elsif ($data->{INPUT} =~ /\G($Num)/cgo) {
-				$data->{STATE} = OP;
-				return('NUM', Math::Symbolic::Constant->new($1));
-			}
-			elsif ($data->{INPUT} =~ /\G($Unary)/cgo) {
-				return($1, $1);
-			}
-			else {
-				my $pos = pos($data->{INPUT});
-				die "Parse error at position $pos of string '$data->{INPUT}'.\nCould not find a suitable token while expecting data (identifier, function, number, etc.).";
-			}
-		}
-		else { # $data->{STATE} == OP
-			if ($data->{INPUT} =~ /\G\)/cgo) {
-				return(')', ')');
-			}
-			elsif ($data->{INPUT} =~ /\G($Op)/cgo) {
-				$data->{STATE} = DAT;
-				return($1, $1);
-			}
-			elsif ($data->{INPUT} =~ /\G,/cgo) {
-				$data->{STATE} = DAT;
-				return(',', ',');
-			}
-			else {
-				my $pos = pos($data->{INPUT});
-				die "Parse error at position $pos of string '$data->{INPUT}'.\nCould not find a suitable token while expecting an operator (+, -, etc).";
-			}
-		}
+            else { # $data->{STATE} == OP
+                if ($data->{INPUT} =~ /\G\)/cgo) {
+                    return(')', ')');
+                }
+                elsif ($data->{INPUT} =~ /\G\}/cgo) {
+                    return('}', '}');
+                }
+                elsif ($data->{INPUT} =~ /\G($Op)/cgo) {
+                    $data->{STATE} = DAT;
+                    return($1, $1);
+                }
+                elsif ($data->{INPUT} =~ /\G,/cgo) {
+                    $data->{STATE} = DAT;
+                    return(',', ',');
+                }
+                else {
+                    my $pos = pos($data->{INPUT});
+                    die "Parse error at position $pos of string '$data->{INPUT}'.\nCould not find a suitable token while expecting an operator (+, -, etc).";
+                }
+            }
+        }
+    } # }}} end if defined $predicates
+    else { # {{{ not defined $predicates
+        for ($data->{INPUT}) {
+            if ($data->{STATE} == DAT) {
+                if ($data->{INPUT} =~ /\G($Func)(?=\()/cg) {
+                    return('FUNC', $1);
+                }
+                elsif ($data->{INPUT} =~ /\G($ExtFunc$balanced_parens_re)/cg) {
+                    $data->{STATE} = OP;
+                    return('EFUNC', $1);
+                }
+                elsif ($data->{INPUT} =~ /\G($Ident)(?:\(($Ident(?:,$Ident)*)\))?/cgo) {
+                    $data->{STATE} = OP;
+                    if (defined $2) {
+                        return(
+                            'VAR',
+                            Math::Symbolic::Variable->new({name=>$1, signature=>[split /,/, $2]})
+                        );
+                    }
+                    else {
+                        return('VAR', Math::Symbolic::Variable->new({name=>$1}));
+                    }
+                }
+                elsif ($data->{INPUT} =~ /\G\(/cgo) {
+                    return('(', '(');
+                }
+                elsif ($data->{INPUT} =~ /\G($Num)/cgo) {
+                    $data->{STATE} = OP;
+                    return('NUM', Math::Symbolic::Constant->new($1));
+                }
+                elsif ($data->{INPUT} =~ /\G($Unary)/cgo) {
+                    return($1, $1);
+                }
+                else {
+                    my $pos = pos($data->{INPUT});
+                    die "Parse error at position $pos of string '$data->{INPUT}'.\nCould not find a suitable token while expecting data (identifier, function, number, etc.).";
+                }
+            }
+            else { # $data->{STATE} == OP
+                if ($data->{INPUT} =~ /\G\)/cgo) {
+                    return(')', ')');
+                }
+                elsif ($data->{INPUT} =~ /\G($Op)/cgo) {
+                    $data->{STATE} = DAT;
+                    return($1, $1);
+                }
+                elsif ($data->{INPUT} =~ /\G,/cgo) {
+                    $data->{STATE} = DAT;
+                    return(',', ',');
+                }
+                else {
+                    my $pos = pos($data->{INPUT});
+                    die "Parse error at position $pos of string '$data->{INPUT}'.\nCould not find a suitable token while expecting an operator (+, -, etc).";
+                }
+            }
+        }
+    } # }}} end else => not defined $predicates
 
-    }
 }
 
 sub parse {

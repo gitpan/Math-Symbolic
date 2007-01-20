@@ -501,237 +501,279 @@ sub new {
 [
 	{#State 0
 		ACTIONS => {
-			'NUM' => 2,
+			'NUM' => 5,
 			"-" => 1,
-			"(" => 4,
-			'EFUNC' => 6,
-			'VAR' => 5,
-			'FUNC' => 7
+			"(" => 6,
+			'PRED' => 3,
+			'VAR' => 8,
+			'EFUNC' => 7,
+			'FUNC' => 4
 		},
 		GOTOS => {
-			'exp' => 3
+			'exp' => 2
 		}
 	},
 	{#State 1
 		ACTIONS => {
-			'NUM' => 2,
+			'NUM' => 5,
 			"-" => 1,
-			"(" => 4,
-			'EFUNC' => 6,
-			'VAR' => 5,
-			'FUNC' => 7
+			"(" => 6,
+			'PRED' => 3,
+			'EFUNC' => 7,
+			'VAR' => 8,
+			'FUNC' => 4
 		},
 		GOTOS => {
-			'exp' => 8
+			'exp' => 9
 		}
 	},
 	{#State 2
-		DEFAULT => -1
+		ACTIONS => {
+			'' => 11,
+			"-" => 10,
+			"^" => 14,
+			"*" => 15,
+			"+" => 12,
+			"/" => 13
+		}
 	},
 	{#State 3
 		ACTIONS => {
-			'' => 10,
-			"-" => 9,
-			"^" => 11,
-			"*" => 12,
-			"+" => 13,
-			"/" => 14
+			"{" => 16
 		}
 	},
 	{#State 4
 		ACTIONS => {
-			'NUM' => 2,
-			"-" => 1,
-			"(" => 4,
-			'EFUNC' => 6,
-			'VAR' => 5,
-			'FUNC' => 7
-		},
-		GOTOS => {
-			'exp' => 15
+			"(" => 17
 		}
 	},
 	{#State 5
-		DEFAULT => -4
+		DEFAULT => -1
 	},
 	{#State 6
-		DEFAULT => -3
-	},
-	{#State 7
 		ACTIONS => {
-			"(" => 16
-		}
-	},
-	{#State 8
-		ACTIONS => {
-			"^" => 11
-		},
-		DEFAULT => -9
-	},
-	{#State 9
-		ACTIONS => {
-			'NUM' => 2,
+			'NUM' => 5,
 			"-" => 1,
-			"(" => 4,
-			'EFUNC' => 6,
-			'VAR' => 5,
-			'FUNC' => 7
-		},
-		GOTOS => {
-			'exp' => 17
-		}
-	},
-	{#State 10
-		DEFAULT => 0
-	},
-	{#State 11
-		ACTIONS => {
-			'NUM' => 2,
-			"-" => 1,
-			"(" => 4,
-			'EFUNC' => 6,
-			'VAR' => 5,
-			'FUNC' => 7
+			"(" => 6,
+			'PRED' => 3,
+			'EFUNC' => 7,
+			'VAR' => 8,
+			'FUNC' => 4
 		},
 		GOTOS => {
 			'exp' => 18
 		}
 	},
-	{#State 12
+	{#State 7
+		DEFAULT => -4
+	},
+	{#State 8
+		DEFAULT => -5
+	},
+	{#State 9
 		ACTIONS => {
-			'NUM' => 2,
+			"^" => 14
+		},
+		DEFAULT => -10
+	},
+	{#State 10
+		ACTIONS => {
+			'NUM' => 5,
 			"-" => 1,
-			"(" => 4,
-			'EFUNC' => 6,
-			'VAR' => 5,
-			'FUNC' => 7
+			"(" => 6,
+			'PRED' => 3,
+			'EFUNC' => 7,
+			'VAR' => 8,
+			'FUNC' => 4
 		},
 		GOTOS => {
 			'exp' => 19
 		}
 	},
-	{#State 13
+	{#State 11
+		DEFAULT => 0
+	},
+	{#State 12
 		ACTIONS => {
-			'NUM' => 2,
+			'NUM' => 5,
 			"-" => 1,
-			"(" => 4,
-			'EFUNC' => 6,
-			'VAR' => 5,
-			'FUNC' => 7
+			"(" => 6,
+			'PRED' => 3,
+			'EFUNC' => 7,
+			'VAR' => 8,
+			'FUNC' => 4
 		},
 		GOTOS => {
 			'exp' => 20
 		}
 	},
-	{#State 14
+	{#State 13
 		ACTIONS => {
-			'NUM' => 2,
+			'NUM' => 5,
 			"-" => 1,
-			"(" => 4,
-			'EFUNC' => 6,
-			'VAR' => 5,
-			'FUNC' => 7
+			"(" => 6,
+			'PRED' => 3,
+			'EFUNC' => 7,
+			'VAR' => 8,
+			'FUNC' => 4
 		},
 		GOTOS => {
 			'exp' => 21
 		}
 	},
+	{#State 14
+		ACTIONS => {
+			'NUM' => 5,
+			"-" => 1,
+			"(" => 6,
+			'PRED' => 3,
+			'EFUNC' => 7,
+			'VAR' => 8,
+			'FUNC' => 4
+		},
+		GOTOS => {
+			'exp' => 22
+		}
+	},
 	{#State 15
 		ACTIONS => {
-			"-" => 9,
-			"^" => 11,
-			"*" => 12,
-			"+" => 13,
-			"/" => 14,
-			")" => 22
+			'NUM' => 5,
+			"-" => 1,
+			"(" => 6,
+			'PRED' => 3,
+			'EFUNC' => 7,
+			'VAR' => 8,
+			'FUNC' => 4
+		},
+		GOTOS => {
+			'exp' => 23
 		}
 	},
 	{#State 16
 		ACTIONS => {
-			'NUM' => 2,
+			'NUM' => 5,
 			"-" => 1,
-			"(" => 4,
-			'EFUNC' => 6,
-			'VAR' => 5,
-			'FUNC' => 7
+			"(" => 6,
+			'PRED' => 3,
+			'EFUNC' => 7,
+			'VAR' => 8,
+			'FUNC' => 4
 		},
 		GOTOS => {
-			'exp' => 23,
-			'list' => 24
+			'exp' => 24
 		}
 	},
 	{#State 17
 		ACTIONS => {
-			"/" => 14,
-			"^" => 11,
-			"*" => 12
+			'NUM' => 5,
+			"-" => 1,
+			"(" => 6,
+			'PRED' => 3,
+			'EFUNC' => 7,
+			'VAR' => 8,
+			'FUNC' => 4
 		},
-		DEFAULT => -6
+		GOTOS => {
+			'exp' => 25,
+			'list' => 26
+		}
 	},
 	{#State 18
 		ACTIONS => {
-			"^" => 11
-		},
-		DEFAULT => -10
+			"-" => 10,
+			"^" => 14,
+			"*" => 15,
+			"+" => 12,
+			"/" => 13,
+			")" => 27
+		}
 	},
 	{#State 19
 		ACTIONS => {
-			"^" => 11
+			"/" => 13,
+			"^" => 14,
+			"*" => 15
 		},
 		DEFAULT => -7
 	},
 	{#State 20
 		ACTIONS => {
-			"/" => 14,
-			"^" => 11,
-			"*" => 12
+			"/" => 13,
+			"^" => 14,
+			"*" => 15
 		},
-		DEFAULT => -5
+		DEFAULT => -6
 	},
 	{#State 21
 		ACTIONS => {
-			"^" => 11
+			"^" => 14
 		},
-		DEFAULT => -8
+		DEFAULT => -9
 	},
 	{#State 22
+		ACTIONS => {
+			"^" => 14
+		},
 		DEFAULT => -11
 	},
 	{#State 23
 		ACTIONS => {
-			"-" => 9,
-			"^" => 11,
-			"*" => 12,
-			"+" => 13,
-			"/" => 14,
-			"," => 25
+			"^" => 14
 		},
-		DEFAULT => -13
+		DEFAULT => -8
 	},
 	{#State 24
 		ACTIONS => {
-			")" => 26
+			"}" => 28,
+			"-" => 10,
+			"^" => 14,
+			"*" => 15,
+			"+" => 12,
+			"/" => 13
 		}
 	},
 	{#State 25
 		ACTIONS => {
-			'NUM' => 2,
-			"-" => 1,
-			"(" => 4,
-			'EFUNC' => 6,
-			'VAR' => 5,
-			'FUNC' => 7
+			"-" => 10,
+			"^" => 14,
+			"*" => 15,
+			"+" => 12,
+			"/" => 13,
+			"," => 29
 		},
-		GOTOS => {
-			'exp' => 23,
-			'list' => 27
-		}
+		DEFAULT => -14
 	},
 	{#State 26
-		DEFAULT => -2
+		ACTIONS => {
+			")" => 30
+		}
 	},
 	{#State 27
 		DEFAULT => -12
+	},
+	{#State 28
+		DEFAULT => -3
+	},
+	{#State 29
+		ACTIONS => {
+			'NUM' => 5,
+			"-" => 1,
+			"(" => 6,
+			'PRED' => 3,
+			'EFUNC' => 7,
+			'VAR' => 8,
+			'FUNC' => 4
+		},
+		GOTOS => {
+			'exp' => 25,
+			'list' => 31
+		}
+	},
+	{#State 30
+		DEFAULT => -2
+	},
+	{#State 31
+		DEFAULT => -13
 	}
 ],
                                   yyrules  =>
@@ -755,49 +797,58 @@ sub {
             }
 	],
 	[#Rule 3
+		 'exp', 4,
+sub {
+                Math::Symbolic::Variable->new(
+                    'TRANSFORMATION_HOOK',
+                    [$_[1], $_[3]]
+                );
+            }
+	],
+	[#Rule 4
 		 'exp', 1,
 sub {
                 $_[1] =~ /^([^(]+)\((.+)\)$/o or die;
                 $Math::SymbolicX::ParserExtensionFactory::Functions->{$1}->($2)
             }
 	],
-	[#Rule 4
+	[#Rule 5
 		 'exp', 1,
 sub { $_[1] }
 	],
-	[#Rule 5
+	[#Rule 6
 		 'exp', 3,
 sub { Math::Symbolic::Operator->new('+', $_[1], $_[3]) }
 	],
-	[#Rule 6
+	[#Rule 7
 		 'exp', 3,
 sub { Math::Symbolic::Operator->new('-', $_[1], $_[3]) }
 	],
-	[#Rule 7
+	[#Rule 8
 		 'exp', 3,
 sub { Math::Symbolic::Operator->new('*', $_[1], $_[3]) }
 	],
-	[#Rule 8
+	[#Rule 9
 		 'exp', 3,
 sub { Math::Symbolic::Operator->new('/', $_[1], $_[3]) }
 	],
-	[#Rule 9
+	[#Rule 10
 		 'exp', 2,
 sub { Math::Symbolic::Operator->new('neg', $_[2]) }
 	],
-	[#Rule 10
+	[#Rule 11
 		 'exp', 3,
 sub { Math::Symbolic::Operator->new('^', $_[1], $_[3]) }
 	],
-	[#Rule 11
+	[#Rule 12
 		 'exp', 3,
 sub { $_[2] }
 	],
-	[#Rule 12
+	[#Rule 13
 		 'list', 3,
 sub { unshift @{$_[3]}, $_[1]; $_[3] }
 	],
-	[#Rule 13
+	[#Rule 14
 		 'list', 1,
 sub { [$_[1]] }
 	]
@@ -839,7 +890,15 @@ $balanced_parens_re = qr{\((?:(?>[^()]+)|(??{$balanced_parens_re}))*\)};
 	no warnings; no strict;
 	*real_new = \&new;
 	*new = sub {
-		goto &real_new;
+        my $class = shift;
+        my %args = @_;
+        my $predicates = $args{predicates};
+        delete $args{predicates};
+		my $parser = real_new($class, %args);
+        if ($predicates) {
+            $parser->{__PREDICATES} = $predicates;
+        }
+        return $parser;
 	};
 }
 
@@ -850,65 +909,134 @@ sub _Lexer {
                     || qr/(?!)/o;
 
 	my $data = $parser->{USER};
+    my $predicates = $parser->{__PREDICATES};
 
-		pos($data->{INPUT}) < length($data->{INPUT})
+	pos($data->{INPUT}) < length($data->{INPUT})
     or  return('',undef);
 
-    for ($data->{INPUT}) {
-		if ($data->{STATE} == DAT) {
-			if ($data->{INPUT} =~ /\G($Func)(?=\()/cg) {
-				return('FUNC', $1);
-			}
-            elsif ($data->{INPUT} =~ /\G($ExtFunc$balanced_parens_re)/cg) {
-				$data->{STATE} = OP;
-                return('EFUNC', $1);
+    # This is a huge hack
+    if (defined $predicates) {
+        for ($data->{INPUT}) {
+            if ($data->{STATE} == DAT) {
+                if ($data->{INPUT} =~ /\G($Func)(?=\()/cg) {
+                    return('FUNC', $1);
+                }
+                elsif ($data->{INPUT} =~ /\G($ExtFunc$balanced_parens_re)/cg) {
+                    $data->{STATE} = OP;
+                    return('EFUNC', $1);
+                }
+                elsif ($data->{INPUT} =~ /\G($predicates)(?=\{)/cg) {
+                    return('PRED', $1);
+                }
+                elsif ($data->{INPUT} =~ /\G($Ident)(?:\(($Ident(?:,$Ident)*)\))?/cgo) {
+                    $data->{STATE} = OP;
+                    if (defined $2) {
+                        return(
+                            'VAR',
+                            Math::Symbolic::Variable->new({name=>$1, signature=>[split /,/, $2]})
+                        );
+                    }
+                    else {
+                        return('VAR', Math::Symbolic::Variable->new({name=>$1}));
+                    }
+                }
+                elsif ($data->{INPUT} =~ /\G\(/cgo) {
+                    return('(', '(');
+                }
+                elsif ($data->{INPUT} =~ /\G\{/cgo) {
+                    return('{', '{');
+                }
+                elsif ($data->{INPUT} =~ /\G($Num)/cgo) {
+                    $data->{STATE} = OP;
+                    return('NUM', Math::Symbolic::Constant->new($1));
+                }
+                elsif ($data->{INPUT} =~ /\G($Unary)/cgo) {
+                    return($1, $1);
+                }
+                else {
+                    my $pos = pos($data->{INPUT});
+                    die "Parse error at position $pos of string '$data->{INPUT}'.\nCould not find a suitable token while expecting data (identifier, function, number, etc.).";
+                }
             }
-			elsif ($data->{INPUT} =~ /\G($Ident)(?:\(($Ident(?:,$Ident)*)\))?/cgo) {
-				$data->{STATE} = OP;
-				if (defined $2) {
-					return(
-						'VAR',
-						Math::Symbolic::Variable->new({name=>$1, signature=>[split /,/, $2]})
-					);
-				}
-				else {
-					return('VAR', Math::Symbolic::Variable->new({name=>$1}));
-				}
-			}
-			elsif ($data->{INPUT} =~ /\G\(/cgo) {
-				return('(', '(');
-			}
-			elsif ($data->{INPUT} =~ /\G($Num)/cgo) {
-				$data->{STATE} = OP;
-				return('NUM', Math::Symbolic::Constant->new($1));
-			}
-			elsif ($data->{INPUT} =~ /\G($Unary)/cgo) {
-				return($1, $1);
-			}
-			else {
-				my $pos = pos($data->{INPUT});
-				die "Parse error at position $pos of string '$data->{INPUT}'.\nCould not find a suitable token while expecting data (identifier, function, number, etc.).";
-			}
-		}
-		else { # $data->{STATE} == OP
-			if ($data->{INPUT} =~ /\G\)/cgo) {
-				return(')', ')');
-			}
-			elsif ($data->{INPUT} =~ /\G($Op)/cgo) {
-				$data->{STATE} = DAT;
-				return($1, $1);
-			}
-			elsif ($data->{INPUT} =~ /\G,/cgo) {
-				$data->{STATE} = DAT;
-				return(',', ',');
-			}
-			else {
-				my $pos = pos($data->{INPUT});
-				die "Parse error at position $pos of string '$data->{INPUT}'.\nCould not find a suitable token while expecting an operator (+, -, etc).";
-			}
-		}
+            else { # $data->{STATE} == OP
+                if ($data->{INPUT} =~ /\G\)/cgo) {
+                    return(')', ')');
+                }
+                elsif ($data->{INPUT} =~ /\G\}/cgo) {
+                    return('}', '}');
+                }
+                elsif ($data->{INPUT} =~ /\G($Op)/cgo) {
+                    $data->{STATE} = DAT;
+                    return($1, $1);
+                }
+                elsif ($data->{INPUT} =~ /\G,/cgo) {
+                    $data->{STATE} = DAT;
+                    return(',', ',');
+                }
+                else {
+                    my $pos = pos($data->{INPUT});
+                    die "Parse error at position $pos of string '$data->{INPUT}'.\nCould not find a suitable token while expecting an operator (+, -, etc).";
+                }
+            }
+        }
+    } # }}} end if defined $predicates
+    else { # {{{ not defined $predicates
+        for ($data->{INPUT}) {
+            if ($data->{STATE} == DAT) {
+                if ($data->{INPUT} =~ /\G($Func)(?=\()/cg) {
+                    return('FUNC', $1);
+                }
+                elsif ($data->{INPUT} =~ /\G($ExtFunc$balanced_parens_re)/cg) {
+                    $data->{STATE} = OP;
+                    return('EFUNC', $1);
+                }
+                elsif ($data->{INPUT} =~ /\G($Ident)(?:\(($Ident(?:,$Ident)*)\))?/cgo) {
+                    $data->{STATE} = OP;
+                    if (defined $2) {
+                        return(
+                            'VAR',
+                            Math::Symbolic::Variable->new({name=>$1, signature=>[split /,/, $2]})
+                        );
+                    }
+                    else {
+                        return('VAR', Math::Symbolic::Variable->new({name=>$1}));
+                    }
+                }
+                elsif ($data->{INPUT} =~ /\G\(/cgo) {
+                    return('(', '(');
+                }
+                elsif ($data->{INPUT} =~ /\G($Num)/cgo) {
+                    $data->{STATE} = OP;
+                    return('NUM', Math::Symbolic::Constant->new($1));
+                }
+                elsif ($data->{INPUT} =~ /\G($Unary)/cgo) {
+                    return($1, $1);
+                }
+                else {
+                    my $pos = pos($data->{INPUT});
+                    die "Parse error at position $pos of string '$data->{INPUT}'.\nCould not find a suitable token while expecting data (identifier, function, number, etc.).";
+                }
+            }
+            else { # $data->{STATE} == OP
+                if ($data->{INPUT} =~ /\G\)/cgo) {
+                    return(')', ')');
+                }
+                elsif ($data->{INPUT} =~ /\G($Op)/cgo) {
+                    $data->{STATE} = DAT;
+                    return($1, $1);
+                }
+                elsif ($data->{INPUT} =~ /\G,/cgo) {
+                    $data->{STATE} = DAT;
+                    return(',', ',');
+                }
+                else {
+                    my $pos = pos($data->{INPUT});
+                    die "Parse error at position $pos of string '$data->{INPUT}'.\nCould not find a suitable token while expecting an operator (+, -, etc).";
+                }
+            }
+        }
+    } # }}} end else => not defined $predicates
 
-    }
 }
 
 sub parse {
