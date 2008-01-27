@@ -2,16 +2,16 @@
 use ExtUtils::MakeMaker;
 WriteMakefile
 (
-          'PL_FILES' => {},
-          'INSTALLDIRS' => 'site',
           'NAME' => 'Math::Symbolic',
-          'EXE_FILES' => [],
           'VERSION_FROM' => 'lib/Math/Symbolic.pm',
           'PREREQ_PM' => {
-                           'Test::More' => 0,
-                           'Memoize' => '1.01',
                            'Data::Dumper' => '0',
-                           'Parse::RecDescent' => '0'
-                         }
+                           'Memoize' => '1.01',
+                           'Parse::RecDescent' => '0',
+                           'Test::More' => '0'
+                         },
+          'INSTALLDIRS' => 'site',
+          'EXE_FILES' => [],
+          'PL_FILES' => {}
         )
 ;
