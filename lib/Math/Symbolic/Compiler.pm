@@ -67,7 +67,7 @@ compilation.
 =head2 EXPORT
 
 None by default, but you may choose to import the compile(), compile_to_sub(),
-and compile_to_code() subroutines to your namespace using the standart
+and compile_to_code() subroutines to your namespace using the standard
 Exporter semantics including the ':all' tag.
 
 =head1 SUBROUTINES
@@ -98,7 +98,7 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw();
 
-our $VERSION = '0.510';
+our $VERSION = '0.601';
 
 =head2 ($code, $trees) = compile_to_code($tree, $vars)
 

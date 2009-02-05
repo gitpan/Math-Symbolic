@@ -67,6 +67,9 @@ Math::Symbolic::Operator in the section on the new() constructor.
 In version 0.503, a function named C<exp(...)> is recognized and
 transformed into C<e^(...)> internally. In version 0.506, a function
 named C<sqrt(...)> was added which is transformed into C<(...)^0.5>.
+Version 0.511 added support for the typical C<f'(x)> syntax for
+derivatives. For details, refer to the section on parsing
+derivatives below.
 
 =head2 EXAMPLES
 
@@ -120,6 +123,22 @@ would be treated as constants if you derived them in respect to t.
 Figuratively speaking, omega would be a frequency and theta would be a
 initial value.
 
+=head2 PARSING DERIVATIVES
+
+The traditional way of specifying a derivative for parsing was
+C<partial_derivative(EXPRESSION, VARIABLE)> where C<EXPRESSION>
+can be any valid expression and C<VARIABLE> is a variable name.
+The syntax denotes a partial derivative of the expression with respect
+to the variable. The same syntax is available for total derivatives.
+
+With version 0.511, a new syntax for specifying partial derivatives
+was added to the parser(s). C<f'(x)> denotes the first partial
+derivative of C<f> with respect to C<x>. If C<(x)> is omitted,
+C<f'> defaults to using C<x>. C<f''(a)> is the second order partial
+derivative with respect to C<a>. If there are multiple variables
+in the parenthesis, a la C<f'(b, a)>, the first variable is
+used for the derivatives.
+
 =head2 EXPORT
 
 None by default.
@@ -147,7 +166,7 @@ use Math::Symbolic::ExportConstants qw/:all/;
 #use Parse::RecDescent;
 my $Required_Parse_RecDescent = 0;
 
-our $VERSION = '0.510';
+our $VERSION = '0.601';
 our $DEBUG   = 0;
 
 # Functions that are parsed and translated to specific M::S trees
@@ -373,20 +392,56 @@ our $Grammar = <<'GRAMMAR_END';
               $item[1]
             }
 
-  variable: /[a-zA-Z][a-zA-Z0-9_]*/ '(' identifier_list ')'
+  variable: /[a-zA-Z][a-zA-Z0-9_]*/ /\'*/ '(' identifier_list ')'
             {
               #warn 'variable '
               #  if $Math::Symbolic::Parser::DEBUG;
-              Math::Symbolic::Variable->new(
-                { name => $item[1], signature => $item[3] }
-              );
+              my $varname = $item[1];
+              my $ticks = $item[2];
+              if ($ticks) {
+                my $n = length($ticks);
+                my $sig = $item[4] || ['x'];
+                my $dep_var = $sig->[0];
+                my $return = Math::Symbolic::Variable->new(
+                  { name => $varname, signature => $sig }
+                );
+                foreach (1..$n) {
+                  $return = Math::Symbolic::Operator->new(
+                    'partial_derivative', 
+                     $return, $dep_var,
+                  );
+                }
+                $return;
+              }
+              else {
+                Math::Symbolic::Variable->new(
+                  { name => $varname, signature => $item[4] }
+                );
+              }
             }
 
-          | /[a-zA-Z][a-zA-Z0-9_]*/
+          | /[a-zA-Z][a-zA-Z0-9_]*/ /\'*/
             {
               #warn 'variable '
               #  if $Math::Symbolic::Parser::DEBUG;
-              Math::Symbolic::Variable->new( $item[1] );
+              my $varname = $item[1];
+              my $ticks = $item[2];
+              if ($ticks) {
+                my $n = length($ticks);
+                my $return = Math::Symbolic::Variable->new(
+                  { name => $varname, signature => ['x'] }
+                );
+                foreach (1..$n) {
+                  $return = Math::Symbolic::Operator->new(
+                    'partial_derivative', 
+                     $return, 'x',
+                  );
+                }
+                $return;
+              }
+              else {
+                Math::Symbolic::Variable->new( $varname );
+              }
             }
 
   identifier_list: <leftop:/[a-zA-Z][a-zA-Z0-9_]*/ ',' /[a-zA-Z][a-zA-Z0-9_]*/>
@@ -457,14 +512,17 @@ sub _new_recdescent {
 
     if ( $args->{recompile} ) {
         $parser = Parse::RecDescent->new($Grammar);
+        $parser->{__PRIV_EXT_FUNC_REGEX} = qr/(?!)/;
     }
     else {
         eval 'require Math::Symbolic::Parser::Precompiled;';
         if ($@) {
             $parser = Parse::RecDescent->new($Grammar);
+            $parser->{__PRIV_EXT_FUNC_REGEX} = qr/(?!)/;
         }
         else {
             $parser = Math::Symbolic::Parser::Precompiled->new();
+            $parser->{__PRIV_EXT_FUNC_REGEX} = qr/(?!)/;
         }
     }
     return $parser;

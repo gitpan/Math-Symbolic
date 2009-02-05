@@ -45,7 +45,7 @@ use overload
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.510';
+our $VERSION = '0.601';
 our $AUTOLOAD;
 
 =head1 METHODS
@@ -321,7 +321,7 @@ turned off.
 Returns a (modified) copy of the original tree. If in-place modification is
 turned on, the returned tree will not be a copy.
 
-Availlable parameters are:
+Available parameters are:
 
 =over 2
 
