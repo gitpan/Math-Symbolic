@@ -63,7 +63,7 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw();
 
-our $VERSION = '0.601';
+our $VERSION = '0.602';
 
 =head1  CLASS DATA
 
@@ -115,7 +115,7 @@ our @Constant_Simplify = (
         my ($op1, $op2) = @{$tree->{operands}};
         my ($t1, $t2) = ($op1->term_type(), $op2->term_type());
         if ($t1 == T_CONSTANT) {
-            $op2->{value} *= -1, return $op2 if $op1->{value} == 0;
+            $op2 *= -1, return $op2 if $op1->{value} == 0;
             if ($t2 == T_CONSTANT) {
                 return Math::Symbolic::Constant->new($op1->{value} - $op2->{value});
             }
