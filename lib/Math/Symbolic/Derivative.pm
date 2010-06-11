@@ -63,7 +63,7 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw();
 
-our $VERSION = '0.603';
+our $VERSION = '0.604';
 
 =head1  CLASS DATA
 
@@ -262,7 +262,7 @@ sub _quotient_rule {
         }
         return $tree->new('*', Math::Symbolic::Constant->new(1/$val), $do1);
     }
-    # y = c/f(x)
+    # y = c/f(x) => y' = -c*f'(x)/f^2(x)
     elsif ($op1->is_simple_constant()) {
         $do2 = $d_sub->( $op2, $var, 0 );
         my $val = $op1->value();
@@ -274,13 +274,16 @@ sub _quotient_rule {
         my $tdo2 = $do2->term_type();
         if ($tdo2 == T_CONSTANT) {
             return $do2->zero() if $do2->{value} == 0; # c*0/f
-            return $tree->new('*', $do2->new($val*$do2->{value}), $op1);
+            return $tree->new(
+                '/', $do2->new(-1.*$val*$do2->{value}),
+                     $tree->new('^', $op2, 2)
+            );
         }
         else {
             return $tree->new(
-                '*', Math::Symbolic::Constant->new($val),
-                $tree->new('/', $do2, $op1)
-            );
+                '*', Math::Symbolic::Constant->new(-1*$val),
+                $tree->new('/', $do2, $tree->new('^', $op2, Math::Symbolic::Constant->new(2)))
+            )
         }
     }
 
@@ -320,7 +323,9 @@ sub _quotient_rule {
     }
 
     my $m3 = $tree->new('^', $op2, Math::Symbolic::Constant->new(2));
-    $upper = Math::Symbolic::Operator->new( '-', $m1, $m2 );
+    if (not defined $upper) {
+      $upper = Math::Symbolic::Operator->new( '-', $m1, $m2 );
+    }
     return Math::Symbolic::Operator->new( '/', $upper, $m3 );
 }
 
@@ -330,13 +335,13 @@ sub _logarithmic_chain_rule_after_ln {
     # y(x)=u^v
     # y'(x)=y*(d/dx ln(y))
     # y'(x)=y*(d/dx (v*ln(u)))
-	my ($u, $v) = @{$tree->{operands}};
+    my ($u, $v) = @{$tree->{operands}};
 
-	# This is a special case:
-	# y(x)=u^CONST
+    # This is a special case:
+    # y(x)=u^CONST
     # y'(x)=CONST*y* d/dx ln(u)
-	# y'(x)=CONST*y* u' / u
-	if ($v->term_type() == T_CONSTANT) {
+    # y'(x)=CONST*y* u' / u
+    if ($v->term_type() == T_CONSTANT) {
 
         # y=VAR^CONST
         if ($u->term_type() == T_VARIABLE) {
@@ -353,15 +358,15 @@ sub _logarithmic_chain_rule_after_ln {
             # otherwise: signature contains $var
         }
         return Math::Symbolic::Operator->new(
-			'*', 
-			Math::Symbolic::Operator->new(
-		    	'*', $v->new(), $tree
-			),
-			Math::Symbolic::Operator->new(
-				'/', $d_sub->($u, $var, 0), $u->new()
-			)
-		);
-	}
+            '*', 
+            Math::Symbolic::Operator->new(
+                '*', $v->new(), $tree
+            ),
+            Math::Symbolic::Operator->new(
+                '/', $d_sub->($u, $var, 0), $u->new()
+            )
+        );
+    }
 
     my $e    = Math::Symbolic::Constant->euler();
     my $ln   = Math::Symbolic::Operator->new( 'log', $e, $u );
@@ -379,10 +384,10 @@ sub _logarithmic_chain_rule {
     my $dy  = $d_sub->( $y, $var, 0 );
 
     # This would be y'/y
-	if ($a->term_type() == T_CONSTANT and $a->{special} eq 'euler') {
-		return Math::Symbolic::Operator->new('/', $dy, $y);
-	}
-	
+    if ($a->term_type() == T_CONSTANT and $a->{special} eq 'euler') {
+        return Math::Symbolic::Operator->new('/', $dy, $y);
+    }
+    
     my $e    = Math::Symbolic::Constant->euler();
     my $ln   = Math::Symbolic::Operator->new( 'log', $e, $a );
     my $mul1 = $ln->new( '*', $ln, $y->new() );
@@ -401,7 +406,7 @@ sub _trigonometric_derivatives {
     my $op = Math::Symbolic::Operator->new();
     my $d_inner = $d_sub->( $tree->{operands}[0], $var, 0 );
     my $trig;
-	my $type = $tree->type();
+    my $type = $tree->type();
     if ( $type == U_SINE ) {
         $trig = $op->new( 'cos', $tree->{operands}[0] );
     }
@@ -429,15 +434,15 @@ sub _trigonometric_derivatives {
     else {
         die "Trigonometric derivative applied to invalid operator.";
     }
-	if ($d_inner->term_type() == T_CONSTANT) {
-		my $spec = $d_inner->special();
-		if ($spec eq 'zero') {
-			return $d_inner;
-		}
-		elsif ($spec eq 'one') {
-			return $trig;
-		}
-	}
+    if ($d_inner->term_type() == T_CONSTANT) {
+        my $spec = $d_inner->special();
+        if ($spec eq 'zero') {
+            return $d_inner;
+        }
+        elsif ($spec eq 'one') {
+            return $trig;
+        }
+    }
     return $op->new( '*', $d_inner, $trig );
 }
 
@@ -446,11 +451,11 @@ sub _inverse_trigonometric_derivatives {
     my $op = Math::Symbolic::Operator->new();
     my $d_inner = $d_sub->( $tree->{operands}[0], $var, 0 );
     my $trig;
-	my $type = $tree->type();
+    my $type = $tree->type();
     if ( $type == U_ARCSINE or $type == U_ARCCOSINE ) {
         my $one = $type == U_ARCSINE
-			? Math::Symbolic::Constant->one()
-			: Math::Symbolic::Constant->new(-1);
+            ? Math::Symbolic::Constant->one()
+            : Math::Symbolic::Constant->new(-1);
         $trig = $op->new( '/', $one,
             $op->new( '-', $one->new(1), $op->new( '^', $tree->op1(), $one->new(2) ) )
         );
@@ -459,8 +464,8 @@ sub _inverse_trigonometric_derivatives {
         or $type == U_ARCCOTANGENT )
     {
         my $one = $type == U_ARCTANGENT
-			? Math::Symbolic::Constant->one()
-			: Math::Symbolic::Constant->new(-1);
+            ? Math::Symbolic::Constant->one()
+            : Math::Symbolic::Constant->new(-1);
         $trig = $op->new( '/', $one,
             $op->new( '+', $one->new(1), $op->new( '^', $tree->op1(), $one->new(2) ) )
         );
@@ -486,15 +491,15 @@ sub _inverse_trigonometric_derivatives {
         die "Inverse trig. derivative applied to invalid operator.";
     }
 
-	if ($d_inner->term_type() == T_CONSTANT) {
-		my $spec = $d_inner->special();
-		if ($spec eq 'zero') {
-			return $d_inner;
-		}
-		elsif ($spec eq 'one') {
-			return $trig;
-		}
-	}
+    if ($d_inner->term_type() == T_CONSTANT) {
+        my $spec = $d_inner->special();
+        if ($spec eq 'zero') {
+            return $d_inner;
+        }
+        elsif ($spec eq 'one') {
+            return $trig;
+        }
+    }
     return $op->new( '*', $d_inner, $trig );
 }
 
@@ -504,15 +509,16 @@ sub _inverse_atan2 {
     my ($op1, $op2) = @{$tree->{operands}}; 
 
     my $inner = $d_sub->( $op1->new()/$op2->new(), $var, 0 );
-    my $x = Math::Symbolic::Variable->new('x');
+    # templates
     my $two = Math::Symbolic::Constant->new(2);
+    my $op  = Math::Symbolic::Operator->new('+', $two, $two);
 
-    my $result = $op1->new('*',
-      $op1->new('/',
-        $op1->new('^', $x->new('x'), $two->new()), 
-        $op1->new(
-          '+', $op1->new('^', $x->new('x'), $two->new()),
-          $op1->new('^', $x->new('y'), $two->new())
+    my $result = $op->new('*',
+      $op->new('/',
+        $op->new('^', $op2->new(), $two->new()), 
+        $op->new(
+          '+', $op->new('^', $op2->new(), $two->new()),
+          $op->new('^', $op1->new(), $two->new())
         )
       ),
       $inner
