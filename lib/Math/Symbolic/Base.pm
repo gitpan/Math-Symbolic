@@ -1,4 +1,6 @@
 
+=encoding utf8
+
 =head1 NAME
 
 Math::Symbolic::Base - Base class for symbols in symbolic calculations
@@ -45,7 +47,7 @@ use overload
 
 use Math::Symbolic::ExportConstants qw/:all/;
 
-our $VERSION = '0.608';
+our $VERSION = '0.609';
 our $AUTOLOAD;
 
 =head1 METHODS

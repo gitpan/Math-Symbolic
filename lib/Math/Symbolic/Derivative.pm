@@ -1,4 +1,6 @@
 
+=encoding utf8
+
 =head1 NAME
 
 Math::Symbolic::Derivative - Derive Math::Symbolic trees
@@ -63,7 +65,7 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw();
 
-our $VERSION = '0.608';
+our $VERSION = '0.609';
 
 =head1  CLASS DATA
 

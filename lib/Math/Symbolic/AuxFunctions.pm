@@ -1,4 +1,6 @@
 
+=encoding utf8
+
 =head1 NAME
 
 Math::Symbolic::AuxFunctions - Auxiliary functions for Math::Symbolic hierarchy
@@ -35,7 +37,7 @@ use Carp;
 use Math::Symbolic::ExportConstants qw/:all/;
 use Memoize;
 
-our $VERSION = '0.608';
+our $VERSION = '0.609';
 
 =head1 TRIGONOMETRIC FUNCTIONS
 

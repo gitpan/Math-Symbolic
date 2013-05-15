@@ -1,3 +1,8 @@
+
+=encoding utf8
+
+=cut
+
 package Math::Symbolic::ExportConstants;
 
 use 5.006;
@@ -78,7 +83,7 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw(
 );
-our $VERSION = '0.608';
+our $VERSION = '0.609';
 
 1;
 __END__

@@ -1,4 +1,6 @@
 
+=encoding utf8
+
 =head1 NAME
 
 Math::Symbolic::VectorCalculus - Symbolically comp. grad, Jacobi matrices etc.
@@ -118,7 +120,7 @@ our %EXPORT_TAGS = (
 
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
-our $VERSION = '0.608';
+our $VERSION = '0.609';
 
 =begin comment
 

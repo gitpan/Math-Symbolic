@@ -1,4 +1,6 @@
 
+=encoding utf8
+
 =head1 NAME
 
 Math::Symbolic::MiscCalculus - Miscellaneous calculus routines (eg Taylor poly)
@@ -70,7 +72,7 @@ our %EXPORT_TAGS = (
 
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
-our $VERSION = '0.608';
+our $VERSION = '0.609';
 
 =begin comment
 

@@ -1,4 +1,6 @@
 
+=encoding utf8
+
 =head1 NAME
 
 Math::Symbolic::Variable - Variable in symbolic calculations
@@ -42,7 +44,7 @@ use Math::Symbolic::ExportConstants qw/:all/;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.608';
+our $VERSION = '0.609';
 
 =head1 METHODS
 

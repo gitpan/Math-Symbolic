@@ -1,4 +1,6 @@
 
+=encoding utf8
+
 =head1 NAME
 
 Math::Symbolic::Operator - Operators in symbolic calculations
@@ -58,7 +60,7 @@ use Math::Symbolic::Derivative qw//;
 
 use base 'Math::Symbolic::Base';
 
-our $VERSION = '0.608';
+our $VERSION = '0.609';
 
 =head1 CLASS DATA
 

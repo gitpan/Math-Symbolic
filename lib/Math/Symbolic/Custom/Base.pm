@@ -1,4 +1,6 @@
 
+=encoding utf8
+
 =head1 NAME
 
 Math::Symbolic::Custom::Base - Base class for tree tests and transformations
@@ -53,7 +55,7 @@ use 5.006;
 use strict;
 use warnings;
 
-our $VERSION = '0.608';
+our $VERSION = '0.609';
 our $AUTOLOAD;
 
 =head2 aggregate_import
