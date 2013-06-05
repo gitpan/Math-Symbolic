@@ -1,3 +1,4 @@
+=encoding utf8
 
 =head1 NAME
 
@@ -27,7 +28,7 @@ Math::Symbolic::Compiler - Compile Math::Symbolic trees to Perl code
 
 =head1 DESCRIPTION
 
-This module allows to compile Math::Symbolic trees to Perl code and/or
+This module allows one to compile Math::Symbolic trees to Perl code and/or
 anonymous subroutines whose arguments will be positionally mapped to the
 variables of the compiled Math::Symbolic tree.
 
@@ -98,7 +99,7 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw();
 
-our $VERSION = '0.609';
+our $VERSION = '0.610';
 
 =head2 ($code, $trees) = compile_to_code($tree, $vars)
 
